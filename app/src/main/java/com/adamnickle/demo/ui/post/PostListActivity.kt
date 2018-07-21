@@ -12,6 +12,7 @@ import android.view.WindowManager
 import com.adamnickle.demo.BuildConfig
 import com.adamnickle.demo.R
 import com.adamnickle.demo.databinding.ActivityPostListBinding
+import com.adamnickle.demo.injection.ViewModelFactory
 
 class PostListActivity: AppCompatActivity()
 {
@@ -27,7 +28,7 @@ class PostListActivity: AppCompatActivity()
         binding = DataBindingUtil.setContentView( this, R.layout.activity_post_list)
         binding.postList.layoutManager = LinearLayoutManager( this, LinearLayoutManager.VERTICAL, false )
 
-        viewModel = ViewModelProviders.of( this ).get( PostListViewModel::class.java )
+        viewModel = ViewModelProviders.of( this, ViewModelFactory( this ) ).get( PostListViewModel::class.java )
         viewModel.errorMessage.observe( this, Observer { errorMessage ->
             if( errorMessage != null )
             {
