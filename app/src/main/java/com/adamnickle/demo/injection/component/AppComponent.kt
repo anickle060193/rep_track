@@ -7,6 +7,7 @@ import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
+@Suppress( "UNCHECKED_CAST" )
 @Singleton
 @Component( modules = [
     AndroidSupportInjectionModule::class,
