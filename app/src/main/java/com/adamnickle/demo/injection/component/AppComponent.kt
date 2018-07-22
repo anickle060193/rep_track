@@ -1,11 +1,11 @@
 package com.adamnickle.demo.injection.component
 
+import com.adamnickle.demo.DemoApplication
 import com.adamnickle.demo.injection.module.ActivityBuilderModule
 import com.adamnickle.demo.injection.module.AppModule
 import com.adamnickle.demo.injection.module.NetworkModule
-import com.adamnickle.demo.ui.post.PostListViewModel
-import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
@@ -16,16 +16,8 @@ import javax.inject.Singleton
     ActivityBuilderModule::class,
     NetworkModule::class
 ] )
-interface ViewModelInjector
+interface AppComponent: AndroidInjector<DemoApplication>
 {
-    fun inject( postListViewModel: PostListViewModel )
-
     @Component.Builder
-    interface Builder
-    {
-        fun build(): ViewModelInjector
-
-        @BindsInstance
-        fun networkModule( networkModule: NetworkModule ): Builder
-    }
+    abstract class Builder: AndroidInjector.Builder<DemoApplication>()
 }

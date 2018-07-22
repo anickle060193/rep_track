@@ -6,15 +6,15 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.WindowManager
 import com.adamnickle.demo.BuildConfig
 import com.adamnickle.demo.R
 import com.adamnickle.demo.databinding.ActivityPostListBinding
-import com.adamnickle.demo.injection.ViewModelFactory
+import com.adamnickle.demo.ui.ViewModelFactory
+import dagger.android.support.DaggerAppCompatActivity
 
-class PostListActivity: AppCompatActivity()
+class PostListActivity: DaggerAppCompatActivity()
 {
     private var errorSnackbar: Snackbar? = null
 
@@ -23,12 +23,12 @@ class PostListActivity: AppCompatActivity()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
-        super.onCreate(savedInstanceState)
+        super.onCreate( savedInstanceState )
 
         binding = DataBindingUtil.setContentView( this, R.layout.activity_post_list)
         binding.postList.layoutManager = LinearLayoutManager( this, LinearLayoutManager.VERTICAL, false )
 
-        viewModel = ViewModelProviders.of( this, ViewModelFactory( this ) ).get( PostListViewModel::class.java )
+        viewModel = ViewModelProviders.of( this, ViewModelFactory() ).get( PostListViewModel::class.java )
         viewModel.errorMessage.observe( this, Observer { errorMessage ->
             if( errorMessage != null )
             {

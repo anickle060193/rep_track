@@ -2,8 +2,8 @@ package com.adamnickle.demo.model.database
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
-import com.adamnickle.demo.model.Post
-import com.adamnickle.demo.model.PostDao
+import com.adamnickle.demo.model.post.Post
+import com.adamnickle.demo.model.post.PostDao
 
 @Database( entities = [
     Post::class

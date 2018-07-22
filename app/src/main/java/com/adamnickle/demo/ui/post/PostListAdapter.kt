@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.adamnickle.demo.R
 import com.adamnickle.demo.databinding.ItemPostBinding
-import com.adamnickle.demo.model.Post
+import com.adamnickle.demo.model.post.Post
 
 class PostListAdapter: RecyclerView.Adapter<PostListAdapter.ViewHolder>()
 {
@@ -43,7 +43,7 @@ class PostListAdapter: RecyclerView.Adapter<PostListAdapter.ViewHolder>()
     {
         private val viewModel = PostViewModel()
 
-        fun bind( post:Post )
+        fun bind( post: Post)
         {
             viewModel.bind( post )
             binding.viewModel = viewModel

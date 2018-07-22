@@ -4,8 +4,8 @@ import android.arch.lifecycle.MutableLiveData
 import android.view.View
 import com.adamnickle.demo.R
 import com.adamnickle.demo.base.BaseViewModel
-import com.adamnickle.demo.model.Post
-import com.adamnickle.demo.model.PostDao
+import com.adamnickle.demo.model.post.Post
+import com.adamnickle.demo.model.post.PostDao
 import com.adamnickle.demo.network.PostApi
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -13,10 +13,13 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PostListViewModel( private val postDao: PostDao ): BaseViewModel()
+class PostListViewModel: BaseViewModel()
 {
     @Inject
     lateinit var postApi: PostApi
+
+    @Inject
+    lateinit var postDao: PostDao
 
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
     val errorMessage: MutableLiveData<Int> = MutableLiveData()
@@ -59,7 +62,7 @@ class PostListViewModel( private val postDao: PostDao ): BaseViewModel()
                 .doOnTerminate { onRetrievePostListFinish() }
                 .subscribe(
                         { result -> onRetrievePostListSuccess( result ) },
-                        { onRetrievePostListError() }
+                        { error -> onRetrievePostListError( error ) }
                 )
     }
 
@@ -79,8 +82,9 @@ class PostListViewModel( private val postDao: PostDao ): BaseViewModel()
     postListAdapter.updatePostList( postList )
     }
 
-    private fun onRetrievePostListError()
+    private fun onRetrievePostListError( error: Throwable )
     {
+        println( error )
         errorMessage.value = R.string.post_error
     }
 }

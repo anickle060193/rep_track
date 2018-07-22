@@ -1,4 +1,4 @@
-package com.adamnickle.demo.model
+package com.adamnickle.demo.model.post
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey

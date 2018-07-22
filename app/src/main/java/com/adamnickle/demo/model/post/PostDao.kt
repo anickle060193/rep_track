@@ -1,4 +1,4 @@
-package com.adamnickle.demo.model
+package com.adamnickle.demo.model.post
 
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
@@ -11,5 +11,5 @@ interface PostDao
     val all: List<Post>
 
     @Insert
-    fun insertAll( vararg posts: Post )
+    fun insertAll( vararg posts: Post)
 }

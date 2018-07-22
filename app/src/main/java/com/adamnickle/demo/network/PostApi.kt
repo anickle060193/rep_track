@@ -1,6 +1,6 @@
 package com.adamnickle.demo.network
 
-import com.adamnickle.demo.model.Post
+import com.adamnickle.demo.model.post.Post
 import io.reactivex.Observable
 import retrofit2.http.GET
 
