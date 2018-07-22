@@ -11,7 +11,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.adamnickle.demo"
+        applicationId "com.adamnickle.reptrack"
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 1

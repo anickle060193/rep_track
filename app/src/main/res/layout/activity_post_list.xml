@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.adamnickle.demo.ui.post.PostListViewModel" />
+            type="com.adamnickle.reptrack.ui.post.PostListViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout

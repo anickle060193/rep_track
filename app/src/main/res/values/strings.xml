@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Demo</string>
+    <string name="app_name">Rep Track</string>
 
     <string name="retry">Retry</string>
     <string name="post_error">An error occurred while loading the posts</string>
