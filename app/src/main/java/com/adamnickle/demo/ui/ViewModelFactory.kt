@@ -2,18 +2,29 @@ package com.adamnickle.demo.ui
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.adamnickle.demo.ui.post.PostListViewModel
+import javax.inject.Inject
+import javax.inject.Provider
+import javax.inject.Singleton
 
-class ViewModelFactory: ViewModelProvider.Factory
+@Singleton
+class ViewModelFactory @Inject constructor(
+        private val viewModelsMap: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
+): ViewModelProvider.Factory
 {
     override fun <T : ViewModel?> create( modelClass: Class<T> ): T
     {
-        if( modelClass.isAssignableFrom( PostListViewModel::class.java ) )
+        val creator = viewModelsMap [ modelClass ] ?: viewModelsMap.asIterable().firstOrNull {
+            modelClass.isAssignableFrom( it.key )
+        }?.value ?: throw IllegalArgumentException( "Unknown model class $modelClass" )
+
+        try
         {
             @Suppress( "UNCHECKED_CAST" )
-            return PostListViewModel() as T
+            return creator.get() as T
         }
-
-        throw IllegalArgumentException( "Unknown ViewModel class $modelClass" )
+        catch( e: Exception )
+        {
+            throw RuntimeException( e )
+        }
     }
 }

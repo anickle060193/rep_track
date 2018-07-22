@@ -13,13 +13,17 @@ import com.adamnickle.demo.R
 import com.adamnickle.demo.databinding.ActivityPostListBinding
 import com.adamnickle.demo.ui.ViewModelFactory
 import dagger.android.support.DaggerAppCompatActivity
+import javax.inject.Inject
 
 class PostListActivity: DaggerAppCompatActivity()
 {
-    private var errorSnackbar: Snackbar? = null
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var binding: ActivityPostListBinding
     private lateinit var viewModel: PostListViewModel
+
+    private var errorSnackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -28,7 +32,7 @@ class PostListActivity: DaggerAppCompatActivity()
         binding = DataBindingUtil.setContentView( this, R.layout.activity_post_list)
         binding.postList.layoutManager = LinearLayoutManager( this, LinearLayoutManager.VERTICAL, false )
 
-        viewModel = ViewModelProviders.of( this, ViewModelFactory() ).get( PostListViewModel::class.java )
+        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( PostListViewModel::class.java )
         viewModel.errorMessage.observe( this, Observer { errorMessage ->
             if( errorMessage != null )
             {

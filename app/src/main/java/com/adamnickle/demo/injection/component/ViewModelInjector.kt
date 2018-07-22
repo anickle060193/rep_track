@@ -1,8 +1,6 @@
 package com.adamnickle.demo.injection.component
 
-import com.adamnickle.demo.injection.module.ActivityBuilderModule
-import com.adamnickle.demo.injection.module.AppModule
-import com.adamnickle.demo.injection.module.NetworkModule
+import com.adamnickle.demo.injection.module.*
 import com.adamnickle.demo.ui.post.PostListViewModel
 import dagger.BindsInstance
 import dagger.Component
@@ -14,7 +12,9 @@ import javax.inject.Singleton
     AndroidSupportInjectionModule::class,
     AppModule::class,
     ActivityBuilderModule::class,
-    NetworkModule::class
+    NetworkModule::class,
+    ViewModelFactoryModule::class,
+    ViewModelModule::class
 ] )
 interface ViewModelInjector
 {
