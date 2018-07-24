@@ -14,20 +14,20 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ui.post.PostListActivity">
-        </activity>
-
-        <activity
-            android:name=".ui.workouts.WorkoutsListActivity">
-        </activity>
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true" />
 
         <activity-alias
             android:name="Launcher"
-            android:targetActivity=".ui.workouts.WorkoutsListActivity">
+            android:targetActivity=".MainActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
         </activity-alias>
 
     </application>

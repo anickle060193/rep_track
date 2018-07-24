@@ -5,6 +5,7 @@ import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import android.arch.persistence.room.TypeConverters
 import com.adamnickle.reptrack.model.AppTypeConverters
+import com.adamnickle.reptrack.utils.extensions.toShortString
 import java.util.*
 
 @Entity
@@ -17,4 +18,10 @@ data class Workout(
 {
     @Ignore
     constructor( name: String, date: Date ): this( null, name, date )
+
+    @Ignore
+    constructor( date: Date ): this( date.toShortString(), date )
+
+    @Ignore
+    constructor(): this( Date() )
 }

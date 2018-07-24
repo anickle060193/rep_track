@@ -4,6 +4,4 @@
     <string name="retry">Retry</string>
     <string name="post_error">An error occurred while loading the posts</string>
 
-    <string name="shortDateFormat">%1$tm/%1$td/%1$tY</string>
-
 </resources>
