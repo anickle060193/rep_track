@@ -6,35 +6,39 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="com.adamnickle.reptrack.ui.post.PostListViewModel" />
+            name="workout"
+            type="com.adamnickle.reptrack.model.workout.Workout" />
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:mutableVisibility="@{viewModel.getLoadingVisibility()}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/post_list"
+        <TextView
+            android:id="@+id/workout_name"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            app:adapter="@{viewModel.getPostListAdapter()}"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceListItem"
+            android:textSize="20sp"
+            android:text="@{workout.name}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            tools:text="Deadlift" />
+
+        <TextView
+            android:id="@+id/workout_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceListItemSecondary"
+            android:textSize="18sp"
+            android:text="@{workout.date}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:listitem="@layout/item_post" />
+            tools:text="7/6/2018" />
 
     </android.support.constraint.ConstraintLayout>
 

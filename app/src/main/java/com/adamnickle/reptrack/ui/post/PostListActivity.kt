@@ -6,7 +6,6 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
-import android.support.v7.widget.LinearLayoutManager
 import android.view.WindowManager
 import com.adamnickle.reptrack.BuildConfig
 import com.adamnickle.reptrack.R
@@ -29,8 +28,7 @@ class PostListActivity: DaggerAppCompatActivity()
     {
         super.onCreate( savedInstanceState )
 
-        binding = DataBindingUtil.setContentView( this, R.layout.activity_post_list)
-        binding.postList.layoutManager = LinearLayoutManager( this, LinearLayoutManager.VERTICAL, false )
+        binding = DataBindingUtil.setContentView( this, R.layout.activity_post_list )
 
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get( PostListViewModel::class.java )
         viewModel.errorMessage.observe( this, Observer { errorMessage ->

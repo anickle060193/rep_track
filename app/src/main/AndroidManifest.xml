@@ -17,9 +17,13 @@
             android:name=".ui.post.PostListActivity">
         </activity>
 
+        <activity
+            android:name=".ui.workouts.WorkoutsListActivity">
+        </activity>
+
         <activity-alias
             android:name="Launcher"
-            android:targetActivity=".ui.post.PostListActivity">
+            android:targetActivity=".ui.workouts.WorkoutsListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

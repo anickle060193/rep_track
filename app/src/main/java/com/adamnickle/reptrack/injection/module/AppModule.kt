@@ -4,6 +4,7 @@ import android.arch.persistence.room.Room
 import com.adamnickle.reptrack.RepTrackApp
 import com.adamnickle.reptrack.model.database.AppDatabase
 import com.adamnickle.reptrack.model.post.PostDao
+import com.adamnickle.reptrack.model.workout.WorkoutDao
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -14,10 +15,15 @@ class AppModule
     @Provides
     @Singleton
     fun provideDatabase( app: RepTrackApp ): AppDatabase = Room
-                .databaseBuilder( app, AppDatabase::class.java, "posts" )
-                .build()
+            .databaseBuilder( app, AppDatabase::class.java, "rep_track.db" )
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     @Singleton
     fun providePostsDao( database: AppDatabase ): PostDao = database.postDao()
+
+    @Provides
+    @Singleton
+    fun provideWorkoutDao( database: AppDatabase ): WorkoutDao = database.workoutDao()
 }
