@@ -5,6 +5,7 @@ import com.adamnickle.reptrack.ui.ViewModelFactory
 import dagger.Binds
 import dagger.Module
 
+@Suppress( "unused" )
 @Module
 abstract class ViewModelFactoryModule
 {
