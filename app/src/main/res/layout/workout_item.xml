@@ -25,22 +25,11 @@
             android:text="@{workout.name}"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textSize="28sp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Deadlift"/>
-
-        <TextView
-            android:id="@+id/workout_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@{@string/shortDateFormat( workout.date )}"
-            android:textAppearance="?android:textAppearanceListItemSecondary"
-            android:textSize="22sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="7/6/2018"/>
+            tools:text="Deadlift"/>
 
     </android.support.constraint.ConstraintLayout>
 
