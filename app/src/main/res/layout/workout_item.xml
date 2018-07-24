@@ -13,6 +13,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
 
@@ -20,25 +21,26 @@
             android:id="@+id/workout_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:textAppearanceListItem"
-            android:textSize="20sp"
+            android:layout_margin="@dimen/text_margin"
             android:text="@{workout.name}"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textSize="28sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:text="Deadlift" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Deadlift"/>
 
         <TextView
             android:id="@+id/workout_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{@string/shortDateFormat( workout.date )}"
             android:textAppearance="?android:textAppearanceListItemSecondary"
-            android:textSize="18sp"
-            android:text="@{workout.date}"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="7/6/2018" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="7/6/2018"/>
 
     </android.support.constraint.ConstraintLayout>
 

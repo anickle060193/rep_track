@@ -18,8 +18,6 @@ interface WorkoutDao
     @Delete
     fun deleteWorkout( workout: Workout )
 
-    fun getExercisesForWorkout( workout: Workout ) = workout.id?.let{ getExercisesForWorkoutId( it ) }
-
     @Insert
     fun insertExercise( exercise: Exercise )
 
@@ -40,8 +38,6 @@ interface WorkoutDao
 
     @Delete
     fun deleteExerciseSet( exerciseSet: ExerciseSet )
-
-    fun getExerciseSetsForExercise( exercise: Exercise ) = exercise.id?.let { getExerciseSetsForExerciseId( it ) }
 
     @Query( "SELECT * FROM exerciseSet WHERE exerciseId = :exerciseId" )
     fun getExerciseSetsForExerciseId( exerciseId: Long ): LiveData<List<ExerciseSet>>

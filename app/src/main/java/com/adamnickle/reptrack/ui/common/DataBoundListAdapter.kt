@@ -1,13 +1,20 @@
 package com.adamnickle.reptrack.ui.common
 
 import android.databinding.ViewDataBinding
+import android.support.v7.recyclerview.extensions.AsyncDifferConfig
 import android.support.v7.recyclerview.extensions.ListAdapter
 import android.support.v7.util.DiffUtil
 import android.view.ViewGroup
+import com.adamnickle.reptrack.AppExecutors
 
 abstract class DataBoundListAdapter<T, V: ViewDataBinding>(
+        appExecutors: AppExecutors,
         diffCallback: DiffUtil.ItemCallback<T>
-): ListAdapter<T, DataBoundViewHolder<V>>( diffCallback )
+): ListAdapter<T, DataBoundViewHolder<V>>(
+        AsyncDifferConfig.Builder<T>( diffCallback )
+                .setBackgroundThreadExecutor( appExecutors.diskIO() )
+                .build()
+)
 {
     override fun onCreateViewHolder( parent: ViewGroup, viewType: Int ): DataBoundViewHolder<V>
     {

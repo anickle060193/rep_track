@@ -4,14 +4,17 @@ import android.databinding.DataBindingUtil
 import android.support.v7.util.DiffUtil
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.WorkoutItemBinding
 import com.adamnickle.reptrack.model.workout.Workout
 import com.adamnickle.reptrack.ui.common.DataBoundListAdapter
 
 class WorkoutsListAdapter(
+        appExecutors: AppExecutors,
         private val workoutClickCallback: ( ( Workout ) -> Unit )?
 ): DataBoundListAdapter<Workout, WorkoutItemBinding>(
+        appExecutors,
         object: DiffUtil.ItemCallback<Workout>()
         {
             override fun areItemsTheSame( oldItem: Workout, newItem: Workout ): Boolean
