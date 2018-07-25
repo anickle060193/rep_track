@@ -13,7 +13,7 @@ interface WorkoutDao
     fun getWorkout( workoutId: Long ): Workout
 
     @Insert
-    fun insertWorkout( workout: Workout )
+    fun insertWorkout( workout: Workout ): Long
 
     @Update
     fun updateWorkout( workout: Workout )
@@ -22,7 +22,7 @@ interface WorkoutDao
     fun deleteWorkout( workout: Workout )
 
     @Insert
-    fun insertExercise( exercise: Exercise )
+    fun insertExercise( exercise: Exercise ): Long
 
     @Update
     fun updateExercise( exercise: Exercise )
@@ -37,7 +37,10 @@ interface WorkoutDao
     fun getNextExerciseOrderForWorkoutId( workoutId: Long ): Int
 
     @Insert
-    fun insertExerciseSet( exerciseSet: ExerciseSet )
+    fun insertExerciseSet( exerciseSet: ExerciseSet ): Long
+
+    @Insert
+    fun insertExerciseSets( exerciseSets: List<ExerciseSet> )
 
     @Update
     fun updateExerciseSet( exerciseSet: ExerciseSet )

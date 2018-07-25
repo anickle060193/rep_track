@@ -3,6 +3,8 @@ package com.adamnickle.reptrack.ui.common
 import android.content.Context
 import android.content.DialogInterface
 import android.databinding.DataBindingUtil
+import android.databinding.ViewDataBinding
+import android.support.annotation.LayoutRes
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.WindowManager
@@ -14,26 +16,33 @@ object InputDialog
 {
     fun showInputDialog( context: Context, title: String, onInput: ( String, DialogInterface, EditText ) -> Unit )
     {
-        val inputBinding = DataBindingUtil
-                .inflate<InputDialogBinding>(
+        showDialog<InputDialogBinding>( context, title, R.layout.input_dialog ) { binding, dialogInterface ->
+            val text = binding.input.text.toString()
+            onInput( text, dialogInterface, binding.input )
+        }
+    }
+
+    fun <T : ViewDataBinding> showDialog( context: Context, title: String, @LayoutRes layout: Int, onPositiveButtonClick: ( T, DialogInterface ) -> Unit )
+    {
+        val binding = DataBindingUtil
+                .inflate<T>(
                         LayoutInflater.from( context ),
-                        R.layout.input_dialog,
+                        layout,
                         null,
                         false
                 )
 
         AlertDialog.Builder( context )
                 .setTitle( title )
-                .setView( inputBinding.root )
+                .setView( binding.root )
                 .setPositiveButton( android.R.string.ok, null )
                 .setNegativeButton( android.R.string.cancel, null )
                 .create()
                 .also { dialog ->
                     dialog.window.setSoftInputMode( WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE )
-                    dialog.setOnShowListener {
+                    dialog.setOnShowListener { dialogInterface ->
                         dialog.getButton( AlertDialog.BUTTON_POSITIVE ).setOnClickListener {
-                            val text = inputBinding.input.text.toString()
-                            onInput( text, dialog, inputBinding.input )
+                            onPositiveButtonClick( binding, dialogInterface )
                         }
                     }
                 }

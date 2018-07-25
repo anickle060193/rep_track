@@ -14,8 +14,10 @@ import android.view.ViewGroup
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.ExerciseItemBinding
+import com.adamnickle.reptrack.databinding.NewExerciseDialogBinding
 import com.adamnickle.reptrack.databinding.WorkoutFragmentBinding
 import com.adamnickle.reptrack.model.workout.Exercise
+import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.Workout
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
@@ -119,19 +121,54 @@ class WorkoutFragment: DaggerFragment()
         binding.exerciseAdd.setOnClickListener {
             context?.let { context ->
                 workout?.id?.also { workoutId ->
-                    InputDialog.showInputDialog( context, "Exercise Name" ) { exerciseName, dialog, editText ->
-                        if( !exerciseName.isBlank() )
+                    InputDialog.showDialog<NewExerciseDialogBinding>( context, "Exercise", R.layout.new_exercise_dialog ) { binding, dialog ->
+                        val name = binding.exerciseName.text.toString()
+                        if( name.isBlank() )
                         {
-                            appExecutors.diskIO().execute {
-                                val order = workoutDao.getNextExerciseOrderForWorkoutId( workoutId )
-                                workoutDao.insertExercise( Exercise( exerciseName, workoutId, order ) )
+                            binding.exerciseName.error = "Name cannot be blank"
+                            binding.exerciseName.requestFocus()
+                            return@showDialog
+                        }
+
+                        val sets = binding.exerciseSets.text.toString().toIntOrNull()
+                        if( sets == null || sets <= 0 )
+                        {
+                            binding.exerciseSets.error = "Sets must be greater than zero"
+                            binding.exerciseSets.requestFocus()
+                            return@showDialog
+                        }
+
+                        val reps = binding.exerciseReps.text.toString().toIntOrNull()
+                        if( reps == null || reps <= 0 )
+                        {
+                            binding.exerciseReps.error = "Reps must be greater than zero"
+                            binding.exerciseReps.requestFocus()
+                            return@showDialog
+                        }
+
+                        val weight = binding.exerciseWeight.text.toString().toFloatOrNull()
+                        if( weight == null || weight <= 0 )
+                        {
+                            binding.exerciseWeight.error = "Weight must be greater than zero"
+                            binding.exerciseWeight.requestFocus()
+                            return@showDialog
+                        }
+
+                        appExecutors.diskIO().execute {
+                            val order = workoutDao.getNextExerciseOrderForWorkoutId( workoutId )
+                            val exercise = Exercise( name, workoutId, order )
+                            val exerciseId = workoutDao.insertExercise( exercise )
+
+                            val exerciseSets = arrayListOf<ExerciseSet>()
+                            for( i in 1..sets)
+                            {
+                                exerciseSets.add( ExerciseSet( weight, reps, exerciseId, i ) )
                             }
-                            dialog.dismiss()
+
+                            workoutDao.insertExerciseSets( exerciseSets )
                         }
-                        else
-                        {
-                            editText.error = "Exercise name cannot be blank"
-                        }
+
+                        dialog.dismiss()
                     }
                 } ?: throw IllegalStateException( "Cannot create Exercise without Workout ID" )
             }

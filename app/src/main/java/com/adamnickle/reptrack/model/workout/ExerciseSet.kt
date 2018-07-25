@@ -19,3 +19,7 @@ data class ExerciseSet(
         @ColumnInfo( index = true ) var exerciseId: Long,
         var order: Int
 )
+{
+    @Ignore
+    constructor( weight: Float, repCount: Int, exerciseId: Long, order: Int ): this( null, false, weight, repCount, exerciseId, order )
+}
