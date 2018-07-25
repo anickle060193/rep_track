@@ -7,15 +7,18 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
+import com.adamnickle.reptrack.databinding.WorkoutItemBinding
 import com.adamnickle.reptrack.databinding.WorkoutsListFragmentBinding
 import com.adamnickle.reptrack.model.workout.Workout
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
+import com.adamnickle.reptrack.ui.common.DataBoundViewHolder
 import com.adamnickle.reptrack.utils.autoCleared
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -69,46 +72,33 @@ class WorkoutsListFragment: DaggerFragment()
         binding.workoutsList.adapter = adapter
         binding.workoutsList.addItemDecoration( DividerItemDecoration( context, DividerItemDecoration.VERTICAL ) )
 
-        binding.workoutAdd.setOnClickListener {
+        ItemTouchHelper( object : ItemTouchHelper.SimpleCallback( 0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT )
+        {
+            override fun onMove( recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder? ): Boolean
+            {
+                return false
+            }
 
+            override fun onSwiped( viewHolder: RecyclerView.ViewHolder?, direction: Int )
+            {
+                if( viewHolder is DataBoundViewHolder<*> )
+                {
+                    if( viewHolder.binding is WorkoutItemBinding )
+                    {
+                        viewHolder.binding.workout?.let{ workout ->
+                            appExecutors.diskIO().execute {
+                                workoutDao.deleteWorkout( workout )
+                            }
+                        }
+                    }
+                }
+            }
+        } ).attachToRecyclerView( binding.workoutsList )
+
+        binding.workoutAdd.setOnClickListener {
             appExecutors.diskIO().execute {
                 workoutDao.insertWorkout( Workout() )
             }
-
-            /*
-            val inputBinding = DataBindingUtil.inflate<InputDialogBinding>( layoutInflater, R.layout.input_dialog, null, false )
-            inputBinding.defaultValue = getString( R.string.shortDateFormat, Date() )
-
-            context?.let { c ->
-                inputDialog = AlertDialog.Builder( c )
-                        .setTitle( "Workout Name" )
-                        .setView( inputBinding.root )
-                        .setPositiveButton( android.R.string.ok, null )
-                        .setNegativeButton( android.R.string.cancel, null )
-                        .create()
-                        .also { dialog ->
-                            dialog.window.setSoftInputMode( WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE )
-                            dialog.setOnShowListener {
-                                dialog.getButton( AlertDialog.BUTTON_POSITIVE ).setOnClickListener {
-                                    val workoutName = inputBinding.input.text.toString()
-                                    if( !workoutName.isBlank() )
-                                    {
-                                        appExecutors.diskIO().execute {
-                                            workoutDao.insertWorkout( Workout( workoutName, Date() ) )
-                                        }
-
-                                        dialog.dismiss()
-                                    }
-                                    else
-                                    {
-                                        inputBinding.input.error = "Cannot be empty"
-                                    }
-                                }
-                            }
-                        }
-                inputDialog?.show()
-            }
-            */
         }
 
         return binding.root
