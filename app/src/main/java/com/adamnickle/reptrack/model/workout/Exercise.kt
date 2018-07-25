@@ -16,3 +16,7 @@ data class Exercise(
         @ColumnInfo( index = true ) var workoutId: Long,
         var order: Int
 )
+{
+    @Ignore
+    constructor( name: String, workoutId: Long, order: Int ): this( null, name, workoutId, order )
+}

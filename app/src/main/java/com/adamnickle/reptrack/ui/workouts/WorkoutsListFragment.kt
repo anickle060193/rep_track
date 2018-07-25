@@ -2,9 +2,9 @@ package com.adamnickle.reptrack.ui.workouts
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -34,17 +34,17 @@ class WorkoutsListFragment: DaggerFragment()
     @Inject
     lateinit var appExecutors: AppExecutors
 
-    var binding by autoCleared<WorkoutsListFragmentBinding>()
+    private var binding by autoCleared<WorkoutsListFragmentBinding>()
 
-    var adapter by autoCleared<WorkoutsListAdapter>()
+    private var adapter by autoCleared<WorkoutsListAdapter>()
 
     private lateinit var viewModel: WorkoutsListViewModel
 
-    private var inputDialog: AlertDialog? = null
+    private var listener: OnWorkoutsListFragmentInteractionListener? = null
 
     companion object
     {
-        fun createInstance() = WorkoutsListFragment()
+        fun newInstance() = WorkoutsListFragment()
     }
 
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View?
@@ -57,8 +57,8 @@ class WorkoutsListFragment: DaggerFragment()
             adapter.submitList( result?.sortedByDescending { workout -> workout.date } )
         } )
 
-        adapter = WorkoutsListAdapter( appExecutors ) {
-            workout -> println( "Workout clicked: $workout")
+        adapter = WorkoutsListAdapter( appExecutors ) { workout ->
+            listener?.onWorkoutClicked( workout )
         }
 
         adapter.registerAdapterDataObserver( object: RecyclerView.AdapterDataObserver()
@@ -104,10 +104,29 @@ class WorkoutsListFragment: DaggerFragment()
         return binding.root
     }
 
-    override fun onDestroy()
+    override fun onAttach( context: Context )
     {
-        inputDialog?.dismiss()
+        super.onAttach( context )
 
-        super.onDestroy()
+        if( context is OnWorkoutsListFragmentInteractionListener )
+        {
+            listener = context
+        }
+        else
+        {
+            throw ClassCastException( "$context must implement ${OnWorkoutsListFragmentInteractionListener::class}" )
+        }
+    }
+
+    override fun onDetach()
+    {
+        super.onDetach()
+
+        listener = null
+    }
+
+    interface OnWorkoutsListFragmentInteractionListener
+    {
+        fun onWorkoutClicked( workout: Workout )
     }
 }

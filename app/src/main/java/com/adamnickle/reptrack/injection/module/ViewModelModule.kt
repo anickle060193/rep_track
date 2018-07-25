@@ -1,6 +1,7 @@
 package com.adamnickle.reptrack.injection.module
 
 import android.arch.lifecycle.ViewModel
+import com.adamnickle.reptrack.ui.workout.WorkoutViewModel
 import com.adamnickle.reptrack.ui.workouts.WorkoutsListViewModel
 import dagger.Binds
 import dagger.Module
@@ -14,4 +15,9 @@ abstract class ViewModelModule
     @IntoMap
     @ViewModelKey( WorkoutsListViewModel::class )
     abstract fun bindWorkoutsListViewModel( workoutsListViewModel: WorkoutsListViewModel ): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey( WorkoutViewModel::class )
+    abstract fun bingWorkoutViewModel( workoutViewModel: WorkoutViewModel ): ViewModel
 }

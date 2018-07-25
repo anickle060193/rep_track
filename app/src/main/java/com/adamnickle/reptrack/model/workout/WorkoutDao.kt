@@ -9,6 +9,9 @@ interface WorkoutDao
     @Query( "SELECT * FROM workout" )
     fun allWorkouts(): LiveData<List<Workout>>
 
+    @Query( "SELECT * FROM workout WHERE id = :workoutId LIMIT 1" )
+    fun getWorkout( workoutId: Long ): Workout
+
     @Insert
     fun insertWorkout( workout: Workout )
 
@@ -29,6 +32,9 @@ interface WorkoutDao
 
     @Query( "SELECT * FROM exercise WHERE workoutId = :workoutId" )
     fun getExercisesForWorkoutId( workoutId: Long ): LiveData<List<Exercise>>
+
+    @Query( "SELECT MAX( `order` ) + 1 FROM exercise WHERE workoutId = :workoutId ")
+    fun getNextExerciseOrderForWorkoutId( workoutId: Long ): Int
 
     @Insert
     fun insertExerciseSet( exerciseSet: ExerciseSet )
