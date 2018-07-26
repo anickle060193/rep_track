@@ -8,10 +8,12 @@ import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.ExerciseItemBinding
 import com.adamnickle.reptrack.model.workout.Exercise
+import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.common.DataBoundListAdapter
 
 class ExercisesListAdapter(
         appExecutors: AppExecutors,
+        private val workoutDao: WorkoutDao,
         private val exerciseClickCallback: ( ( Exercise ) -> Unit )?
 ): DataBoundListAdapter<Exercise, ExerciseItemBinding>(
         appExecutors,
@@ -43,12 +45,14 @@ class ExercisesListAdapter(
             }
         }
 
+        binding.viewModel = ExerciseViewModel( workoutDao )
+
         return binding
     }
 
     override fun bind(binding: ExerciseItemBinding, item: Exercise)
     {
         binding.exercise = item
-        binding.setCount = 0
+        binding.viewModel?.bind( item )
     }
 }

@@ -10,8 +10,8 @@
             type="com.adamnickle.reptrack.model.workout.Exercise" />
 
         <variable
-            name="setCount"
-            type="int" />
+            name="viewModel"
+            type="com.adamnickle.reptrack.ui.workout.ExerciseViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -40,9 +40,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:text="@{@string/exercise_set_count( setCount )}"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"
             android:textSize="24sp"
+            app:mutableText="@{viewModel.getExerciseSetCount()}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

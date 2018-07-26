@@ -80,7 +80,7 @@ class WorkoutFragment: DaggerFragment()
             adapter.submitList( result?.sortedBy { exercise -> exercise.order } )
         } )
 
-        adapter = ExercisesListAdapter( appExecutors ) { exercise ->
+        adapter = ExercisesListAdapter( appExecutors, workoutDao ) { exercise ->
             listener?.onExerciseClicked( exercise )
         }
 

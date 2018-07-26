@@ -50,4 +50,7 @@ interface WorkoutDao
 
     @Query( "SELECT * FROM exerciseSet WHERE exerciseId = :exerciseId" )
     fun getExerciseSetsForExerciseId( exerciseId: Long ): LiveData<List<ExerciseSet>>
+
+    @Query( "SELECT COUNT( * ) FROM exerciseSet WHERE exerciseId = :exerciseId" )
+    fun getExerciseSetCountForExerciseId( exerciseId: Long ): LiveData<Int>
 }
