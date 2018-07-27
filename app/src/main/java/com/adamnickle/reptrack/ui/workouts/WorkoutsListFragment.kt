@@ -19,6 +19,7 @@ import com.adamnickle.reptrack.model.workout.Workout
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.ui.common.DataBoundViewHolder
+import com.adamnickle.reptrack.ui.common.SwipeableItemTouchHelperCallback
 import com.adamnickle.reptrack.utils.autoCleared
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -72,14 +73,9 @@ class WorkoutsListFragment: DaggerFragment()
         binding.workoutsList.adapter = adapter
         binding.workoutsList.addItemDecoration( DividerItemDecoration( context, DividerItemDecoration.VERTICAL ) )
 
-        ItemTouchHelper( object : ItemTouchHelper.SimpleCallback( 0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT )
+        ItemTouchHelper( object: SwipeableItemTouchHelperCallback()
         {
-            override fun onMove( recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder? ): Boolean
-            {
-                return false
-            }
-
-            override fun onSwiped( viewHolder: RecyclerView.ViewHolder?, direction: Int )
+            override fun onDeleteItem(viewHolder: RecyclerView.ViewHolder)
             {
                 if( viewHolder is DataBoundViewHolder<*> )
                 {
@@ -92,6 +88,19 @@ class WorkoutsListFragment: DaggerFragment()
                         }
                     }
                 }
+            }
+
+            override fun getSwipeableView(viewHolder: RecyclerView.ViewHolder): View
+            {
+                if( viewHolder is DataBoundViewHolder<*> )
+                {
+                    if( viewHolder.binding is WorkoutItemBinding )
+                    {
+                        return viewHolder.binding.foreground
+                    }
+                }
+
+                throw IllegalArgumentException( "Bound ViewHolder is not a ${WorkoutItemBinding::class}" )
             }
         } ).attachToRecyclerView( binding.workoutsList )
 
