@@ -96,18 +96,36 @@ class WorkoutFragment: DaggerFragment()
         binding.exercisesList.adapter = adapter
         binding.exercisesList.addItemDecoration( DividerItemDecoration( context, DividerItemDecoration.VERTICAL ) )
 
-        ItemTouchHelper( object: SwipeableItemTouchHelperCallback()
+        ItemTouchHelper( object: SwipeableItemTouchHelperCallback( ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT )
         {
-            override fun onDeleteItem(viewHolder: RecyclerView.ViewHolder)
+            override fun onMove( recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder? ): Boolean
             {
-                if( viewHolder is DataBoundViewHolder<*> )
+                if( viewHolder is DataBoundViewHolder<*>
+                 && viewHolder.binding is ExerciseItemBinding
+                 && target is DataBoundViewHolder<*>
+                 && target.binding is ExerciseItemBinding )
                 {
-                    if( viewHolder.binding is ExerciseItemBinding )
-                    {
-                        viewHolder.binding.exercise?.let{ exercise ->
+                    viewHolder.binding.exercise?.let { sourceExercise ->
+                        target.binding.exercise?.let { targetExercise ->
                             appExecutors.diskIO().execute {
-                                workoutDao.deleteExercise( exercise )
+                                workoutDao.swapExercisesInWorkout( sourceExercise, targetExercise )
                             }
+                            return true
+                        }
+                    }
+                }
+
+                return false
+            }
+
+            override fun onSwiped( viewHolder: RecyclerView.ViewHolder, direction: Int )
+            {
+                if( viewHolder is DataBoundViewHolder<*>
+                && viewHolder.binding is ExerciseItemBinding )
+                {
+                    viewHolder.binding.exercise?.let{ exercise ->
+                        appExecutors.diskIO().execute {
+                            workoutDao.deleteExercise( exercise )
                         }
                     }
                 }
@@ -115,12 +133,10 @@ class WorkoutFragment: DaggerFragment()
 
             override fun getSwipeableView(viewHolder: RecyclerView.ViewHolder): View
             {
-                if( viewHolder is DataBoundViewHolder<*> )
+                if( viewHolder is DataBoundViewHolder<*>
+                 && viewHolder.binding is ExerciseItemBinding )
                 {
-                    if( viewHolder.binding is ExerciseItemBinding)
-                    {
-                        return viewHolder.binding.foreground
-                    }
+                    return viewHolder.binding.foreground
                 }
 
                 throw IllegalArgumentException( "Bound ViewHolder is not a ${ExerciseItemBinding::class}" )

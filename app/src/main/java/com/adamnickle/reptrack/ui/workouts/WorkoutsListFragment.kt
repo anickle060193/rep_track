@@ -73,18 +73,16 @@ class WorkoutsListFragment: DaggerFragment()
         binding.workoutsList.adapter = adapter
         binding.workoutsList.addItemDecoration( DividerItemDecoration( context, DividerItemDecoration.VERTICAL ) )
 
-        ItemTouchHelper( object: SwipeableItemTouchHelperCallback()
+        ItemTouchHelper( object: SwipeableItemTouchHelperCallback( 0, ItemTouchHelper.LEFT )
         {
-            override fun onDeleteItem(viewHolder: RecyclerView.ViewHolder)
+            override fun onSwiped( viewHolder: RecyclerView.ViewHolder, direction: Int )
             {
-                if( viewHolder is DataBoundViewHolder<*> )
+                if( viewHolder is DataBoundViewHolder<*>
+                 && viewHolder.binding is WorkoutItemBinding )
                 {
-                    if( viewHolder.binding is WorkoutItemBinding )
-                    {
-                        viewHolder.binding.workout?.let{ workout ->
-                            appExecutors.diskIO().execute {
-                                workoutDao.deleteWorkout( workout )
-                            }
+                    viewHolder.binding.workout?.let{ workout ->
+                        appExecutors.diskIO().execute {
+                            workoutDao.deleteWorkout( workout )
                         }
                     }
                 }
@@ -92,12 +90,10 @@ class WorkoutsListFragment: DaggerFragment()
 
             override fun getSwipeableView(viewHolder: RecyclerView.ViewHolder): View
             {
-                if( viewHolder is DataBoundViewHolder<*> )
+                if( viewHolder is DataBoundViewHolder<*>
+                 && viewHolder.binding is WorkoutItemBinding )
                 {
-                    if( viewHolder.binding is WorkoutItemBinding )
-                    {
-                        return viewHolder.binding.foreground
-                    }
+                    return viewHolder.binding.foreground
                 }
 
                 throw IllegalArgumentException( "Bound ViewHolder is not a ${WorkoutItemBinding::class}" )

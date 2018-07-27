@@ -36,6 +36,31 @@ interface WorkoutDao
     @Query( "SELECT MAX( `order` ) + 1 FROM exercise WHERE workoutId = :workoutId ")
     fun getNextExerciseOrderForWorkoutId( workoutId: Long ): Int
 
+    @Transaction
+    fun swapExercisesInWorkout( a: Exercise, b: Exercise )
+    {
+        if( a.id == b.id )
+        {
+            throw IllegalArgumentException( "Attempting to swap Exercise with same Exercise." )
+        }
+        if( a.workoutId != b.workoutId )
+        {
+            throw IllegalArgumentException( "Exercises do not belong to same Workout." )
+        }
+
+        val aOrder = a.order
+        val bOrder = b.order
+
+        a.order = Int.MIN_VALUE
+        updateExercise( a )
+
+        b.order = aOrder
+        updateExercise( b )
+
+        a.order = bOrder
+        updateExercise( a )
+    }
+
     @Insert
     fun insertExerciseSet( exerciseSet: ExerciseSet ): Long
 
