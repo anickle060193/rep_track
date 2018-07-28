@@ -78,4 +78,29 @@ interface WorkoutDao
 
     @Query( "SELECT COUNT( * ) FROM exerciseSet WHERE exerciseId = :exerciseId" )
     fun getExerciseSetCountForExerciseId( exerciseId: Long ): LiveData<Int>
+
+    @Transaction
+    fun swapExerciseSetsInExercise( a: ExerciseSet, b: ExerciseSet )
+    {
+        if( a.id == b.id )
+        {
+            throw IllegalArgumentException( "Attempting to swap Exercise Set with same Exercise Set." )
+        }
+        if( a.exerciseId != b.exerciseId )
+        {
+            throw IllegalArgumentException( "Exercise Sets do not belong to same Exercise." )
+        }
+
+        val aOrder = a.order
+        val bOrder = b.order
+
+        a.order = Int.MIN_VALUE
+        updateExerciseSet( a )
+
+        b.order = aOrder
+        updateExerciseSet( b )
+
+        a.order = bOrder
+        updateExerciseSet( a )
+    }
 }

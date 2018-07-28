@@ -47,7 +47,7 @@ class WorkoutsListAdapter(
         return binding
     }
 
-    override fun bind(binding: WorkoutItemBinding, item: Workout)
+    override fun bind( binding: WorkoutItemBinding, item: Workout, position: Int )
     {
         binding.workout = item
     }

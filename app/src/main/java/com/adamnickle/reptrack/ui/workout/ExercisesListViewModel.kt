@@ -6,7 +6,7 @@ import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import javax.inject.Inject
 
-class WorkoutViewModel @Inject constructor(
+class ExercisesListViewModel @Inject constructor(
         private val workoutDao: WorkoutDao
 ): ViewModel()
 {

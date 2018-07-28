@@ -50,7 +50,7 @@ class ExercisesListAdapter(
         return binding
     }
 
-    override fun bind(binding: ExerciseItemBinding, item: Exercise)
+    override fun bind( binding: ExerciseItemBinding, item: Exercise, position: Int )
     {
         binding.exercise = item
         binding.viewModel?.bind( item )

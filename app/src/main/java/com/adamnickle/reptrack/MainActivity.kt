@@ -5,13 +5,18 @@ import android.support.v4.app.FragmentTransaction
 import android.view.MenuItem
 import android.view.WindowManager
 import com.adamnickle.reptrack.model.workout.Exercise
+import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.Workout
+import com.adamnickle.reptrack.ui.exercise.ExerciseFragment
 import com.adamnickle.reptrack.ui.workout.WorkoutFragment
 import com.adamnickle.reptrack.ui.workouts.WorkoutsListFragment
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.main_activity.*
 
-class MainActivity: DaggerAppCompatActivity(), WorkoutsListFragment.OnWorkoutsListFragmentInteractionListener, WorkoutFragment.OnWorkoutFragmentInteractionListener
+class MainActivity: DaggerAppCompatActivity(),
+        WorkoutsListFragment.OnWorkoutsListFragmentInteractionListener,
+        WorkoutFragment.OnWorkoutFragmentInteractionListener,
+        ExerciseFragment.OnExerciseFragmentInteractionListener
 {
     override fun onCreate( savedInstanceState: Bundle? )
     {
@@ -70,6 +75,16 @@ class MainActivity: DaggerAppCompatActivity(), WorkoutsListFragment.OnWorkoutsLi
 
     override fun onExerciseClicked( exercise: Exercise )
     {
-        println( "Exercise clicked: $exercise" )
+        supportFragmentManager
+                .beginTransaction()
+                .addToBackStack( exercise.name )
+                .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
+                .replace( R.id.main_content, ExerciseFragment.newInstance( exercise ) )
+                .commit()
+    }
+
+    override fun onExerciseSetClicked( exerciseSet: ExerciseSet )
+    {
+        println( "Exercise Set Clicked: $exerciseSet" )
     }
 }
