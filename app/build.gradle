@@ -31,10 +31,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+        androidTest.assets.srcDirs += files( "$projectDir/schemas".toString() )
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree( dir: 'libs', include: [ '*.jar' ] )
 
     // Kotlin
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -44,6 +48,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation "android.arch.persistence.room:testing:$room_version"
 
     // Support Design
     implementation "com.android.support:design:$android_support_version"
@@ -66,8 +71,8 @@ dependencies {
 
     // Dagger 2
     implementation "com.google.dagger:dagger:$dagger2_version"
-    implementation "com.google.dagger:dagger-android:${dagger2_version}"
-    implementation "com.google.dagger:dagger-android-support:${dagger2_version}"
+    implementation "com.google.dagger:dagger-android:$dagger2_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger2_version"
     kapt "com.google.dagger:dagger-compiler:$dagger2_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger2_version"
     compileOnly "org.glassfish:javax.annotation:3.1.1"

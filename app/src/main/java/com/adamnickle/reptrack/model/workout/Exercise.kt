@@ -14,9 +14,10 @@ data class Exercise(
         @PrimaryKey( autoGenerate = true ) var id: Long?,
         var name: String,
         @ColumnInfo( index = true ) var workoutId: Long,
-        var order: Int
+        var order: Int,
+        @ColumnInfo( index = true ) var deleted: Boolean
 )
 {
     @Ignore
-    constructor( name: String, workoutId: Long, order: Int ): this( null, name, workoutId, order )
+    constructor( name: String, workoutId: Long, order: Int ): this( null, name, workoutId, order, false )
 }

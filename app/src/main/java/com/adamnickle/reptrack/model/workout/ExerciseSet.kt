@@ -17,9 +17,10 @@ data class ExerciseSet(
         var weight: Float,
         var repCount: Int,
         @ColumnInfo( index = true ) var exerciseId: Long,
-        var order: Int
+        var order: Int,
+        @ColumnInfo( index = true ) var deleted: Boolean
 )
 {
     @Ignore
-    constructor( weight: Float, repCount: Int, exerciseId: Long, order: Int ): this( null, false, weight, repCount, exerciseId, order )
+    constructor( weight: Float, repCount: Int, exerciseId: Long, order: Int ): this( null, false, weight, repCount, exerciseId, order, false )
 }
