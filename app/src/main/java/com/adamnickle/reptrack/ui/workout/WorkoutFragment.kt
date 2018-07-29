@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -125,7 +126,15 @@ class WorkoutFragment: DaggerFragment()
                 {
                     viewHolder.binding.exercise?.let{ exercise ->
                         appExecutors.diskIO().execute {
-                            workoutDao.deleteExercise( exercise )
+                            workoutDao.markExerciseAsDeleted( exercise )
+
+                            Snackbar.make( binding.root, "Exercise deleted.", Snackbar.LENGTH_LONG )
+                                    .setAction( "Undo" ) {
+                                        appExecutors.diskIO().execute {
+                                            workoutDao.unmarkExerciseAsDeleted( exercise )
+                                        }
+                                    }
+                                    .show()
                         }
                     }
                 }

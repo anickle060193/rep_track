@@ -14,13 +14,18 @@ abstract class SwipeableItemTouchHelperCallback( dragDirs: Int, swipeDirs: Int )
 
     protected abstract fun getSwipeableView( viewHolder: RecyclerView.ViewHolder ): View
 
+    override fun clearView( recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder )
+    {
+        getDefaultUIUtil().clearView( getSwipeableView( viewHolder ) )
+    }
+
     override fun onSelectedChanged( viewHolder: RecyclerView.ViewHolder?, actionState: Int )
     {
         if( actionState == ItemTouchHelper.ACTION_STATE_SWIPE )
         {
-            if(viewHolder != null)
+            if( viewHolder != null )
             {
-                getDefaultUIUtil().onSelected(getSwipeableView(viewHolder))
+                getDefaultUIUtil().onSelected( getSwipeableView( viewHolder ) )
             }
         }
         else

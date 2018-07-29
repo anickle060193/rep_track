@@ -4,40 +4,64 @@ import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
 
 @Dao
-interface WorkoutDao
+abstract class WorkoutDao
 {
-    @Query( "SELECT * FROM workout" )
-    fun allWorkouts(): LiveData<List<Workout>>
+    @Query( "SELECT * FROM workout WHERE deleted = 0" )
+    abstract fun allWorkouts(): LiveData<List<Workout>>
 
     @Query( "SELECT * FROM workout WHERE id = :workoutId LIMIT 1" )
-    fun getWorkout( workoutId: Long ): Workout
+    abstract fun getWorkout( workoutId: Long ): Workout
 
     @Insert
-    fun insertWorkout( workout: Workout ): Long
+    abstract fun insertWorkout( workout: Workout ): Long
 
     @Update
-    fun updateWorkout( workout: Workout )
+    abstract fun updateWorkout( workout: Workout )
 
     @Delete
-    fun deleteWorkout( workout: Workout )
+    abstract fun deleteWorkout( workout: Workout )
+
+    fun markWorkoutAsDeleted( workout: Workout )
+    {
+        workout.deleted = true
+        updateWorkout( workout )
+    }
+
+    fun unmarkWorkoutAsDeleted( workout: Workout )
+    {
+        workout.deleted = false
+        updateWorkout( workout )
+    }
 
     @Insert
-    fun insertExercise( exercise: Exercise ): Long
+    abstract fun insertExercise( exercise: Exercise ): Long
 
     @Update
-    fun updateExercise( exercise: Exercise )
+    abstract fun updateExercise( exercise: Exercise )
 
     @Delete
-    fun deleteExercise( exercise: Exercise )
+    abstract fun deleteExercise( exercise: Exercise )
 
-    @Query( "SELECT * FROM exercise WHERE workoutId = :workoutId" )
-    fun getExercisesForWorkoutId( workoutId: Long ): LiveData<List<Exercise>>
+    fun markExerciseAsDeleted( exercise: Exercise )
+    {
+        exercise.deleted = true
+        updateExercise( exercise )
+    }
+
+    fun unmarkExerciseAsDeleted( exercise: Exercise )
+    {
+        exercise.deleted = false
+        updateExercise( exercise )
+    }
+
+    @Query( "SELECT * FROM exercise WHERE workoutId = :workoutId AND deleted = 0" )
+    abstract fun getExercisesForWorkoutId( workoutId: Long ): LiveData<List<Exercise>>
 
     @Query( "SELECT MAX( `order` ) + 1 FROM exercise WHERE workoutId = :workoutId ")
-    fun getNextExerciseOrderForWorkoutId( workoutId: Long ): Int
+    abstract fun getNextExerciseOrderForWorkoutId( workoutId: Long ): Int
 
     @Transaction
-    fun swapExercisesInWorkout( a: Exercise, b: Exercise )
+    open fun swapExercisesInWorkout( a: Exercise, b: Exercise )
     {
         if( a.id == b.id )
         {
@@ -62,25 +86,38 @@ interface WorkoutDao
     }
 
     @Insert
-    fun insertExerciseSet( exerciseSet: ExerciseSet ): Long
+    abstract fun insertExerciseSet( exerciseSet: ExerciseSet ): Long
 
     @Insert
-    fun insertExerciseSets( exerciseSets: List<ExerciseSet> )
+    abstract fun insertExerciseSets( exerciseSets: List<ExerciseSet> )
 
     @Update
-    fun updateExerciseSet( exerciseSet: ExerciseSet )
+    abstract fun updateExerciseSet( exerciseSet: ExerciseSet )
 
     @Delete
-    fun deleteExerciseSet( exerciseSet: ExerciseSet )
+    abstract fun deleteExerciseSet( exerciseSet: ExerciseSet )
 
-    @Query( "SELECT * FROM exerciseSet WHERE exerciseId = :exerciseId" )
-    fun getExerciseSetsForExerciseId( exerciseId: Long ): LiveData<List<ExerciseSet>>
+    fun markExerciseSetAsDeleted( exerciseSet: ExerciseSet )
+    {
+        exerciseSet.deleted = true
+        updateExerciseSet( exerciseSet )
+    }
 
-    @Query( "SELECT COUNT( * ) FROM exerciseSet WHERE exerciseId = :exerciseId" )
-    fun getExerciseSetCountForExerciseId( exerciseId: Long ): LiveData<Int>
+    fun unmarkExerciseSetAsDeleted( exerciseSet: ExerciseSet )
+    {
+        exerciseSet.deleted = false
+        updateExerciseSet( exerciseSet )
+    }
+
+
+    @Query( "SELECT * FROM exerciseSet WHERE exerciseId = :exerciseId AND deleted = 0" )
+    abstract fun getExerciseSetsForExerciseId( exerciseId: Long ): LiveData<List<ExerciseSet>>
+
+    @Query( "SELECT COUNT( * ) FROM exerciseSet WHERE exerciseId = :exerciseId AND deleted = 0" )
+    abstract fun getExerciseSetCountForExerciseId( exerciseId: Long ): LiveData<Int>
 
     @Transaction
-    fun swapExerciseSetsInExercise( a: ExerciseSet, b: ExerciseSet )
+    open fun swapExerciseSetsInExercise( a: ExerciseSet, b: ExerciseSet )
     {
         if( a.id == b.id )
         {

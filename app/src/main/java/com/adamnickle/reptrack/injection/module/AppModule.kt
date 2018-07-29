@@ -17,7 +17,6 @@ class AppModule
     fun provideDatabase( app: RepTrackApp ): AppDatabase = Room
             .databaseBuilder( app, AppDatabase::class.java, "rep_track.db" )
             .addMigrations( Migration1to2 )
-            .fallbackToDestructiveMigration()
             .build()
 
     @Provides
