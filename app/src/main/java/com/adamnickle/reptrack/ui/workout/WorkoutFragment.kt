@@ -6,7 +6,6 @@ import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
@@ -26,6 +25,7 @@ import com.adamnickle.reptrack.ui.common.DataBoundViewHolder
 import com.adamnickle.reptrack.ui.common.InputDialog
 import com.adamnickle.reptrack.ui.common.SwipeableItemTouchHelperCallback
 import com.adamnickle.reptrack.utils.autoCleared
+import com.adamnickle.reptrack.utils.extensions.addDividerItemDecoration
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -83,7 +83,9 @@ class WorkoutFragment: DaggerFragment()
         } )
 
         adapter = ExercisesListAdapter( appExecutors, workoutDao ) { exercise ->
-            listener?.onExerciseClicked( exercise )
+            workout?.let { workout ->
+                listener?.onExerciseClicked( workout, exercise )
+            }
         }
 
         adapter.registerAdapterDataObserver( object: RecyclerView.AdapterDataObserver()
@@ -95,7 +97,7 @@ class WorkoutFragment: DaggerFragment()
         } )
 
         binding.exercisesList.adapter = adapter
-        binding.exercisesList.addItemDecoration( DividerItemDecoration( context, DividerItemDecoration.VERTICAL ) )
+        binding.exercisesList.addDividerItemDecoration()
 
         ItemTouchHelper( object: SwipeableItemTouchHelperCallback( ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT )
         {
@@ -235,6 +237,6 @@ class WorkoutFragment: DaggerFragment()
 
     interface OnWorkoutFragmentInteractionListener
     {
-        fun onExerciseClicked( exercise: Exercise )
+        fun onExerciseClicked( workout: Workout, exercise: Exercise )
     }
 }

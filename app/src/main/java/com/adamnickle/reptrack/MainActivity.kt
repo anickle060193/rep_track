@@ -8,6 +8,7 @@ import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.Workout
 import com.adamnickle.reptrack.ui.exercise.ExerciseFragment
+import com.adamnickle.reptrack.ui.exerciseSet.ExerciseSetFragment
 import com.adamnickle.reptrack.ui.workout.WorkoutFragment
 import com.adamnickle.reptrack.ui.workouts.WorkoutsListFragment
 import dagger.android.support.DaggerAppCompatActivity
@@ -73,18 +74,23 @@ class MainActivity: DaggerAppCompatActivity(),
                 .commit()
     }
 
-    override fun onExerciseClicked( exercise: Exercise )
+    override fun onExerciseClicked( workout: Workout, exercise: Exercise )
     {
         supportFragmentManager
                 .beginTransaction()
-                .addToBackStack( exercise.name )
+                .addToBackStack( "${workout.name} - ${exercise.name}" )
                 .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
                 .replace( R.id.main_content, ExerciseFragment.newInstance( exercise ) )
                 .commit()
     }
 
-    override fun onExerciseSetClicked( exerciseSet: ExerciseSet )
+    override fun onExerciseSetClicked( exercise: Exercise, exerciseSet: ExerciseSet )
     {
-        println( "Exercise Set Clicked: $exerciseSet" )
+        supportFragmentManager
+                .beginTransaction()
+                .addToBackStack( "${exercise.name}: Set ${exerciseSet.order}" )
+                .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
+                .replace( R.id.main_content, ExerciseSetFragment.newInstance( exerciseSet ) )
+                .commit()
     }
 }

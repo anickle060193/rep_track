@@ -40,7 +40,7 @@ class ExerciseSetsListAdapter(
                 false
         )
 
-        binding.vm = ExerciseSetViewModel()
+        binding.vm = ExerciseSetItemViewModel()
 
         binding.root.setOnClickListener {
             binding.vm?.exerciseSet?.let {

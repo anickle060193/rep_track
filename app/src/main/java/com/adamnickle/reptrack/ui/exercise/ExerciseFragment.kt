@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.utils.autoCleared
+import com.adamnickle.reptrack.utils.extensions.addDividerItemDecoration
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -47,6 +47,8 @@ class ExerciseFragment: DaggerFragment()
     @Inject
     lateinit var appExecutors: AppExecutors
 
+    private var exercise: Exercise? = null
+
     private var binding by autoCleared<ExerciseFragmentBinding>()
 
     private var adapter by autoCleared<ExerciseSetsListAdapter>()
@@ -59,6 +61,10 @@ class ExerciseFragment: DaggerFragment()
     {
         val exerciseId = arguments?.getLong( EXERCISE_ID_TAG ) ?: throw IllegalStateException( "No Exercise ID provided to WorkoutFragment" )
 
+        appExecutors.diskIO().execute {
+            exercise = workoutDao.getExercise( exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: $exerciseId" )
+        }
+
         binding = DataBindingUtil.inflate( inflater, R.layout.exercise_fragment, container, false )
 
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get( ExerciseSetsListViewModel::class.java )
@@ -68,11 +74,13 @@ class ExerciseFragment: DaggerFragment()
         } )
 
         adapter = ExerciseSetsListAdapter( appExecutors ) { exerciseSet ->
-            listener?.onExerciseSetClicked( exerciseSet )
+            exercise?.also { exercise ->
+                listener?.onExerciseSetClicked( exercise, exerciseSet )
+            }
         }
 
         binding.exerciseSetsList.adapter = adapter
-        binding.exerciseSetsList.addItemDecoration( DividerItemDecoration( context, DividerItemDecoration.VERTICAL ) )
+        binding.exerciseSetsList.addDividerItemDecoration()
 
 //        ItemTouchHelper( object: SwipeableItemTouchHelperCallback( ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT )
 //        {
@@ -153,6 +161,6 @@ class ExerciseFragment: DaggerFragment()
 
     interface OnExerciseFragmentInteractionListener
     {
-        fun onExerciseSetClicked( exerciseSet: ExerciseSet )
+        fun onExerciseSetClicked( exercise: Exercise, exerciseSet: ExerciseSet )
     }
 }

@@ -10,7 +10,7 @@ abstract class WorkoutDao
     abstract fun allWorkouts(): LiveData<List<Workout>>
 
     @Query( "SELECT * FROM workout WHERE id = :workoutId LIMIT 1" )
-    abstract fun getWorkout( workoutId: Long ): Workout
+    abstract fun getWorkout( workoutId: Long ): Workout?
 
     @Insert
     abstract fun insertWorkout( workout: Workout ): Long
@@ -32,6 +32,9 @@ abstract class WorkoutDao
         workout.deleted = false
         updateWorkout( workout )
     }
+
+    @Query( "SELECT * FROM Exercise WHERE id = :exerciseId LIMIT 1" )
+    abstract fun getExercise( exerciseId: Long ): Exercise?
 
     @Insert
     abstract fun insertExercise( exercise: Exercise ): Long
@@ -84,6 +87,9 @@ abstract class WorkoutDao
         a.order = bOrder
         updateExercise( a )
     }
+
+    @Query( "SELECT * FROM exerciseSet WHERE id = :exerciseSetId LIMIT 1" )
+    abstract fun getExerciseSet( exerciseSetId: Long ): ExerciseSet?
 
     @Insert
     abstract fun insertExerciseSet( exerciseSet: ExerciseSet ): Long

@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 
-class ExerciseSetViewModel: ViewModel()
+class ExerciseSetItemViewModel: ViewModel()
 {
     private val exerciseSetData = MutableLiveData<ExerciseSet>()
     private val exerciseSetNumberData = MutableLiveData<Int>()
