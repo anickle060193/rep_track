@@ -1,0 +1,10 @@
+<layout id="Recording">
+    <label
+        x="center"
+        y="center"
+        id="RecordLabel"
+        text="Record"
+        color="Gfx.COLOR_RED"
+        justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"
+    />
+</layout>

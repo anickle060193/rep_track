@@ -1,0 +1,9 @@
+<layout id="Main">
+    <label
+        x="center"
+        y="center"
+        text="@Strings.AppName"
+        color="Gfx.COLOR_WHITE"
+        justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"
+     />
+</layout>

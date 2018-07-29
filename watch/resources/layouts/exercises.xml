@@ -1,0 +1,27 @@
+<layout id="Exercises">
+    <label
+        id="ExerciseName"
+        x="center"
+        y="top"
+        text="Exercise Name"
+        font="Gfx.FONT_LARGE"
+        color="Gfx.COLOR_WHITE"
+        justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"
+        />
+    <label
+        x="center"
+        y="center"
+        text="Sets"
+        color="Gfx.COLOR_WHITE"
+        justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"
+        />
+    <label
+        id="ExerciseSetCount"
+        x="center"
+        y="bottom"
+        text="Exercise Set Count"
+        font="Gfx.FONT_NUMBER_HOT"
+        color="Gfx.COLOR_WHITE"
+        justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"
+        />
+</layout>
