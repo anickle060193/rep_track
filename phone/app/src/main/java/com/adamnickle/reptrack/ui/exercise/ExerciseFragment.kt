@@ -51,7 +51,7 @@ class ExerciseFragment: DaggerFragment()
 
     private var binding by autoCleared<ExerciseFragmentBinding>()
 
-    private var adapter by autoCleared<ExerciseSetsListAdapter>()
+    private var adapter by autoCleared<ExerciseSetListAdapter>()
 
     private lateinit var viewModel: ExerciseFragmentViewModel
 
@@ -73,7 +73,7 @@ class ExerciseFragment: DaggerFragment()
             adapter.submitList( result?.sortedBy { exerciseSet -> exerciseSet.order } )
         } )
 
-        adapter = ExerciseSetsListAdapter( appExecutors ) { exerciseSet ->
+        adapter = ExerciseSetListAdapter( appExecutors ) { exerciseSet ->
             exercise?.also { exercise ->
                 listener?.onExerciseSetClicked( exercise, exerciseSet )
             }

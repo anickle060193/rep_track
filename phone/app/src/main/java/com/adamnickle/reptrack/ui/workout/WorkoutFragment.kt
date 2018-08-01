@@ -62,7 +62,7 @@ class WorkoutFragment: DaggerFragment()
 
     private var binding by autoCleared<WorkoutFragmentBinding>()
 
-    private var adapter by autoCleared<ExercisesListAdapter>()
+    private var adapter by autoCleared<ExerciseListAdapter>()
 
     private lateinit var viewModel: WorkoutFragmentViewModel
 
@@ -105,7 +105,7 @@ class WorkoutFragment: DaggerFragment()
             adapter.submitList( result?.sortedBy { exercise -> exercise.order } )
         } )
 
-        adapter = ExercisesListAdapter( appExecutors, workoutDao ) { exercise ->
+        adapter = ExerciseListAdapter( appExecutors, workoutDao ) { exercise ->
             appExecutors.diskIO().execute {
                 viewModel.workout?.let { workout ->
                     listener?.onExerciseClicked( workout, exercise )

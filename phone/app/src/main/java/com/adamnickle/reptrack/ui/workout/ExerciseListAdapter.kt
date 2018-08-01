@@ -11,7 +11,7 @@ import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.common.DataBoundListAdapter
 
-class ExercisesListAdapter(
+class ExerciseListAdapter(
         appExecutors: AppExecutors,
         private val workoutDao: WorkoutDao,
         private val exerciseClickCallback: ( ( Exercise ) -> Unit )?

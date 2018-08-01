@@ -8,14 +8,14 @@ import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.Workout
 import com.adamnickle.reptrack.ui.exercise.ExerciseFragment
-import com.adamnickle.reptrack.ui.exerciseSet.ExerciseSetFragment
+import com.adamnickle.reptrack.ui.completedExerciseSet.CompletedExerciseSetFragment
 import com.adamnickle.reptrack.ui.workout.WorkoutFragment
-import com.adamnickle.reptrack.ui.workouts.WorkoutsListFragment
+import com.adamnickle.reptrack.ui.workouts.WorkoutListFragment
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.main_activity.*
 
 class MainActivity: DaggerAppCompatActivity(),
-        WorkoutsListFragment.OnWorkoutsListFragmentInteractionListener,
+        WorkoutListFragment.OnWorkoutsListFragmentInteractionListener,
         WorkoutFragment.OnWorkoutFragmentInteractionListener,
         ExerciseFragment.OnExerciseFragmentInteractionListener
 {
@@ -48,7 +48,7 @@ class MainActivity: DaggerAppCompatActivity(),
 
         supportFragmentManager
                 .beginTransaction()
-                .replace( R.id.main_content, WorkoutsListFragment.newInstance() )
+                .replace( R.id.main_content, WorkoutListFragment.newInstance() )
                 .commit()
     }
 
@@ -90,7 +90,7 @@ class MainActivity: DaggerAppCompatActivity(),
                 .beginTransaction()
                 .addToBackStack( "${exercise.name}: Set ${exerciseSet.order}" )
                 .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
-                .replace( R.id.main_content, ExerciseSetFragment.newInstance( exerciseSet ) )
+                .replace( R.id.main_content, CompletedExerciseSetFragment.newInstance( exerciseSet ) )
                 .commit()
     }
 }

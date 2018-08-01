@@ -1,4 +1,4 @@
-package com.adamnickle.reptrack.ui.exerciseSet
+package com.adamnickle.reptrack.ui.completedExerciseSet
 
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
@@ -16,7 +16,7 @@ import com.adamnickle.reptrack.utils.autoCleared
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-class ExerciseSetFragment: DaggerFragment()
+class CompletedExerciseSetFragment: DaggerFragment()
 {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -31,19 +31,19 @@ class ExerciseSetFragment: DaggerFragment()
 
     private var binding by autoCleared<ExerciseSetFragmentBinding>()
 
-    private var adapter by autoCleared<SetRepsListAdapter>()
+    private var adapter by autoCleared<CompletedSetRepListAdapter>()
 
-    lateinit var fragmentViewModel: ExerciseSetFragmentViewModel
+    lateinit var viewModel: CompletedExerciseSetFragmentViewModel
 
     companion object
     {
         private const val EXERCISE_SET_ID_TAG = "exercise_set_id"
 
-        fun newInstance( exerciseSet: ExerciseSet ): ExerciseSetFragment
+        fun newInstance( exerciseSet: ExerciseSet ): CompletedExerciseSetFragment
         {
             val exerciseSetId = exerciseSet.id ?: throw IllegalArgumentException( "Cannot create Exercise Set fragment from unsaved Exercise Set." )
 
-            return ExerciseSetFragment().apply {
+            return CompletedExerciseSetFragment().apply {
                 arguments = Bundle().apply {
                     putLong( EXERCISE_SET_ID_TAG, exerciseSetId )
                 }
@@ -62,9 +62,9 @@ class ExerciseSetFragment: DaggerFragment()
                 false
         )
 
-        fragmentViewModel = ViewModelProviders.of( this, viewModelFactory ).get( ExerciseSetFragmentViewModel::class.java )
+        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( CompletedExerciseSetFragmentViewModel::class.java )
 
-        adapter = SetRepsListAdapter( appExecutors ) { setRep ->
+        adapter = CompletedSetRepListAdapter( appExecutors ) { setRep ->
             println( "Set Rep Clicked: $setRep" )
         }
 
@@ -75,7 +75,7 @@ class ExerciseSetFragment: DaggerFragment()
 
             exerciseSet?.also { exerciseSet ->
                 appExecutors.mainThread().execute {
-                    fragmentViewModel.bind( exerciseSet )
+                    viewModel.bind( exerciseSet )
                 }
 
                 adapter.submitList( ( 0 until exerciseSet.repCount ).toList() )

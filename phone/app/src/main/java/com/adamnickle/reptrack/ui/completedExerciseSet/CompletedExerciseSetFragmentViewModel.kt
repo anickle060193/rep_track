@@ -1,11 +1,11 @@
-package com.adamnickle.reptrack.ui.exerciseSet
+package com.adamnickle.reptrack.ui.completedExerciseSet
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import javax.inject.Inject
 
-class ExerciseSetFragmentViewModel @Inject constructor(): ViewModel()
+class CompletedExerciseSetFragmentViewModel @Inject constructor(): ViewModel()
 {
     private val exerciseSet = MutableLiveData<ExerciseSet>()
 

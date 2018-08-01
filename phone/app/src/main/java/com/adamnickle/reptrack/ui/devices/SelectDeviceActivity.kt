@@ -33,7 +33,7 @@ class SelectDeviceActivity: DaggerAppCompatActivity()
 
     private var binding by autoCleared<SelectDeviceActivityBinding>()
 
-    private var adapter by autoCleared<ConnectIqDeviceListAdapter>()
+    private var adapter by autoCleared<ConnectIQDeviceListAdapter>()
 
     override fun onCreate( savedInstanceState: Bundle? )
     {
@@ -46,7 +46,7 @@ class SelectDeviceActivity: DaggerAppCompatActivity()
 
         setResult( Activity.RESULT_CANCELED )
 
-        adapter = ConnectIqDeviceListAdapter( appExecutors ) { device ->
+        adapter = ConnectIQDeviceListAdapter( appExecutors ) { device ->
             setResult( Activity.RESULT_OK, Intent().also { intent ->
                 intent.putExtra( DEVICE_EXTRA, device.deviceIdentifier )
             } )

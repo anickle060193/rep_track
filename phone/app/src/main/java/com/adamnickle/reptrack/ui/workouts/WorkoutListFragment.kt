@@ -25,7 +25,7 @@ import com.adamnickle.reptrack.utils.autoCleared
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-class WorkoutsListFragment: DaggerFragment()
+class WorkoutListFragment: DaggerFragment()
 {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -38,28 +38,28 @@ class WorkoutsListFragment: DaggerFragment()
 
     private var binding by autoCleared<WorkoutsListFragmentBinding>()
 
-    private var adapter by autoCleared<WorkoutsListAdapter>()
+    private var adapter by autoCleared<WorkoutListAdapter>()
 
-    private lateinit var viewModel: WorkoutsFragmentViewModel
+    private lateinit var viewModel: WorkoutListFragmentViewModel
 
     private var listener: OnWorkoutsListFragmentInteractionListener? = null
 
     companion object
     {
-        fun newInstance() = WorkoutsListFragment()
+        fun newInstance() = WorkoutListFragment()
     }
 
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View?
     {
         binding = DataBindingUtil.inflate( inflater, R.layout.workouts_list_fragment, container, false )
 
-        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( WorkoutsFragmentViewModel::class.java )
+        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( WorkoutListFragmentViewModel::class.java )
 
         viewModel.results.observe( this, Observer { result ->
             adapter.submitList( result?.sortedByDescending { workout -> workout.date } )
         } )
 
-        adapter = WorkoutsListAdapter( appExecutors ) { workout ->
+        adapter = WorkoutListAdapter( appExecutors ) { workout ->
             listener?.onWorkoutClicked( workout )
         }
 

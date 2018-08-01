@@ -10,7 +10,7 @@ import com.adamnickle.reptrack.databinding.ExerciseSetItemBinding
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.ui.common.DataBoundListAdapter
 
-class ExerciseSetsListAdapter(
+class ExerciseSetListAdapter(
         appExecutors: AppExecutors,
         private val exerciseSetClickCallback: ( ( ExerciseSet ) -> Unit )?
 ): DataBoundListAdapter<ExerciseSet, ExerciseSetItemBinding>(

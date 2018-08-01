@@ -1,11 +1,11 @@
 package com.adamnickle.reptrack.injection.module
 
 import android.arch.lifecycle.ViewModel
+import com.adamnickle.reptrack.ui.completedExerciseSet.CompletedExerciseSetFragmentViewModel
 import com.adamnickle.reptrack.ui.exercise.ExerciseFragmentViewModel
-import com.adamnickle.reptrack.ui.exerciseSet.ExerciseSetFragmentViewModel
 import com.adamnickle.reptrack.ui.shared.SharedViewModel
 import com.adamnickle.reptrack.ui.workout.WorkoutFragmentViewModel
-import com.adamnickle.reptrack.ui.workouts.WorkoutsFragmentViewModel
+import com.adamnickle.reptrack.ui.workouts.WorkoutListFragmentViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -21,8 +21,8 @@ abstract class ViewModelModule
 
     @Binds
     @IntoMap
-    @ViewModelKey( WorkoutsFragmentViewModel::class )
-    abstract fun bindWorkoutsFragmentViewModel( workoutsFragmentViewModel: WorkoutsFragmentViewModel ): ViewModel
+    @ViewModelKey( WorkoutListFragmentViewModel::class )
+    abstract fun bindWorkoutListFragmentViewModel(workoutListFragmentViewModel: WorkoutListFragmentViewModel ): ViewModel
 
     @Binds
     @IntoMap
@@ -36,6 +36,6 @@ abstract class ViewModelModule
 
     @Binds
     @IntoMap
-    @ViewModelKey( ExerciseSetFragmentViewModel::class )
-    abstract fun bindExerciseSetFragmentViewModel( exerciseSetFragmentViewModel: ExerciseSetFragmentViewModel ): ViewModel
+    @ViewModelKey( CompletedExerciseSetFragmentViewModel::class )
+    abstract fun bindCompletedExerciseSetFragmentViewModel( completedExerciseSetFragmentViewModel: CompletedExerciseSetFragmentViewModel ): ViewModel
 }

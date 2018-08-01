@@ -1,4 +1,4 @@
-package com.adamnickle.reptrack.ui.exerciseSet
+package com.adamnickle.reptrack.ui.completedExerciseSet
 
 import android.databinding.DataBindingUtil
 import android.support.v7.util.DiffUtil
@@ -9,7 +9,7 @@ import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.SetRepItemBinding
 import com.adamnickle.reptrack.ui.common.DataBoundListAdapter
 
-class SetRepsListAdapter(
+class CompletedSetRepListAdapter(
         appExecutors: AppExecutors,
         private val setRepClickCallback: ( ( Int ) -> Unit )?
 ): DataBoundListAdapter<Int, SetRepItemBinding>(

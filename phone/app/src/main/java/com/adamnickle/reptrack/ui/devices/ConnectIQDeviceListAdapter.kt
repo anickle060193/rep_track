@@ -10,7 +10,7 @@ import com.adamnickle.reptrack.databinding.ConnectIqDeviceItemBinding
 import com.adamnickle.reptrack.ui.common.DataBoundListAdapter
 import com.garmin.android.connectiq.IQDevice
 
-class ConnectIqDeviceListAdapter(
+class ConnectIQDeviceListAdapter(
         appExecutors: AppExecutors,
         private val deviceClickCallback: ( ( IQDevice ) -> Unit )?
 ): DataBoundListAdapter<IQDevice, ConnectIqDeviceItemBinding>(
