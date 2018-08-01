@@ -40,7 +40,7 @@ class ConnectIqDeviceListAdapter(
                 false
         )
 
-        binding.vm = ConnectIQDeviceViewModel()
+        binding.vm = ConnectIQDeviceItemViewModel()
 
         binding.root.setOnClickListener {
             binding.vm?.device?.let { device ->

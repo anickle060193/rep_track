@@ -38,18 +38,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dialog_margin"
-            app:layout_constraintTop_toBottomOf="@id/exercise_name_container"
+            app:layout_constraintTop_toBottomOf="@+id/exercise_name_container"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/center_guideline">
+            app:layout_constraintEnd_toStartOf="@+id/center_guideline">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/exercise_sets"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:nextFocusForward="@id/exercise_reps"
-                android:nextFocusRight="@id/exercise_reps"
-                android:nextFocusDown="@id/exercise_reps"
+                android:nextFocusForward="@+id/exercise_reps"
+                android:nextFocusRight="@+id/exercise_reps"
+                android:nextFocusDown="@+id/exercise_reps"
                 android:hint="Sets" />
 
         </android.support.design.widget.TextInputLayout>
@@ -58,8 +58,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dialog_margin"
-            app:layout_constraintTop_toBottomOf="@id/exercise_name_container"
-            app:layout_constraintStart_toEndOf="@id/center_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/exercise_name_container"
+            app:layout_constraintStart_toEndOf="@+id/center_guideline"
             app:layout_constraintEnd_toEndOf="parent">
 
             <android.support.design.widget.TextInputEditText
@@ -75,7 +75,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dialog_margin"
-            app:layout_constraintTop_toBottomOf="@id/exercise_sets_container"
+            app:layout_constraintTop_toBottomOf="@+id/exercise_sets_container"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 

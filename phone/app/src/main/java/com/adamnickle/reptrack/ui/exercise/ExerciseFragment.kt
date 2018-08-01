@@ -53,7 +53,7 @@ class ExerciseFragment: DaggerFragment()
 
     private var adapter by autoCleared<ExerciseSetsListAdapter>()
 
-    private lateinit var viewModel: ExerciseSetsListViewModel
+    private lateinit var viewModel: ExerciseFragmentViewModel
 
     private var listener: OnExerciseFragmentInteractionListener? = null
 
@@ -67,7 +67,7 @@ class ExerciseFragment: DaggerFragment()
 
         binding = DataBindingUtil.inflate( inflater, R.layout.exercise_fragment, container, false )
 
-        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( ExerciseSetsListViewModel::class.java )
+        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( ExerciseFragmentViewModel::class.java )
 
         viewModel.exerciseSets( exerciseId ).observe( this, Observer { result ->
             adapter.submitList( result?.sortedBy { exerciseSet -> exerciseSet.order } )

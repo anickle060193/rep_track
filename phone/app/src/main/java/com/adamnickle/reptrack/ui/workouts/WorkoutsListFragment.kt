@@ -40,7 +40,7 @@ class WorkoutsListFragment: DaggerFragment()
 
     private var adapter by autoCleared<WorkoutsListAdapter>()
 
-    private lateinit var viewModel: WorkoutsListViewModel
+    private lateinit var viewModel: WorkoutsFragmentViewModel
 
     private var listener: OnWorkoutsListFragmentInteractionListener? = null
 
@@ -53,7 +53,7 @@ class WorkoutsListFragment: DaggerFragment()
     {
         binding = DataBindingUtil.inflate( inflater, R.layout.workouts_list_fragment, container, false )
 
-        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( WorkoutsListViewModel::class.java )
+        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( WorkoutsFragmentViewModel::class.java )
 
         viewModel.results.observe( this, Observer { result ->
             adapter.submitList( result?.sortedByDescending { workout -> workout.date } )

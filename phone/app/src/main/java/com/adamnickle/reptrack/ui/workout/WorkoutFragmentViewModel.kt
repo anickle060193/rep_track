@@ -9,7 +9,7 @@ import com.adamnickle.reptrack.model.workout.Workout
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import javax.inject.Inject
 
-class ExercisesListViewModel @Inject constructor(
+class WorkoutFragmentViewModel @Inject constructor(
         private val workoutDao: WorkoutDao
 ): ViewModel()
 {

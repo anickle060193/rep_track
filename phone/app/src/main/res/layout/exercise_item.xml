@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="com.adamnickle.reptrack.ui.workout.ExerciseViewModel" />
+            type="com.adamnickle.reptrack.ui.workout.ExerciseItemViewModel" />
     </data>
 
     <FrameLayout
@@ -54,7 +54,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/exercise_set_count"
+                app:layout_constraintEnd_toStartOf="@+id/exercise_set_count"
                 tools:text="Deadlift" />
 
             <TextView

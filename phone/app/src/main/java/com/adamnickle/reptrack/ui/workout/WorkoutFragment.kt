@@ -63,7 +63,7 @@ class WorkoutFragment: DaggerFragment()
 
     private var adapter by autoCleared<ExercisesListAdapter>()
 
-    private lateinit var viewModel: ExercisesListViewModel
+    private lateinit var viewModel: WorkoutFragmentViewModel
 
     private var listener: OnWorkoutFragmentInteractionListener? = null
 
@@ -75,7 +75,7 @@ class WorkoutFragment: DaggerFragment()
 
         val workoutId = arguments?.getLong( WORKOUT_ID_TAG ) ?: throw IllegalStateException( "No Workout ID provided to WorkoutFragment" )
 
-        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( ExercisesListViewModel::class.java )
+        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( WorkoutFragmentViewModel::class.java )
 
         viewModel.workoutId = workoutId
 

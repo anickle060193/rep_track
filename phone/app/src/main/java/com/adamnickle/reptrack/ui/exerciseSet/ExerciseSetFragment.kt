@@ -33,7 +33,7 @@ class ExerciseSetFragment: DaggerFragment()
 
     private var adapter by autoCleared<SetRepsListAdapter>()
 
-    lateinit var viewModel: ExerciseSetViewModel
+    lateinit var fragmentViewModel: ExerciseSetFragmentViewModel
 
     companion object
     {
@@ -62,7 +62,7 @@ class ExerciseSetFragment: DaggerFragment()
                 false
         )
 
-        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( ExerciseSetViewModel::class.java )
+        fragmentViewModel = ViewModelProviders.of( this, viewModelFactory ).get( ExerciseSetFragmentViewModel::class.java )
 
         adapter = SetRepsListAdapter( appExecutors ) { setRep ->
             println( "Set Rep Clicked: $setRep" )
@@ -75,7 +75,7 @@ class ExerciseSetFragment: DaggerFragment()
 
             exerciseSet?.also { exerciseSet ->
                 appExecutors.mainThread().execute {
-                    viewModel.bind( exerciseSet )
+                    fragmentViewModel.bind( exerciseSet )
                 }
 
                 adapter.submitList( ( 0 until exerciseSet.repCount ).toList() )

@@ -5,7 +5,7 @@ import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import com.garmin.android.connectiq.IQDevice
 
-class ConnectIQDeviceViewModel: ViewModel()
+class ConnectIQDeviceItemViewModel: ViewModel()
 {
     private var deviceData = MutableLiveData<IQDevice?>()
 

@@ -5,7 +5,7 @@ import android.arch.lifecycle.ViewModel
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import javax.inject.Inject
 
-class ExerciseSetViewModel @Inject constructor(): ViewModel()
+class ExerciseSetFragmentViewModel @Inject constructor(): ViewModel()
 {
     private val exerciseSet = MutableLiveData<ExerciseSet>()
 

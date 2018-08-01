@@ -45,7 +45,7 @@ class ExercisesListAdapter(
             }
         }
 
-        binding.viewModel = ExerciseViewModel( workoutDao )
+        binding.viewModel = ExerciseItemViewModel( workoutDao )
 
         return binding
     }
