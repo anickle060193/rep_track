@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/select_device"
+        android:title="Select Device"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/open_watch_app"
+        android:title="Open Watch App"
+        app:showAsAction="never"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/send_workout_to_watch"
+        android:title="Send Workout Watch"
+        app:showAsAction="never"
+        android:visible="false" />
+
+</menu>

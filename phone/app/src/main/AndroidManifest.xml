@@ -20,6 +20,14 @@
             android:screenOrientation="portrait"
             android:exported="true" />
 
+        <activity
+            android:name=".ui.devices.SelectDeviceActivity"
+            android:label="Connect IQ Devices"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
         <activity-alias
             android:name="Launcher"
             android:targetActivity=".MainActivity">

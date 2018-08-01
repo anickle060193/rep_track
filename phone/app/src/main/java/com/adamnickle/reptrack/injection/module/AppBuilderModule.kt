@@ -1,6 +1,7 @@
 package com.adamnickle.reptrack.injection.module
 
 import com.adamnickle.reptrack.MainActivity
+import com.adamnickle.reptrack.ui.devices.SelectDeviceActivity
 import com.adamnickle.reptrack.ui.exercise.ExerciseFragment
 import com.adamnickle.reptrack.ui.exerciseSet.ExerciseSetFragment
 import com.adamnickle.reptrack.ui.workout.WorkoutFragment
@@ -14,6 +15,9 @@ abstract class AppBuilderModule
 {
     @ContributesAndroidInjector
     abstract fun contributeMainActivity(): MainActivity
+
+    @ContributesAndroidInjector
+    abstract fun contributeSelectDeviceActivity(): SelectDeviceActivity
 
     @ContributesAndroidInjector
     abstract fun contributeWorkoutsListFragment(): WorkoutsListFragment

@@ -1,16 +1,16 @@
 package com.adamnickle.reptrack.ui.workout
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.ExerciseItemBinding
@@ -24,6 +24,7 @@ import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.ui.common.DataBoundViewHolder
 import com.adamnickle.reptrack.ui.common.InputDialog
 import com.adamnickle.reptrack.ui.common.SwipeableItemTouchHelperCallback
+import com.adamnickle.reptrack.ui.devices.SelectDeviceActivity
 import com.adamnickle.reptrack.utils.autoCleared
 import com.adamnickle.reptrack.utils.extensions.addDividerItemDecoration
 import dagger.android.support.DaggerFragment
@@ -33,6 +34,8 @@ class WorkoutFragment: DaggerFragment()
 {
     companion object
     {
+        private const val SELECT_DEVICE_REQUEST = 0
+
         private const val WORKOUT_ID_TAG = "workout_id"
 
         fun newInstance( workout: Workout ): WorkoutFragment
@@ -56,8 +59,6 @@ class WorkoutFragment: DaggerFragment()
     @Inject
     lateinit var appExecutors: AppExecutors
 
-    private var workout: Workout? = null
-
     private var binding by autoCleared<WorkoutFragmentBinding>()
 
     private var adapter by autoCleared<ExercisesListAdapter>()
@@ -66,25 +67,41 @@ class WorkoutFragment: DaggerFragment()
 
     private var listener: OnWorkoutFragmentInteractionListener? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View?
+    override fun onCreate( savedInstanceState: Bundle? )
     {
+        super.onCreate( savedInstanceState )
+
+        setHasOptionsMenu( true )
+
         val workoutId = arguments?.getLong( WORKOUT_ID_TAG ) ?: throw IllegalStateException( "No Workout ID provided to WorkoutFragment" )
-
-        appExecutors.diskIO().execute {
-            workout = workoutDao.getWorkout( workoutId )
-        }
-
-        binding = DataBindingUtil.inflate( inflater, R.layout.workout_fragment, container, false )
 
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get( ExercisesListViewModel::class.java )
 
-        viewModel.exercises( workoutId ).observe( this, Observer { result ->
+        viewModel.workoutId = workoutId
+
+        appExecutors.diskIO().execute {
+            viewModel.workoutId?.let { workoutId ->
+                val workout = workoutDao.getWorkout( workoutId )
+                appExecutors.mainThread().execute {
+                    viewModel.workout = workout
+                }
+            }
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View?
+    {
+        binding = DataBindingUtil.inflate( inflater, R.layout.workout_fragment, container, false )
+
+        viewModel.exercises().observe( this, Observer { result ->
             adapter.submitList( result?.sortedBy { exercise -> exercise.order } )
         } )
 
         adapter = ExercisesListAdapter( appExecutors, workoutDao ) { exercise ->
-            workout?.let { workout ->
-                listener?.onExerciseClicked( workout, exercise )
+            appExecutors.diskIO().execute {
+                viewModel.workout?.let { workout ->
+                    listener?.onExerciseClicked( workout, exercise )
+                }
             }
         }
 
@@ -157,7 +174,7 @@ class WorkoutFragment: DaggerFragment()
 
         binding.exerciseAdd.setOnClickListener {
             context?.let { context ->
-                workout?.id?.also { workoutId ->
+                viewModel.workout?.id?.also { workoutId ->
                     InputDialog.showDialog<NewExerciseDialogBinding>( context, "Exercise", R.layout.new_exercise_dialog ) { binding, dialog ->
                         val name = binding.exerciseName.text.toString()
                         if( name.isBlank() )
@@ -233,6 +250,63 @@ class WorkoutFragment: DaggerFragment()
         super.onDetach()
 
         listener = null
+    }
+
+    override fun onCreateOptionsMenu( menu: Menu, inflater: MenuInflater )
+    {
+        inflater.inflate( R.menu.workout_fragment, menu )
+    }
+
+    override fun onPrepareOptionsMenu( menu: Menu )
+    {
+        if( !viewModel.hasDevice )
+        {
+            menu.findItem( R.id.select_device )?.isVisible = true
+            menu.findItem( R.id.open_watch_app )?.isVisible = false
+            menu.findItem( R.id.send_workout_to_watch )?.isVisible = false
+        }
+        else
+        {
+            menu.findItem( R.id.select_device )?.isVisible = false
+            menu.findItem( R.id.open_watch_app )?.isVisible = true
+            menu.findItem( R.id.send_workout_to_watch )?.isVisible = true
+        }
+    }
+
+    override fun onOptionsItemSelected( item: MenuItem ): Boolean
+    {
+        return when( item.itemId )
+        {
+            R.id.select_device -> {
+                startActivityForResult( Intent( context, SelectDeviceActivity::class.java ), SELECT_DEVICE_REQUEST )
+                return true
+            }
+            else -> super.onOptionsItemSelected( item )
+        }
+    }
+
+    override fun onActivityResult( requestCode: Int, resultCode: Int, data: Intent? )
+    {
+        if( requestCode == SELECT_DEVICE_REQUEST )
+        {
+            if( resultCode == Activity.RESULT_OK )
+            {
+                val deviceId = data?.extras?.getLong( SelectDeviceActivity.DEVICE_EXTRA )
+
+                if( deviceId != null )
+                {
+                    viewModel.deviceId = deviceId
+
+                    Snackbar.make( binding.root, "Device Selected: $deviceId", Snackbar.LENGTH_LONG )
+                            .show()
+                }
+                else
+                {
+                    Snackbar.make( binding.root, "Could not find Device ID result", Snackbar.LENGTH_LONG )
+                            .show()
+                }
+            }
+        }
     }
 
     interface OnWorkoutFragmentInteractionListener

@@ -10,16 +10,20 @@ import javax.inject.Singleton
 @Singleton
 open class AppExecutors(
         private val diskIO: Executor,
+        private val networkIO: Executor,
         private val mainThread: Executor
 )
 {
     @Inject
     constructor() : this(
             Executors.newSingleThreadExecutor(),
+            Executors.newFixedThreadPool( 3 ),
             MainThreadExecutor()
     )
 
     fun diskIO(): Executor = diskIO
+
+    fun networkIO(): Executor = networkIO
 
     fun mainThread(): Executor = mainThread
 
