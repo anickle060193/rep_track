@@ -15,7 +15,6 @@ class WorkoutFragmentViewModel @Inject constructor(
 {
     private var workoutIdData = MutableLiveData<Long>()
     private var workoutData = MutableLiveData<Workout>()
-    private var deviceIdData = MutableLiveData<Long>()
 
     var workout: Workout?
         get() = workoutData.value
@@ -24,12 +23,6 @@ class WorkoutFragmentViewModel @Inject constructor(
     var workoutId: Long?
         get() = workoutIdData.value
         set( value ) { workoutIdData.value = value }
-
-    var deviceId: Long?
-        get() = deviceIdData.value
-        set( value ) { deviceIdData.value = value }
-
-    val hasDevice get() = deviceId != null
 
     fun exercises(): LiveData<List<Exercise>> = Transformations.switchMap( workoutIdData ) { workoutId -> workoutId?.let { workoutDao.getExercisesForWorkoutId( workoutId ) } }
 }

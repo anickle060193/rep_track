@@ -3,6 +3,7 @@ package com.adamnickle.reptrack.injection.module
 import android.arch.lifecycle.ViewModel
 import com.adamnickle.reptrack.ui.exercise.ExerciseFragmentViewModel
 import com.adamnickle.reptrack.ui.exerciseSet.ExerciseSetFragmentViewModel
+import com.adamnickle.reptrack.ui.shared.SharedViewModel
 import com.adamnickle.reptrack.ui.workout.WorkoutFragmentViewModel
 import com.adamnickle.reptrack.ui.workouts.WorkoutsFragmentViewModel
 import dagger.Binds
@@ -13,6 +14,11 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class ViewModelModule
 {
+    @Binds
+    @IntoMap
+    @ViewModelKey( SharedViewModel::class )
+    abstract fun bindSharedViewModel( sharedViewModel: SharedViewModel ): ViewModel
+
     @Binds
     @IntoMap
     @ViewModelKey( WorkoutsFragmentViewModel::class )

@@ -25,6 +25,7 @@ import com.adamnickle.reptrack.ui.common.DataBoundViewHolder
 import com.adamnickle.reptrack.ui.common.InputDialog
 import com.adamnickle.reptrack.ui.common.SwipeableItemTouchHelperCallback
 import com.adamnickle.reptrack.ui.devices.SelectDeviceActivity
+import com.adamnickle.reptrack.ui.shared.SharedViewModel
 import com.adamnickle.reptrack.utils.autoCleared
 import com.adamnickle.reptrack.utils.extensions.addDividerItemDecoration
 import dagger.android.support.DaggerFragment
@@ -65,6 +66,8 @@ class WorkoutFragment: DaggerFragment()
 
     private lateinit var viewModel: WorkoutFragmentViewModel
 
+    private lateinit var sharedViewModel: SharedViewModel
+
     private var listener: OnWorkoutFragmentInteractionListener? = null
 
     override fun onCreate( savedInstanceState: Bundle? )
@@ -72,6 +75,11 @@ class WorkoutFragment: DaggerFragment()
         super.onCreate( savedInstanceState )
 
         setHasOptionsMenu( true )
+
+        activity?.also { activity ->
+            sharedViewModel = ViewModelProviders.of( activity, viewModelFactory ).get( SharedViewModel::class.java )
+        } ?: throw IllegalStateException( "Activity not set in Fragment.onCreate()" )
+
 
         val workoutId = arguments?.getLong( WORKOUT_ID_TAG ) ?: throw IllegalStateException( "No Workout ID provided to WorkoutFragment" )
 
@@ -259,7 +267,7 @@ class WorkoutFragment: DaggerFragment()
 
     override fun onPrepareOptionsMenu( menu: Menu )
     {
-        if( !viewModel.hasDevice )
+        if( !sharedViewModel.hasDevice )
         {
             menu.findItem( R.id.select_device )?.isVisible = true
             menu.findItem( R.id.open_watch_app )?.isVisible = false
@@ -295,7 +303,7 @@ class WorkoutFragment: DaggerFragment()
 
                 if( deviceId != null )
                 {
-                    viewModel.deviceId = deviceId
+                    sharedViewModel.deviceId = deviceId
 
                     Snackbar.make( binding.root, "Device Selected: $deviceId", Snackbar.LENGTH_LONG )
                             .show()
