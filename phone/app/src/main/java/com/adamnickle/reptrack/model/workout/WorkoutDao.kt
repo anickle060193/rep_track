@@ -120,7 +120,6 @@ abstract class WorkoutDao
         updateExerciseSet( exerciseSet )
     }
 
-
     @Query( "SELECT * FROM exerciseSet WHERE exerciseId = :exerciseId AND deleted = 0" )
     abstract fun getExerciseSetsForExerciseId( exerciseId: Long ): LiveData<List<ExerciseSet>>
 
@@ -151,4 +150,7 @@ abstract class WorkoutDao
         a.order = bOrder
         updateExerciseSet( a )
     }
+
+    @Insert
+    abstract fun insertExerciseSetAccel( exerciseSetAccel: List<ExerciseSetAccel> )
 }
