@@ -21,6 +21,8 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import dagger.android.support.DaggerFragment
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import javax.inject.Inject
 
 class UncompletedExerciseSetFragment: DaggerFragment()
@@ -47,6 +49,9 @@ class UncompletedExerciseSetFragment: DaggerFragment()
 
     companion object
     {
+        private val TIME_AXIS_FORMATTER = DecimalFormat( "0.####s", DecimalFormatSymbols.getInstance() )
+        private val ACCEL_AXIS_FORMATTER = DecimalFormat( "#,##0mG", DecimalFormatSymbols.getInstance() )
+
         private const val EXERCISE_SET_ID_TAG = "exercise_set_id"
 
         fun newInstance( exerciseSet: ExerciseSet ): UncompletedExerciseSetFragment
@@ -100,21 +105,26 @@ class UncompletedExerciseSetFragment: DaggerFragment()
 
         binding.accelerometerDataGraph.apply {
             description.isEnabled = false
-            xAxis.setDrawLabels( false )
+            axisRight.isEnabled = false
+            xAxis.setValueFormatter { value, _ -> TIME_AXIS_FORMATTER.format( value ) }
+            axisLeft.setValueFormatter { value, _ -> ACCEL_AXIS_FORMATTER.format( value ) }
         }
 
         viewModel.accelerometerData.observe( this, Observer { accelerometerData ->
             if( accelerometerData != null && accelerometerData.isNotEmpty() )
             {
+                val startTime = accelerometerData.minBy { accel -> accel.time }?.time ?: 0
+
                 val xEntries = mutableListOf<Entry>()
                 val yEntries = mutableListOf<Entry>()
                 val zEntries = mutableListOf<Entry>()
 
                 for( accel in accelerometerData )
                 {
-                    xEntries.add( Entry( accel.time.toFloat(), accel.x ) )
-                    yEntries.add( Entry( accel.time.toFloat(), accel.y ) )
-                    zEntries.add( Entry( accel.time.toFloat(), accel.z ) )
+                    val time = ( accel.time.toFloat() - startTime ) / 1000.0f
+                    xEntries.add( Entry( time, accel.x ) )
+                    yEntries.add( Entry( time, accel.y ) )
+                    zEntries.add( Entry( time, accel.z ) )
                 }
 
                 val xDataSet = LineDataSet( xEntries, "X" ).apply {
