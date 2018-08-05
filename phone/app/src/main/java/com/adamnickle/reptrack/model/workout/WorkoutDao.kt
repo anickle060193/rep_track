@@ -165,4 +165,7 @@ abstract class WorkoutDao
 
     @Insert
     abstract fun insertExerciseSetAccel( exerciseSetAccel: List<ExerciseSetAccel> )
+
+    @Query( "SELECT * FROM ExerciseSetAccel WHERE exerciseSetId = :exerciseSetId" )
+    abstract fun getExerciseSetAccel( exerciseSetId: Long ): LiveData<List<ExerciseSetAccel>>
 }

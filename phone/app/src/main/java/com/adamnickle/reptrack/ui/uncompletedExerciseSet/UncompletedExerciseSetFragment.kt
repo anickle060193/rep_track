@@ -1,8 +1,10 @@
 package com.adamnickle.reptrack.ui.uncompletedExerciseSet
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.databinding.DataBindingUtil
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,9 @@ import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.utils.autoCleared
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -93,6 +98,47 @@ class UncompletedExerciseSetFragment: DaggerFragment()
                 }
             }
         }
+
+        binding.accelerometerDataGraph.apply {
+            description.isEnabled = false
+            xAxis.setDrawLabels( false )
+        }
+
+        viewModel.accelerometerData.observe( this, Observer { accelerometerData ->
+            if( accelerometerData != null && accelerometerData.isNotEmpty() )
+            {
+                val xEntries = mutableListOf<Entry>()
+                val yEntries = mutableListOf<Entry>()
+                val zEntries = mutableListOf<Entry>()
+
+                for( accel in accelerometerData )
+                {
+                    xEntries.add( Entry( accel.time.toFloat(), accel.x ) )
+                    yEntries.add( Entry( accel.time.toFloat(), accel.y ) )
+                    zEntries.add( Entry( accel.time.toFloat(), accel.z ) )
+                }
+
+                val xDataSet = LineDataSet( xEntries, "X" ).apply {
+                    color = Color.RED
+                    setDrawCircles( false )
+                }
+                val yDataSet = LineDataSet( yEntries, "Y" ).apply {
+                    color = Color.GREEN
+                    setDrawCircles( false )
+                }
+                val zDataSet = LineDataSet( zEntries, "Z" ).apply {
+                    color = Color.BLUE
+                    setDrawCircles( false )
+                }
+
+                binding.accelerometerDataGraph.data = LineData( xDataSet, yDataSet, zDataSet )
+                binding.accelerometerDataGraph.invalidate()
+            }
+            else
+            {
+                binding.accelerometerDataGraph.clear()
+            }
+        } )
 
         return binding.root
     }
