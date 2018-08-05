@@ -107,7 +107,7 @@ class RecordingDelegate extends Ui.BehaviorDelegate
             "type"=> "accelerometer",
             "workoutId" => _workout.id,
             "exerciseId" => _exercise.id,
-            "setId" => _exerciseSet.id,
+            "exerciseSetId" => _exerciseSet.id,
             "x" => sensorData.accelerometerData.x,
             "y" => sensorData.accelerometerData.y,
             "z" => sensorData.accelerometerData.z,

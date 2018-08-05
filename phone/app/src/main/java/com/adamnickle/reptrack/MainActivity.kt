@@ -10,9 +10,7 @@ import android.widget.Toast
 import com.adamnickle.reptrack.connectIQ.ConnectIQHelper
 import com.adamnickle.reptrack.model.message.AccelerometerMessage
 import com.adamnickle.reptrack.model.message.RecordingMessage
-import com.adamnickle.reptrack.model.workout.Exercise
-import com.adamnickle.reptrack.model.workout.ExerciseSet
-import com.adamnickle.reptrack.model.workout.Workout
+import com.adamnickle.reptrack.model.workout.*
 import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.ui.completedExerciseSet.CompletedExerciseSetFragment
 import com.adamnickle.reptrack.ui.exercise.ExerciseFragment
@@ -31,6 +29,12 @@ class MainActivity: DaggerAppCompatActivity(),
         WorkoutFragment.OnWorkoutFragmentInteractionListener,
         ExerciseFragment.OnExerciseFragmentInteractionListener
 {
+    @Inject
+    lateinit var appExecutors: AppExecutors
+
+    @Inject
+    lateinit var workoutDao: WorkoutDao
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -154,9 +158,13 @@ class MainActivity: DaggerAppCompatActivity(),
                                     else -> println( "Unknown message: ${message[ "type" ]}" )
                                 }
                             }
-                            catch( e: Exception )
+                            catch( e: ClassCastException )
                             {
-                                println( "Failed to handle message: $e" )
+                                println( "Unexpected message format: $e" )
+                            }
+                            catch( e: NoSuchElementException )
+                            {
+                                println( "Missing/incorrect message parameter: $e" )
                             }
                         }
                     }
@@ -172,6 +180,35 @@ class MainActivity: DaggerAppCompatActivity(),
 
     private fun handleAccelerometerDataMessage( message: AccelerometerMessage )
     {
-        println( "Accelerometer message: $message" )
+        val x = message.x
+        val y = message.y
+        val z = message.z
+
+        if( x.size != y.size || y.size != z.size )
+        {
+            throw IllegalArgumentException( "Accelerometer data ( x, y, z ) are not the same size" )
+        }
+
+        val time = message.time
+        val sampleRate = message.sampleRate
+        val exerciseSetId = message.exerciseSetId
+
+        val dataLength = x.size
+
+        val accel = mutableListOf<ExerciseSetAccel>()
+        for( i in 0 until dataLength )
+        {
+            accel.add( ExerciseSetAccel(
+                    x[ i ],
+                    y[ i ],
+                    z[ i ],
+                    time - ( dataLength - i ) * sampleRate,
+                    exerciseSetId
+            ) )
+        }
+
+        appExecutors.diskIO().execute {
+            workoutDao.insertExerciseSetAccel( accel )
+        }
     }
 }
