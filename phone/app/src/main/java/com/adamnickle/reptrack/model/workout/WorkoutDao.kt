@@ -12,6 +12,11 @@ abstract class WorkoutDao
     @Query( "SELECT * FROM workout WHERE id = :workoutId LIMIT 1" )
     abstract fun getWorkout( workoutId: Long ): Workout?
 
+    @SuppressWarnings( RoomWarnings.CURSOR_MISMATCH )
+    @Transaction
+    @Query( "SELECT * FROM workout WHERE id = :workoutId LIMIT 1" )
+    abstract fun getFullWorkout( workoutId: Long ): FullWorkout?
+
     @Insert
     abstract fun insertWorkout( workout: Workout ): Long
 

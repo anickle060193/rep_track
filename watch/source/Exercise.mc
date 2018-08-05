@@ -2,6 +2,7 @@ using Toybox.Lang as Lang;
 
 class Exercise
 {
+    var id;
     var name;
     var sets;
 
@@ -10,6 +11,16 @@ class Exercise
         if( !( exerciseMap instanceof Lang.Dictionary ) )
         {
             throw new InvalidPhoneDataException( "Exercise map is not a Dictionary." );
+        }
+
+        if( !exerciseMap.hasKey( "id" ) )
+        {
+            throw new InvalidPhoneDataException( "Exercise map does not have id." );
+        }
+        id = exerciseMap.get( "id" );
+        if( !( id instanceof Lang.Long ) )
+        {
+            throw new InvalidPhoneDataException( "Exercise map id is not a long." );
         }
 
         if( !exerciseMap.hasKey( "name" ) )

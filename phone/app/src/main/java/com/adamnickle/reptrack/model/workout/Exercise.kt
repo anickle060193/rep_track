@@ -21,3 +21,22 @@ data class Exercise(
     @Ignore
     constructor( name: String, workoutId: Long, order: Int ): this( null, name, workoutId, order, false )
 }
+
+class FullExercise
+{
+    var id: Long = 0
+    lateinit var name: String
+    var order: Int = 0
+    var deleted: Boolean = false
+
+    @Relation( parentColumn = "id", entityColumn = "exerciseId", entity = ExerciseSet::class )
+    lateinit var sets: List<FullExerciseSet>
+
+    fun toMap() = mapOf(
+        "id" to id,
+        "name" to name,
+        "order" to order,
+        "deleted" to deleted,
+        "sets" to sets.sortedBy { set -> set.order }.map { set -> set.toMap() }
+    )
+}

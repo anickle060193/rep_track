@@ -24,3 +24,22 @@ data class ExerciseSet(
     @Ignore
     constructor( weight: Float, repCount: Int, exerciseId: Long, order: Int ): this( null, false, weight, repCount, exerciseId, order, false )
 }
+
+class FullExerciseSet
+{
+    var id: Long = 0
+    var completed: Boolean = false
+    var weight: Float = 0.0f
+    var repCount: Int = 0
+    var order: Int = 0
+    var deleted: Boolean = false
+
+    fun toMap() = mapOf(
+        "id" to id,
+        "completed" to completed,
+        "weight" to weight,
+        "repCount" to repCount,
+        "order" to order,
+        "deleted" to deleted
+    )
+}

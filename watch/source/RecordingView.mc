@@ -58,8 +58,8 @@ class RecordingView extends Ui.View
 class RecordingDelegate extends Ui.BehaviorDelegate
 {
     private var _workout;
-    private var _exerciseIndex;
-    private var _setIndex;
+    private var _exercise;
+    private var _exerciseSet;
 
     private var _recordingView;
     private var _recording;
@@ -71,8 +71,8 @@ class RecordingDelegate extends Ui.BehaviorDelegate
         BehaviorDelegate.initialize();
         
         _workout = workout;
-        _exerciseIndex = exerciseIndex;
-        _setIndex = setIndex;
+        _exercise = _workout.exercises[ exerciseIndex ];
+        _exerciseSet = _exercise.sets[ setIndex ];
         
         _recordingView = null;
         _recording = false;
@@ -94,7 +94,11 @@ class RecordingDelegate extends Ui.BehaviorDelegate
         
         updateView();
         
-        Comm.transmit( { "recording" => _recording }, { }, new RecordingCommListener( method( :onTransmitStatus ) ) );
+        var message = {
+            "type" => "recording",
+            "recording" => _recording
+        };
+        Comm.transmit( message, { }, new RecordingCommListener( method( :onTransmitStatus ) ) );
     }
     
     private function onAccelerometerCallback( sensorData )
@@ -102,8 +106,8 @@ class RecordingDelegate extends Ui.BehaviorDelegate
         var message = {
             "type"=> "accelerometer",
             "workoutId" => _workout.id,
-            "exerciseIndex" => _exerciseIndex,
-            "setIndex" => _setIndex,
+            "exerciseId" => _exercise.id,
+            "setId" => _exerciseSet.id,
             "x" => sensorData.accelerometerData.x,
             "y" => sensorData.accelerometerData.y,
             "z" => sensorData.accelerometerData.z,

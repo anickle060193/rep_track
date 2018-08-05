@@ -11,6 +11,13 @@ import javax.inject.Singleton
 @Singleton
 class ConnectIQHelper @Inject constructor()
 {
+    companion object
+    {
+        const val REP_TRACK_APP_ID = "2649146e00df42358fb239388daf724b"
+
+        private val REP_TRACK_APP = IQApp( REP_TRACK_APP_ID )
+    }
+
     @Inject
     lateinit var appExecutors: AppExecutors
 
@@ -80,55 +87,57 @@ class ConnectIQHelper @Inject constructor()
         return connectIQ?.getDeviceStatus( device ) ?: IQDevice.IQDeviceStatus.UNKNOWN
     }
 
-    fun getApplicationInfo( deviceId: Long, applicationId: String, callback: ConnectIQ.IQApplicationInfoListener )
+    fun getApplicationInfo( deviceId: Long, listener: ConnectIQ.IQApplicationInfoListener )
     {
         assertSqkReady()
 
         val device = IQDevice( deviceId, "" )
 
-        connectIQ?.getApplicationInfo( applicationId, device, callback )
+        connectIQ?.getApplicationInfo( REP_TRACK_APP_ID, device, listener )
     }
 
-    fun openApplication( deviceId: Long, applicationId: String, callback: ConnectIQ.IQOpenApplicationListener )
+    fun openApplication( deviceId: Long, listener: ConnectIQ.IQOpenApplicationListener )
     {
         assertSqkReady()
 
         val device = IQDevice( deviceId, "" )
-        val application = IQApp( applicationId )
-        connectIQ?.openApplication( device, application, callback )
+        connectIQ?.openApplication( device, REP_TRACK_APP, listener )
     }
 
-    fun sendMessage( deviceId: Long, applicationId: String, message: Any, callback: ConnectIQ.IQSendMessageListener )
+    fun sendMessage( deviceId: Long, message: Any, listener: ConnectIQ.IQSendMessageListener )
     {
         assertSqkReady()
 
         val device = IQDevice( deviceId, "" )
-        val application = IQApp( applicationId )
 
         appExecutors.networkIO().execute {
-            connectIQ?.sendMessage( device, application, message ) { iqDevice, iqApp, status ->
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+            connectIQ?.sendMessage( device, REP_TRACK_APP, message, listener )
         }
     }
 
     abstract class ConnectIQEventListener: ConnectIQ.IQDeviceEventListener, ConnectIQ.IQApplicationEventListener
 
-    fun startListeningToDevice( deviceId: Long, applicationId: String, listener: ConnectIQEventListener )
+    fun startListeningToDevice( deviceId: Long, listener: ConnectIQEventListener )
     {
         assertSqkReady()
 
         val device = IQDevice( deviceId, "" )
-        val application = IQApp( applicationId )
 
-        connectIQ?.registerForEvents( device, listener, application, listener )
+        connectIQ?.registerForEvents( device, listener, REP_TRACK_APP, listener )
     }
 
-    fun stopListeningToDevice( deviceId: Long, applicationId: String )
+    fun stopListeningToDevice( deviceId: Long )
     {
         assertSqkReady()
 
         val device = IQDevice( deviceId, "" )
         connectIQ?.unregisterForEvents( device )
+    }
+
+    fun stopListeningToAll()
+    {
+        assertSqkReady()
+
+        connectIQ?.unregisterAllForEvents()
     }
 }

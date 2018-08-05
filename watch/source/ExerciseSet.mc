@@ -2,6 +2,7 @@ using Toybox.Lang as Lang;
 
 class ExerciseSet
 {
+    var id;
     var completed;
     var weight;
     var repCount;
@@ -11,6 +12,16 @@ class ExerciseSet
         if( !( exerciseSetMap instanceof Lang.Dictionary ) )
         {
             throw new InvalidPhoneDataException( "Exercise Set map is not a Dictionary." );
+        }
+
+        if( !exerciseSetMap.hasKey( "id" ) )
+        {
+            throw new InvalidPhoneDataException( "Exercise Set map does not have id." );
+        }
+        id = exerciseSetMap.get( "id" );
+        if( !( id instanceof Lang.Long ) )
+        {
+            throw new InvalidPhoneDataException( "Exercise Set map id is not a long." );
         }
 
         if( !exerciseSetMap.hasKey( "completed" ) )
@@ -39,10 +50,9 @@ class ExerciseSet
             throw new InvalidPhoneDataException( "Exercise Set map does not have repCount." );
         }
         repCount = exerciseSetMap.get( "repCount" );
-        if( !( repCount instanceof Lang.Float ) )
+        if( !( repCount instanceof Lang.Number ) )
         {
-            throw new InvalidPhoneDataException( "Exercise Set repCount is not a float." );
+            throw new InvalidPhoneDataException( "Exercise Set repCount is not an int." );
         }
-        repCount = repCount.toNumber();
     }
 }

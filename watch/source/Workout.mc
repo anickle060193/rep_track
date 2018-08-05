@@ -18,9 +18,9 @@ class Workout
             throw new InvalidPhoneDataException( "Workout map does not have id." );
         }
         id = workoutMap.get( "id" );
-        if( !( id instanceof Lang.String ) )
+        if( !( id instanceof Lang.Long ) )
         {
-            throw new InvalidPhoneDataException( "Workout map id is not a string." );
+            throw new InvalidPhoneDataException( "Workout map id is not a long." );
         }
 
         if( !workoutMap.hasKey( "name" ) )

@@ -13,6 +13,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
+import com.adamnickle.reptrack.connectIQ.ConnectIQHelper
 import com.adamnickle.reptrack.databinding.ExerciseItemBinding
 import com.adamnickle.reptrack.databinding.NewExerciseDialogBinding
 import com.adamnickle.reptrack.databinding.WorkoutFragmentBinding
@@ -28,6 +29,7 @@ import com.adamnickle.reptrack.ui.devices.SelectDeviceActivity
 import com.adamnickle.reptrack.ui.shared.SharedViewModel
 import com.adamnickle.reptrack.utils.autoCleared
 import com.adamnickle.reptrack.utils.extensions.addDividerItemDecoration
+import com.garmin.android.connectiq.ConnectIQ
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -59,6 +61,9 @@ class WorkoutFragment: DaggerFragment()
 
     @Inject
     lateinit var appExecutors: AppExecutors
+
+    @Inject
+    lateinit var connectIQ: ConnectIQHelper
 
     private var binding by autoCleared<WorkoutFragmentBinding>()
 
@@ -289,6 +294,12 @@ class WorkoutFragment: DaggerFragment()
                 startActivityForResult( Intent( context, SelectDeviceActivity::class.java ), SELECT_DEVICE_REQUEST )
                 return true
             }
+
+            R.id.send_workout_to_watch -> {
+                sendWorkoutToWatch()
+                return true
+            }
+
             else -> super.onOptionsItemSelected( item )
         }
     }
@@ -312,6 +323,24 @@ class WorkoutFragment: DaggerFragment()
                 {
                     Snackbar.make( binding.root, "Could not find Device ID result", Snackbar.LENGTH_LONG )
                             .show()
+                }
+            }
+        }
+    }
+
+    private fun sendWorkoutToWatch()
+    {
+        sharedViewModel.deviceId?.let { deviceId ->
+            viewModel.workoutId?.let { workoutId ->
+                appExecutors.diskIO().execute {
+                    workoutDao.getFullWorkout( workoutId )?.let { workout ->
+                        println( "Full Workout: $workout" )
+
+                        val message = mapOf( "type" to "workout", "workout" to workout.toMap() )
+                        connectIQ.sendMessage( deviceId, message, ConnectIQ.IQSendMessageListener { _, _, messageStatus ->
+                            println( "Send Workout Status: $messageStatus" )
+                        } )
+                    }
                 }
             }
         }

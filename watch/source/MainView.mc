@@ -41,7 +41,19 @@ class MainDelegate extends Ui.BehaviorDelegate
 
     private function onPhoneAppMessage( message )
     {
-        Sys.println( "Message: " + message.data );
+        if( message == null )
+        {
+          Sys.println( "Message Receieved: Message is null" );
+          return;
+        }
+
+        if( message.data == null )
+        {
+          Sys.println( "Message Receieved: Message data is null" );
+          return;
+        }
+
+        Sys.println( "Message Receieved - Data: " + message.data );
 
         if( message.data.hasKey( "type" )
          && message.data.get( "type" ).equals( "workout" )
