@@ -29,7 +29,8 @@ class MainActivity: DaggerAppCompatActivity(),
         WorkoutListFragment.OnWorkoutsListFragmentInteractionListener,
         WorkoutFragment.OnWorkoutFragmentInteractionListener,
         ExerciseFragment.OnExerciseFragmentInteractionListener,
-        UncompletedExerciseSetFragment.OnUncompletedExerciseSetFragmentInteractionListener
+        UncompletedExerciseSetFragment.OnUncompletedExerciseSetFragmentInteractionListener,
+        CompletedExerciseSetFragment.OnCompletedExerciseSetFragmentInteractionListener
 {
     @Inject
     lateinit var appExecutors: AppExecutors
@@ -133,6 +134,8 @@ class MainActivity: DaggerAppCompatActivity(),
     }
     override fun onExerciseSetCompleted( exercise: Exercise, exerciseSet: ExerciseSet ) = onExerciseSetCompletedChanged( exercise, exerciseSet )
 
+    override fun onExerciseSetUncompleted(exercise: Exercise, exerciseSet: ExerciseSet) = onExerciseSetCompletedChanged( exercise, exerciseSet )
+
     private fun onExerciseSetCompletedChanged( exercise: Exercise, exerciseSet: ExerciseSet )
     {
         val fragment = if( exerciseSet.completed )
@@ -207,7 +210,7 @@ class MainActivity: DaggerAppCompatActivity(),
 
     private fun handleRecordingMessage( message: RecordingMessage )
     {
-        println( "Recording message: $message" );
+        println( "Recording message: $message" )
     }
 
     private fun handleAccelerometerDataMessage( message: AccelerometerMessage )

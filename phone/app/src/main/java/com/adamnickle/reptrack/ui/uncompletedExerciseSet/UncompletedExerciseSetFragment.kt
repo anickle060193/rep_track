@@ -86,8 +86,10 @@ class UncompletedExerciseSetFragment: DaggerFragment()
                 appExecutors.diskIO().execute {
                     workoutDao.markExerciseSetCompleted( exerciseSet )
 
-                    val exercise = workoutDao.getExercise( exerciseSet.exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: ${exerciseSet.exerciseId}" )
-                    listener?.onExerciseSetCompleted( exercise, exerciseSet )
+                    listener?.let { listener ->
+                        val exercise = workoutDao.getExercise( exerciseSet.exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: ${exerciseSet.exerciseId}" )
+                        listener.onExerciseSetCompleted( exercise, exerciseSet )
+                    }
                 }
             }
         }
