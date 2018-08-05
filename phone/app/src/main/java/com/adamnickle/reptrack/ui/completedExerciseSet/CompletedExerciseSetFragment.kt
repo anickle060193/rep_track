@@ -1,5 +1,6 @@
 package com.adamnickle.reptrack.ui.completedExerciseSet
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.databinding.DataBindingUtil
@@ -32,8 +33,6 @@ class CompletedExerciseSetFragment: DaggerFragment()
     @Inject
     lateinit var workoutDao: WorkoutDao
 
-    private var exerciseSet: ExerciseSet? = null
-
     private var binding by autoCleared<CompletedExerciseSetFragmentBinding>()
 
     private var adapter by autoCleared<CompletedSetRepListAdapter>()
@@ -63,12 +62,22 @@ class CompletedExerciseSetFragment: DaggerFragment()
         super.onCreate( savedInstanceState )
 
         setHasOptionsMenu( true )
+
+        val exerciseSetId = arguments?.getLong( EXERCISE_SET_ID_TAG ) ?: throw IllegalArgumentException( "Missing Exercise Set ID for Completed Exercise Set Fragment" )
+
+        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( CompletedExerciseSetFragmentViewModel::class.java )
+
+        appExecutors.diskIO().execute {
+            val exerciseSet = workoutDao.getExerciseSet( exerciseSetId ) ?: throw IllegalArgumentException( "Could not find Exercise Set: $exerciseSetId" )
+
+            appExecutors.mainThread().execute {
+                viewModel.exerciseSet = exerciseSet
+            }
+        }
     }
 
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View
     {
-        val exerciseSetId = arguments?.getLong( EXERCISE_SET_ID_TAG ) ?: throw IllegalArgumentException( "Missing Exercise Set ID for Completed Exercise Set Fragment" )
-
         binding = DataBindingUtil.inflate(
                 inflater,
                 R.layout.completed_exercise_set_fragment,
@@ -76,25 +85,15 @@ class CompletedExerciseSetFragment: DaggerFragment()
                 false
         )
 
-        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( CompletedExerciseSetFragmentViewModel::class.java )
-
         adapter = CompletedSetRepListAdapter( appExecutors ) { setRep ->
             println( "Set Rep Clicked: $setRep" )
         }
 
         binding.repsList.adapter = adapter
 
-        appExecutors.diskIO().execute {
-            exerciseSet = workoutDao.getExerciseSet( exerciseSetId ) ?: throw IllegalArgumentException( "Could not find Exercise Set: $exerciseSetId" )
-
-            exerciseSet?.also { exerciseSet ->
-                appExecutors.mainThread().execute {
-                    viewModel.bind( exerciseSet )
-                }
-
-                adapter.submitList( ( 0 until exerciseSet.repCount ).toList() )
-            }
-        }
+        viewModel.exerciseSetLive.observe( this, Observer { exerciseSet ->
+            adapter.submitList( ( 0 until ( exerciseSet?.repCount ?: 0 ) ).toList() )
+        } )
 
         return binding.root
     }
@@ -109,14 +108,12 @@ class CompletedExerciseSetFragment: DaggerFragment()
         return when( item.itemId )
         {
             R.id.unmark_exercise_set_as_completed -> {
-                exerciseSet?.let { exerciseSet ->
+                viewModel.exerciseSet?.let { exerciseSet ->
                     appExecutors.diskIO().execute {
                         workoutDao.unmarkExerciseSetCompleted( exerciseSet )
 
-                        listener?.let { listener ->
-                            val exercise = workoutDao.getExercise( exerciseSet.exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: ${exerciseSet.exerciseId}" )
-                            listener.onExerciseSetUncompleted( exercise, exerciseSet )
-                        }
+                        val exercise = workoutDao.getExercise( exerciseSet.exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: ${exerciseSet.exerciseId}" )
+                        listener?.onExerciseSetUncompleted( exercise, exerciseSet )
                     }
                 }
                 return true
@@ -129,13 +126,13 @@ class CompletedExerciseSetFragment: DaggerFragment()
     {
         super.onAttach( context )
 
-        if( context is OnCompletedExerciseSetFragmentInteractionListener )
+        if( context is CompletedExerciseSetFragment.OnCompletedExerciseSetFragmentInteractionListener)
         {
             listener = context
         }
         else
         {
-            throw ClassCastException( "$context must implement ${OnCompletedExerciseSetFragmentInteractionListener::class}" )
+            throw ClassCastException( "$context must implement ${CompletedExerciseSetFragment.OnCompletedExerciseSetFragmentInteractionListener::class}" )
         }
     }
 

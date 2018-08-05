@@ -1,9 +1,11 @@
 package com.adamnickle.reptrack.ui.exercise
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.adamnickle.reptrack.model.workout.ExerciseSet
+import com.adamnickle.reptrack.utils.LiveDataProperty
 
 class ExerciseSetItemViewModel: ViewModel()
 {
@@ -17,9 +19,9 @@ class ExerciseSetItemViewModel: ViewModel()
         descriptionData.addSource( exerciseSetNumberData ) { exerciseSetNumber -> descriptionData.value = formatDescription( exerciseSetData.value, exerciseSetNumber ) }
     }
 
-    val exerciseSet get() = exerciseSetData.value
+    val exerciseSet by LiveDataProperty( exerciseSetData )
 
-    val description get() = descriptionData
+    val description get(): LiveData<String> = descriptionData
 
     fun bind( exerciseSet: ExerciseSet, exerciseSetNumber: Int )
     {

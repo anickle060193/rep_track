@@ -32,6 +32,11 @@ class MainActivity: DaggerAppCompatActivity(),
         UncompletedExerciseSetFragment.OnUncompletedExerciseSetFragmentInteractionListener,
         CompletedExerciseSetFragment.OnCompletedExerciseSetFragmentInteractionListener
 {
+    companion object
+    {
+        private val TITLE_ARG = "${MainActivity::class}.title"
+    }
+
     @Inject
     lateinit var appExecutors: AppExecutors
 
@@ -58,19 +63,9 @@ class MainActivity: DaggerAppCompatActivity(),
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
-            val backStackCount = supportFragmentManager.backStackEntryCount
-            val index = backStackCount - 1
-            if( index >= 0 )
-            {
-                val entry = supportFragmentManager.getBackStackEntryAt( index )
-                supportActionBar?.title = entry.name
-            }
-            else
-            {
-                supportActionBar?.setTitle( R.string.app_name )
-            }
+            title = supportFragmentManager.findFragmentById( R.id.main_content )?.arguments?.getString( TITLE_ARG ) ?: getString( R.string.app_name )
 
-            supportActionBar?.setDisplayHomeAsUpEnabled( backStackCount > 0 )
+            supportActionBar?.setDisplayHomeAsUpEnabled( supportFragmentManager.backStackEntryCount > 0 )
         }
 
         supportFragmentManager
@@ -79,7 +74,7 @@ class MainActivity: DaggerAppCompatActivity(),
                 .commit()
 
         sharedViewModel = ViewModelProviders.of( this, viewModelFactory ).get( SharedViewModel::class.java )
-        sharedViewModel.deviceLiveData.observe( this, Observer( this::onDeviceChanged ) )
+        sharedViewModel.deviceLive.observe( this, Observer( this::onDeviceChanged ) )
     }
 
     override fun onOptionsItemSelected( item: MenuItem ): Boolean
@@ -98,9 +93,11 @@ class MainActivity: DaggerAppCompatActivity(),
     {
         supportFragmentManager
                 .beginTransaction()
-                .addToBackStack( "Workout - ${workout.name}" )
+                .addToBackStack( null )
                 .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
-                .replace( R.id.main_content, WorkoutFragment.newInstance( workout ) )
+                .replace( R.id.main_content, WorkoutFragment.newInstance( workout ).apply {
+                    arguments?.putString( TITLE_ARG, workout.name )
+                } )
                 .commit()
     }
 
@@ -108,13 +105,17 @@ class MainActivity: DaggerAppCompatActivity(),
     {
         supportFragmentManager
                 .beginTransaction()
-                .addToBackStack( "${workout.name} - ${exercise.name}" )
+                .addToBackStack( null )
                 .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
-                .replace( R.id.main_content, ExerciseFragment.newInstance( exercise ) )
+                .replace( R.id.main_content, ExerciseFragment.newInstance( exercise ).apply {
+                    arguments?.putString( TITLE_ARG, "${workout.name} - ${exercise.name}" )
+                } )
                 .commit()
     }
 
-    override fun onExerciseSetClicked( exercise: Exercise, exerciseSet: ExerciseSet )
+    override fun onExerciseSetClicked( exercise: Exercise, exerciseSet: ExerciseSet ) = putExerciseSetFragment( exercise, exerciseSet )
+
+    private fun putExerciseSetFragment( exercise: Exercise, exerciseSet: ExerciseSet )
     {
         val fragment = if( exerciseSet.completed )
         {
@@ -127,33 +128,23 @@ class MainActivity: DaggerAppCompatActivity(),
 
         supportFragmentManager
                 .beginTransaction()
-                .addToBackStack( "${exercise.name}: Set ${exerciseSet.order}" )
+                .addToBackStack( null )
                 .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
-                .replace( R.id.main_content, fragment )
+                .replace( R.id.main_content, fragment.apply {
+                    arguments?.putString( TITLE_ARG, "${exercise.name} - Set ${exerciseSet.order}" )
+                } )
                 .commit()
     }
+
     override fun onExerciseSetCompleted( exercise: Exercise, exerciseSet: ExerciseSet ) = onExerciseSetCompletedChanged( exercise, exerciseSet )
 
-    override fun onExerciseSetUncompleted(exercise: Exercise, exerciseSet: ExerciseSet) = onExerciseSetCompletedChanged( exercise, exerciseSet )
+    override fun onExerciseSetUncompleted( exercise: Exercise, exerciseSet: ExerciseSet ) = onExerciseSetCompletedChanged( exercise, exerciseSet )
 
     private fun onExerciseSetCompletedChanged( exercise: Exercise, exerciseSet: ExerciseSet )
     {
-        val fragment = if( exerciseSet.completed )
-        {
-            CompletedExerciseSetFragment.newInstance( exerciseSet )
-        }
-        else
-        {
-            UncompletedExerciseSetFragment.newInstance( exerciseSet )
-        }
-
         supportFragmentManager.popBackStack()
-        supportFragmentManager
-                .beginTransaction()
-                .addToBackStack( "${exercise.name}: Set ${exerciseSet.order}" )
-                .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
-                .replace( R.id.main_content, fragment )
-                .commit()
+
+        putExerciseSetFragment( exercise, exerciseSet )
     }
 
     private fun onDeviceChanged( device: IQDevice? )

@@ -27,6 +27,11 @@ import javax.inject.Inject
 
 class WorkoutListFragment: DaggerFragment()
 {
+    interface OnWorkoutsListFragmentInteractionListener
+    {
+        fun onWorkoutClicked( workout: Workout )
+    }
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -137,10 +142,5 @@ class WorkoutListFragment: DaggerFragment()
         super.onDetach()
 
         listener = null
-    }
-
-    interface OnWorkoutsListFragmentInteractionListener
-    {
-        fun onWorkoutClicked( workout: Workout )
     }
 }

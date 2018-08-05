@@ -22,6 +22,11 @@ import javax.inject.Inject
 
 class ExerciseFragment: DaggerFragment()
 {
+    interface OnExerciseFragmentInteractionListener
+    {
+        fun onExerciseSetClicked( exercise: Exercise, exerciseSet: ExerciseSet )
+    }
+
     companion object
     {
         private const val EXERCISE_ID_TAG = "exercise_id"
@@ -47,8 +52,6 @@ class ExerciseFragment: DaggerFragment()
     @Inject
     lateinit var appExecutors: AppExecutors
 
-    private var exercise: Exercise? = null
-
     private var binding by autoCleared<ExerciseFragmentBinding>()
 
     private var adapter by autoCleared<ExerciseSetListAdapter>()
@@ -57,24 +60,34 @@ class ExerciseFragment: DaggerFragment()
 
     private var listener: OnExerciseFragmentInteractionListener? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View?
+    override fun onCreate( savedInstanceState: Bundle? )
     {
+        super.onCreate( savedInstanceState )
+
         val exerciseId = arguments?.getLong( EXERCISE_ID_TAG ) ?: throw IllegalStateException( "No Exercise ID provided to WorkoutFragment" )
-
-        appExecutors.diskIO().execute {
-            exercise = workoutDao.getExercise( exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: $exerciseId" )
-        }
-
-        binding = DataBindingUtil.inflate( inflater, R.layout.exercise_fragment, container, false )
 
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get( ExerciseFragmentViewModel::class.java )
 
-        viewModel.exerciseSets( exerciseId ).observe( this, Observer { result ->
+        appExecutors.diskIO().execute {
+            val exercise = workoutDao.getExercise( exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: $exerciseId" )
+
+            appExecutors.mainThread().execute {
+                viewModel.exercise = exercise
+            }
+        }
+
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View?
+    {
+        binding = DataBindingUtil.inflate( inflater, R.layout.exercise_fragment, container, false )
+
+        viewModel.exerciseSets.observe( this, Observer { result ->
             adapter.submitList( result?.sortedBy { exerciseSet -> exerciseSet.order } )
         } )
 
         adapter = ExerciseSetListAdapter( appExecutors ) { exerciseSet ->
-            exercise?.also { exercise ->
+            viewModel.exercise?.let { exercise ->
                 listener?.onExerciseSetClicked( exercise, exerciseSet )
             }
         }
@@ -157,10 +170,5 @@ class ExerciseFragment: DaggerFragment()
         super.onDetach()
 
         listener = null
-    }
-
-    interface OnExerciseFragmentInteractionListener
-    {
-        fun onExerciseSetClicked( exercise: Exercise, exerciseSet: ExerciseSet )
     }
 }

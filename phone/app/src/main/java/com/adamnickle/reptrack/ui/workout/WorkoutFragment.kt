@@ -35,6 +35,11 @@ import javax.inject.Inject
 
 class WorkoutFragment: DaggerFragment()
 {
+    interface OnWorkoutFragmentInteractionListener
+    {
+        fun onExerciseClicked( workout: Workout, exercise: Exercise )
+    }
+
     companion object
     {
         private const val SELECT_DEVICE_REQUEST = 0
@@ -85,36 +90,29 @@ class WorkoutFragment: DaggerFragment()
             sharedViewModel = ViewModelProviders.of( activity, viewModelFactory ).get( SharedViewModel::class.java )
         } ?: throw IllegalStateException( "Activity not set in Fragment.onCreate()" )
 
-
         val workoutId = arguments?.getLong( WORKOUT_ID_TAG ) ?: throw IllegalStateException( "No Workout ID provided to WorkoutFragment" )
 
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get( WorkoutFragmentViewModel::class.java )
 
-        viewModel.workoutId = workoutId
-
         appExecutors.diskIO().execute {
-            viewModel.workoutId?.let { workoutId ->
-                val workout = workoutDao.getWorkout( workoutId )
-                appExecutors.mainThread().execute {
-                    viewModel.workout = workout
-                }
+            val workout = workoutDao.getWorkout( workoutId )
+            appExecutors.mainThread().execute {
+                viewModel.workout = workout
             }
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View?
+    override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View?
     {
         binding = DataBindingUtil.inflate( inflater, R.layout.workout_fragment, container, false )
 
-        viewModel.exercises().observe( this, Observer { result ->
+        viewModel.exercises.observe( this, Observer { result ->
             adapter.submitList( result?.sortedBy { exercise -> exercise.order } )
         } )
 
         adapter = ExerciseListAdapter( appExecutors, workoutDao ) { exercise ->
-            appExecutors.diskIO().execute {
-                viewModel.workout?.let { workout ->
-                    listener?.onExerciseClicked( workout, exercise )
-                }
+            viewModel.workout?.let { workout ->
+                listener?.onExerciseClicked( workout, exercise )
             }
         }
 
@@ -331,7 +329,7 @@ class WorkoutFragment: DaggerFragment()
     private fun sendWorkoutToWatch()
     {
         sharedViewModel.deviceId?.let { deviceId ->
-            viewModel.workoutId?.let { workoutId ->
+            viewModel.workout?.id?.let { workoutId ->
                 appExecutors.diskIO().execute {
                     workoutDao.getFullWorkout( workoutId )?.let { workout ->
                         println( "Full Workout: $workout" )
@@ -344,10 +342,5 @@ class WorkoutFragment: DaggerFragment()
                 }
             }
         }
-    }
-
-    interface OnWorkoutFragmentInteractionListener
-    {
-        fun onExerciseClicked( workout: Workout, exercise: Exercise )
     }
 }

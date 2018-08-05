@@ -39,8 +39,6 @@ class UncompletedExerciseSetFragment: DaggerFragment()
     @Inject
     lateinit var workoutDao: WorkoutDao
 
-    private var exerciseSet: ExerciseSet? = null
-
     private var binding by autoCleared<UncompletedExerciseSetFragmentBinding>()
 
     private lateinit var viewModel: UncompletedExerciseSetFragmentViewModel
@@ -63,10 +61,25 @@ class UncompletedExerciseSetFragment: DaggerFragment()
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View
+    override fun onCreate( savedInstanceState: Bundle? )
     {
+        super.onCreate( savedInstanceState )
+
         val exerciseSetId = arguments?.getLong( EXERCISE_SET_ID_TAG ) ?: throw IllegalArgumentException( "Missing Exercise Set ID for Uncompleted Exercise Set Fragment" )
 
+        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( UncompletedExerciseSetFragmentViewModel::class.java )
+
+        appExecutors.diskIO().execute {
+            val exerciseSet = workoutDao.getExerciseSet( exerciseSetId ) ?: throw IllegalArgumentException( "Could not find Exercise Set: $exerciseSetId" )
+
+            appExecutors.mainThread().execute {
+                viewModel.bind( exerciseSet )
+            }
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View
+    {
         binding = DataBindingUtil.inflate(
                 inflater,
                 R.layout.uncompleted_exercise_set_fragment,
@@ -74,27 +87,13 @@ class UncompletedExerciseSetFragment: DaggerFragment()
                 false
         )
 
-        viewModel = ViewModelProviders.of( this, viewModelFactory ).get( UncompletedExerciseSetFragmentViewModel::class.java )
-
-        appExecutors.diskIO().execute {
-            exerciseSet = workoutDao.getExerciseSet( exerciseSetId ) ?: throw IllegalArgumentException( "Could not find Exercise Set: $exerciseSetId" )
-
-            exerciseSet?.also { exerciseSet ->
-                appExecutors.mainThread().execute {
-                    viewModel.bind( exerciseSet )
-                }
-            }
-        }
-
         binding.markExerciseSetCompleted.setOnClickListener {
-            exerciseSet?.let { exerciseSet ->
+            viewModel.exerciseSet?.let { exerciseSet ->
                 appExecutors.diskIO().execute {
                     workoutDao.markExerciseSetCompleted( exerciseSet )
 
-                    listener?.let { listener ->
-                        val exercise = workoutDao.getExercise( exerciseSet.exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: ${exerciseSet.exerciseId}" )
-                        listener.onExerciseSetCompleted( exercise, exerciseSet )
-                    }
+                    val exercise = workoutDao.getExercise( exerciseSet.exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: ${exerciseSet.exerciseId}" )
+                    listener?.onExerciseSetCompleted( exercise, exerciseSet )
                 }
             }
         }
