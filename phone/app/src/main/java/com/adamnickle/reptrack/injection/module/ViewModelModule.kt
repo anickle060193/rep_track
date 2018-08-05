@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import com.adamnickle.reptrack.ui.completedExerciseSet.CompletedExerciseSetFragmentViewModel
 import com.adamnickle.reptrack.ui.exercise.ExerciseFragmentViewModel
 import com.adamnickle.reptrack.ui.shared.SharedViewModel
+import com.adamnickle.reptrack.ui.uncompletedExerciseSet.UncompletedExerciseSetFragmentViewModel
 import com.adamnickle.reptrack.ui.workout.WorkoutFragmentViewModel
 import com.adamnickle.reptrack.ui.workouts.WorkoutListFragmentViewModel
 import dagger.Binds
@@ -33,6 +34,11 @@ abstract class ViewModelModule
     @IntoMap
     @ViewModelKey( ExerciseFragmentViewModel::class )
     abstract fun bindExerciseFragmentViewModel( exerciseFragmentViewModel: ExerciseFragmentViewModel ): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey( UncompletedExerciseSetFragmentViewModel::class )
+    abstract fun bindUncompletedExerciseSetFragmentViewModel( uncompletedExerciseSetFragmentViewModel: UncompletedExerciseSetFragmentViewModel ): ViewModel
 
     @Binds
     @IntoMap

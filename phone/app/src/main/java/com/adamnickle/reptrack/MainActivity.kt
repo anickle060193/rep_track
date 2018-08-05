@@ -15,6 +15,7 @@ import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.ui.completedExerciseSet.CompletedExerciseSetFragment
 import com.adamnickle.reptrack.ui.exercise.ExerciseFragment
 import com.adamnickle.reptrack.ui.shared.SharedViewModel
+import com.adamnickle.reptrack.ui.uncompletedExerciseSet.UncompletedExerciseSetFragment
 import com.adamnickle.reptrack.ui.workout.WorkoutFragment
 import com.adamnickle.reptrack.ui.workouts.WorkoutListFragment
 import com.garmin.android.connectiq.ConnectIQ
@@ -27,7 +28,8 @@ import javax.inject.Inject
 class MainActivity: DaggerAppCompatActivity(),
         WorkoutListFragment.OnWorkoutsListFragmentInteractionListener,
         WorkoutFragment.OnWorkoutFragmentInteractionListener,
-        ExerciseFragment.OnExerciseFragmentInteractionListener
+        ExerciseFragment.OnExerciseFragmentInteractionListener,
+        UncompletedExerciseSetFragment.OnUncompletedExerciseSetFragmentInteractionListener
 {
     @Inject
     lateinit var appExecutors: AppExecutors
@@ -113,11 +115,41 @@ class MainActivity: DaggerAppCompatActivity(),
 
     override fun onExerciseSetClicked( exercise: Exercise, exerciseSet: ExerciseSet )
     {
+        val fragment = if( exerciseSet.completed )
+        {
+            CompletedExerciseSetFragment.newInstance( exerciseSet )
+        }
+        else
+        {
+            UncompletedExerciseSetFragment.newInstance( exerciseSet )
+        }
+
         supportFragmentManager
                 .beginTransaction()
                 .addToBackStack( "${exercise.name}: Set ${exerciseSet.order}" )
                 .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
-                .replace( R.id.main_content, CompletedExerciseSetFragment.newInstance( exerciseSet ) )
+                .replace( R.id.main_content, fragment )
+                .commit()
+    }
+    override fun onExerciseSetCompleted( exercise: Exercise, exerciseSet: ExerciseSet ) = onExerciseSetCompletedChanged( exercise, exerciseSet )
+
+    private fun onExerciseSetCompletedChanged( exercise: Exercise, exerciseSet: ExerciseSet )
+    {
+        val fragment = if( exerciseSet.completed )
+        {
+            CompletedExerciseSetFragment.newInstance( exerciseSet )
+        }
+        else
+        {
+            UncompletedExerciseSetFragment.newInstance( exerciseSet )
+        }
+
+        supportFragmentManager.popBackStack()
+        supportFragmentManager
+                .beginTransaction()
+                .addToBackStack( "${exercise.name}: Set ${exerciseSet.order}" )
+                .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
+                .replace( R.id.main_content, fragment )
                 .commit()
     }
 

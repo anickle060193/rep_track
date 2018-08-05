@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
-import com.adamnickle.reptrack.databinding.ExerciseSetFragmentBinding
+import com.adamnickle.reptrack.databinding.CompletedExerciseSetFragmentBinding
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
@@ -29,7 +29,7 @@ class CompletedExerciseSetFragment: DaggerFragment()
 
     var exerciseSet: ExerciseSet? = null
 
-    private var binding by autoCleared<ExerciseSetFragmentBinding>()
+    private var binding by autoCleared<CompletedExerciseSetFragmentBinding>()
 
     private var adapter by autoCleared<CompletedSetRepListAdapter>()
 
@@ -41,7 +41,7 @@ class CompletedExerciseSetFragment: DaggerFragment()
 
         fun newInstance( exerciseSet: ExerciseSet ): CompletedExerciseSetFragment
         {
-            val exerciseSetId = exerciseSet.id ?: throw IllegalArgumentException( "Cannot create Exercise Set fragment from unsaved Exercise Set." )
+            val exerciseSetId = exerciseSet.id ?: throw IllegalArgumentException( "Cannot create Completed Exercise Set fragment from unsaved Exercise Set." )
 
             return CompletedExerciseSetFragment().apply {
                 arguments = Bundle().apply {
@@ -53,11 +53,11 @@ class CompletedExerciseSetFragment: DaggerFragment()
 
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View
     {
-        val exerciseSetId = arguments?.getLong( EXERCISE_SET_ID_TAG ) ?: throw IllegalArgumentException( "Missing Exercise Set ID for Exercise Set Fragment" )
+        val exerciseSetId = arguments?.getLong( EXERCISE_SET_ID_TAG ) ?: throw IllegalArgumentException( "Missing Exercise Set ID for Completed Exercise Set Fragment" )
 
         binding = DataBindingUtil.inflate(
                 inflater,
-                R.layout.exercise_set_fragment,
+                R.layout.completed_exercise_set_fragment,
                 container,
                 false
         )

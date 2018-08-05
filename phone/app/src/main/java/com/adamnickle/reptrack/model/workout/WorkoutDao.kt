@@ -151,6 +151,18 @@ abstract class WorkoutDao
         updateExerciseSet( a )
     }
 
+    fun markExerciseSetCompleted( exerciseSet: ExerciseSet )
+    {
+        exerciseSet.completed = true
+        updateExerciseSet( exerciseSet )
+    }
+
+    fun unmarkExerciseSetCompleted( exerciseSet: ExerciseSet )
+    {
+        exerciseSet.completed = false
+        updateExerciseSet( exerciseSet )
+    }
+
     @Insert
     abstract fun insertExerciseSetAccel( exerciseSetAccel: List<ExerciseSetAccel> )
 }

@@ -4,6 +4,7 @@ import com.adamnickle.reptrack.MainActivity
 import com.adamnickle.reptrack.ui.completedExerciseSet.CompletedExerciseSetFragment
 import com.adamnickle.reptrack.ui.devices.SelectDeviceActivity
 import com.adamnickle.reptrack.ui.exercise.ExerciseFragment
+import com.adamnickle.reptrack.ui.uncompletedExerciseSet.UncompletedExerciseSetFragment
 import com.adamnickle.reptrack.ui.workout.WorkoutFragment
 import com.adamnickle.reptrack.ui.workouts.WorkoutListFragment
 import dagger.Module
@@ -27,6 +28,9 @@ abstract class AppBuilderModule
 
     @ContributesAndroidInjector
     abstract fun contributeExerciseFragment(): ExerciseFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeUncompletedExerciseSetFragment(): UncompletedExerciseSetFragment
 
     @ContributesAndroidInjector
     abstract fun contributeCompletedExerciseSetFragment(): CompletedExerciseSetFragment
