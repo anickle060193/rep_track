@@ -20,6 +20,10 @@ class UncompletedExerciseSetFragmentViewModel @Inject constructor(
 
     var exerciseSet by MutableLiveDataProperty( exerciseSetData )
 
+    val rpe: LiveData<Float?> = Transformations.map( exerciseSetData ) { exerciseSet -> exerciseSet?.rpe }
+
+    val notes: LiveData<String> = Transformations.map( exerciseSetData ) { exerciseSet -> exerciseSet?.notes }
+
     val accelerometerData: LiveData<List<ExerciseSetAccel>> = Transformations.switchMap( exerciseSetData ) { exerciseSet ->
         exerciseSet?.id?.let { exerciseSetId -> workoutDao.getExerciseSetAccel( exerciseSetId ) }
     }

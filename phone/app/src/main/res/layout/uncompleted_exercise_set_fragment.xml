@@ -30,7 +30,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
-                android:hint="RPE"/>
+                android:hint="RPE"
+                app:mutableText="@{vm.rpe}" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -49,7 +50,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="textCapSentences|textMultiLine"
                 android:lines="3"
-                android:hint="Notes" />
+                android:hint="Notes"
+                app:mutableText="@{vm.notes}" />
 
         </android.support.design.widget.TextInputLayout>
 

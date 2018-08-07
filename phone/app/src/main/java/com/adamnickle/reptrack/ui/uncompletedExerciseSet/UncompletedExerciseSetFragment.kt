@@ -92,6 +92,32 @@ class UncompletedExerciseSetFragment: DaggerFragment()
                 false
         )
 
+        binding.vm = viewModel
+
+        binding.rpe.setOnFocusChangeListener { _, hasFocus ->
+            if( !hasFocus )
+            {
+                viewModel.exerciseSet?.let { exerciseSet ->
+                    exerciseSet.rpe = binding.rpe.text.toString().toFloatOrNull()
+                    appExecutors.diskIO().execute {
+                        workoutDao.updateExerciseSet( exerciseSet )
+                    }
+                }
+            }
+        }
+
+        binding.notes.setOnFocusChangeListener { _, hasFocus ->
+            if( !hasFocus )
+            {
+                viewModel.exerciseSet?.let { exerciseSet ->
+                    exerciseSet.notes = binding.notes.text.toString()
+                    appExecutors.diskIO().execute {
+                        workoutDao.updateExerciseSet( exerciseSet )
+                    }
+                }
+            }
+        }
+
         binding.markExerciseSetCompleted.setOnClickListener {
             viewModel.exerciseSet?.let { exerciseSet ->
                 appExecutors.diskIO().execute {
