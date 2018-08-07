@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"
                 android:text="@{workout.name}"
-                android:textAppearance="?attr/textAppearanceListItem"
+                android:textAppearance="?android:attr/textAppearanceListItem"
                 android:textSize="28sp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

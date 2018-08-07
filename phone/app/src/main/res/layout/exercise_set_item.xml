@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"
-                android:textAppearance="?attr/textAppearanceListItem"
+                android:textAppearance="?android:attr/textAppearanceListItem"
                 android:textSize="28sp"
                 app:mutableText="@{vm.description}"
                 app:layout_constraintTop_toTopOf="parent"
