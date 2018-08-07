@@ -6,11 +6,7 @@
 
     <data>
         <variable
-            name="exercise"
-            type="com.adamnickle.reptrack.model.workout.Exercise" />
-
-        <variable
-            name="viewModel"
+            name="vm"
             type="com.adamnickle.reptrack.ui.workout.ExerciseItemViewModel" />
     </data>
 
@@ -48,9 +44,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"
-                android:text="@{exercise.name}"
-                android:textAppearance="?attr/textAppearanceListItem"
+                android:textAppearance="?android:attr/textAppearanceListItem"
                 android:textSize="28sp"
+                app:mutableText="@{vm.exerciseName}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"
                 android:textSize="24sp"
-                app:mutableText="@{viewModel.getExerciseSetCount()}"
+                app:mutableText="@{vm.exerciseSetCountDisplay}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

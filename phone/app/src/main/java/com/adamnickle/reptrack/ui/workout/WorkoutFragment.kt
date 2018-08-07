@@ -136,8 +136,8 @@ class WorkoutFragment: DaggerFragment()
                  && target is DataBoundViewHolder<*>
                  && target.binding is ExerciseItemBinding )
                 {
-                    viewHolder.binding.exercise?.let { sourceExercise ->
-                        target.binding.exercise?.let { targetExercise ->
+                    viewHolder.binding.vm?.exercise?.let { sourceExercise ->
+                        target.binding.vm?.exercise?.let { targetExercise ->
                             appExecutors.diskIO().execute {
                                 workoutDao.swapExercisesInWorkout( sourceExercise, targetExercise )
                             }
@@ -154,7 +154,7 @@ class WorkoutFragment: DaggerFragment()
                 if( viewHolder is DataBoundViewHolder<*>
                 && viewHolder.binding is ExerciseItemBinding )
                 {
-                    viewHolder.binding.exercise?.let{ exercise ->
+                    viewHolder.binding.vm?.exercise?.let{ exercise ->
                         appExecutors.diskIO().execute {
                             workoutDao.markExerciseAsDeleted( exercise )
 

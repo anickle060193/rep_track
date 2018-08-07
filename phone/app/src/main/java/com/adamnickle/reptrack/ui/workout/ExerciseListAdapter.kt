@@ -39,20 +39,20 @@ class ExerciseListAdapter(
                 parent,
                 false
         )
+
+        binding.vm = ExerciseItemViewModel( workoutDao )
+
         binding.root.setOnClickListener {
-            binding.exercise?.let {
-                exerciseClickCallback?.invoke( it )
+            binding.vm?.exercise?.let { exercise ->
+                exerciseClickCallback?.invoke( exercise )
             }
         }
-
-        binding.viewModel = ExerciseItemViewModel( workoutDao )
 
         return binding
     }
 
     override fun bind( binding: ExerciseItemBinding, item: Exercise, position: Int )
     {
-        binding.exercise = item
-        binding.viewModel?.bind( item )
+        binding.vm?.bind( item )
     }
 }

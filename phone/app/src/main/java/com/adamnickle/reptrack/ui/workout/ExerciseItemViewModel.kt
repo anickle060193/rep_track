@@ -1,5 +1,6 @@
 package com.adamnickle.reptrack.ui.workout
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
@@ -10,16 +11,24 @@ class ExerciseItemViewModel(
         private val workoutDao: WorkoutDao
 ): ViewModel()
 {
-    private val exercise = MutableLiveData<Exercise>()
-    private val exerciseSetCount = Transformations.switchMap( exercise ) { exercise ->
-        workoutDao.getExerciseSetCountForExerciseId( exercise.id ?: throw IllegalArgumentException( "Cannot display unsaved Exercise" ) )
+    private val exerciseLiveData = MutableLiveData<Exercise?>()
+
+    val exercise get(): Exercise? = exerciseLiveData.value
+
+    val exerciseName: LiveData<String> = Transformations.map( exerciseLiveData ) { exercise -> exercise?.name ?: "" }
+
+    val exerciseSetCount: LiveData<Int> = Transformations.switchMap( exerciseLiveData ) { exercise ->
+        exercise?.let {
+            workoutDao.getExerciseSetCountForExerciseId( exercise.id ?: throw IllegalArgumentException( "Cannot display unsaved Exercise" ) )
+        }
     }
-    private val exerciseSetCountString = Transformations.map( exerciseSetCount ) { exerciseSetCount -> "$exerciseSetCount sets" }
+
+    val exerciseSetCountDisplay: LiveData<String> = Transformations.map( exerciseSetCount ) { exerciseSetCount ->
+        "${exerciseSetCount ?: 0} sets"
+    }
 
     fun bind( exercise: Exercise )
     {
-        this.exercise.value = exercise
+        this.exerciseLiveData.value = exercise
     }
-
-    fun getExerciseSetCount() = exerciseSetCountString!!
 }
