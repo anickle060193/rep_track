@@ -9,7 +9,7 @@ import com.adamnickle.reptrack.model.workout.*
     Exercise::class,
     ExerciseSet::class,
     ExerciseSetAccel::class
-], version = 3, exportSchema = true )
+], version = 4, exportSchema = true )
 abstract class AppDatabase: RoomDatabase()
 {
     abstract fun workoutDao(): WorkoutDao

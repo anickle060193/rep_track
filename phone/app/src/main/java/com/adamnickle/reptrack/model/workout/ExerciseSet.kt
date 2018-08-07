@@ -18,11 +18,13 @@ data class ExerciseSet(
         var repCount: Int,
         @ColumnInfo( index = true ) var exerciseId: Long,
         var order: Int,
-        @ColumnInfo( index = true ) var deleted: Boolean
+        @ColumnInfo( index = true ) var deleted: Boolean,
+        var rpe: Float?,
+        var notes: String
 )
 {
     @Ignore
-    constructor( weight: Float, repCount: Int, exerciseId: Long, order: Int ): this( null, false, weight, repCount, exerciseId, order, false )
+    constructor( weight: Float, repCount: Int, exerciseId: Long, order: Int ): this( null, false, weight, repCount, exerciseId, order, false, null, "" )
 }
 
 class FullExerciseSet
@@ -33,6 +35,8 @@ class FullExerciseSet
     var repCount: Int = 0
     var order: Int = 0
     var deleted: Boolean = false
+    var rpe: Float? = null
+    var notes: String = ""
 
     fun toMap() = mapOf(
         "id" to id,
@@ -40,6 +44,8 @@ class FullExerciseSet
         "weight" to weight,
         "repCount" to repCount,
         "order" to order,
-        "deleted" to deleted
+        "deleted" to deleted,
+        "rpe" to rpe,
+        "notes" to notes
     )
 }
