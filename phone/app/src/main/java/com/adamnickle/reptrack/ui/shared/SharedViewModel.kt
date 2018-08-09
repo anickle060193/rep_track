@@ -3,7 +3,7 @@ package com.adamnickle.reptrack.ui.shared
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.adamnickle.reptrack.utils.MutableLiveDataProperty
+import com.adamnickle.reptrack.utils.property.MutableLiveDataProperty
 import com.garmin.android.connectiq.IQDevice
 import javax.inject.Inject
 

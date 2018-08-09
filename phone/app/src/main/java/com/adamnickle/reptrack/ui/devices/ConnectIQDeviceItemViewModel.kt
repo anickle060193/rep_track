@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
-import com.adamnickle.reptrack.utils.LiveDataProperty
+import com.adamnickle.reptrack.utils.property.LiveDataProperty
 import com.garmin.android.connectiq.IQDevice
 
 class ConnectIQDeviceItemViewModel: ViewModel()

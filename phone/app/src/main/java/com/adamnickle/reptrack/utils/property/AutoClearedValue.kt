@@ -1,4 +1,4 @@
-package com.adamnickle.reptrack.utils
+package com.adamnickle.reptrack.utils.property
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver

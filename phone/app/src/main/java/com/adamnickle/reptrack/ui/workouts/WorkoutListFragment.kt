@@ -21,7 +21,7 @@ import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.ui.common.DataBoundViewHolder
 import com.adamnickle.reptrack.ui.common.SwipeableItemTouchHelperCallback
-import com.adamnickle.reptrack.utils.autoCleared
+import com.adamnickle.reptrack.utils.property.autoCleared
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 

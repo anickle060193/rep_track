@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.adamnickle.reptrack.model.workout.ExerciseSet
-import com.adamnickle.reptrack.utils.MutableLiveDataProperty
+import com.adamnickle.reptrack.utils.property.MutableLiveDataProperty
 import javax.inject.Inject
 
 class CompletedExerciseSetFragmentViewModel @Inject constructor(): ViewModel()

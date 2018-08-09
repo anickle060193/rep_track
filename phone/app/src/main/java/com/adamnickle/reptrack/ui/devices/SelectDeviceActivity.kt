@@ -13,7 +13,7 @@ import com.adamnickle.reptrack.BuildConfig
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.connectIQ.ConnectIQHelper
 import com.adamnickle.reptrack.databinding.SelectDeviceActivityBinding
-import com.adamnickle.reptrack.utils.autoCleared
+import com.adamnickle.reptrack.utils.property.autoCleared
 import com.garmin.android.connectiq.ConnectIQ.IQSdkErrorStatus.*
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject

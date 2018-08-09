@@ -27,7 +27,7 @@ import com.adamnickle.reptrack.ui.common.InputDialog
 import com.adamnickle.reptrack.ui.common.SwipeableItemTouchHelperCallback
 import com.adamnickle.reptrack.ui.devices.SelectDeviceActivity
 import com.adamnickle.reptrack.ui.shared.SharedViewModel
-import com.adamnickle.reptrack.utils.autoCleared
+import com.adamnickle.reptrack.utils.property.autoCleared
 import com.adamnickle.reptrack.utils.extensions.addDividerItemDecoration
 import com.garmin.android.connectiq.ConnectIQ
 import dagger.android.support.DaggerFragment

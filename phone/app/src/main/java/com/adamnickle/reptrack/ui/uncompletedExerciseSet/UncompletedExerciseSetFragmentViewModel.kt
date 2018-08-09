@@ -7,7 +7,7 @@ import android.arch.lifecycle.ViewModel
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.ExerciseSetAccel
 import com.adamnickle.reptrack.model.workout.WorkoutDao
-import com.adamnickle.reptrack.utils.MutableLiveDataProperty
+import com.adamnickle.reptrack.utils.property.MutableLiveDataProperty
 import javax.inject.Inject
 
 class UncompletedExerciseSetFragmentViewModel @Inject constructor(

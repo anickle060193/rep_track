@@ -1,6 +1,5 @@
-package com.adamnickle.reptrack.utils
+package com.adamnickle.reptrack.utils.property
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
