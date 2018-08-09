@@ -13,6 +13,7 @@ import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
+import com.adamnickle.reptrack.utils.AccelerometerParser
 import com.adamnickle.reptrack.utils.property.autoCleared
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -85,8 +86,23 @@ class CompletedExerciseSetFragment: DaggerFragment()
                 false
         )
 
+        binding.vm = viewModel
+
         adapter = CompletedSetRepListAdapter( appExecutors ) { setRep ->
-            println( "Set Rep Clicked: $setRep" )
+            viewModel.accelData = null
+
+            if( setRep == 0 )
+            {
+                appExecutors.diskIO().execute {
+                    viewModel.exerciseSet?.let { exerciseSet ->
+                        val accels = workoutDao.getExerciseSetAccelSync( exerciseSet.id ?: throw IllegalArgumentException( "Cannot display unsaved Exercise Set" ) )
+                        val accelData = AccelerometerParser.getAccelerationData( accels )
+                        appExecutors.mainThread().execute {
+                            viewModel.accelData = accelData
+                        }
+                    }
+                }
+            }
         }
 
         binding.repsList.adapter = adapter

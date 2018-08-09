@@ -168,4 +168,7 @@ abstract class WorkoutDao
 
     @Query( "SELECT * FROM ExerciseSetAccel WHERE exerciseSetId = :exerciseSetId" )
     abstract fun getExerciseSetAccel( exerciseSetId: Long ): LiveData<List<ExerciseSetAccel>>
+
+    @Query( "SELECT * FROM ExerciseSetAccel WHERE exerciseSetId = :exerciseSetId" )
+    abstract fun getExerciseSetAccelSync( exerciseSetId: Long ): List<ExerciseSetAccel>
 }

@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="28sp"
-                android:text="@{`` + vm.repMin}"
+                app:mutableText="@{vm.min}"
                 tools:text="0.0" />
 
             <include layout="@layout/accent_separator" />
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="28sp"
-                android:text="@{`` + vm.repMax}"
+                app:mutableText="@{vm.max}"
                 tools:text="0.0" />
 
             <include layout="@layout/accent_separator" />
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textSize="28sp"
-                android:text="@{`` + vm.repAvg}"
+                app:mutableText="@{vm.avg}"
                 tools:text="0.0" />
 
             <include layout="@layout/accent_separator" />
