@@ -92,7 +92,7 @@ class CompletedExerciseSetFragment: DaggerFragment()
         binding.repsList.adapter = adapter
 
         viewModel.exerciseSetLive.observe( this, Observer { exerciseSet ->
-            adapter.submitList( ( 0 until ( exerciseSet?.repCount ?: 0 ) ).toList() )
+            adapter.submitList( ( 0 until ( exerciseSet?.repCount ?: 0 ) + 1 ).toList() )
         } )
 
         return binding.root
