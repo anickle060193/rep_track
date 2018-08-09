@@ -32,30 +32,36 @@ class CompletedSetRepListAdapter(
 
     override fun createBinding( parent: ViewGroup ): SetRepItemBinding
     {
-        val binding = DataBindingUtil.inflate<SetRepItemBinding>(
+        return DataBindingUtil.inflate(
                 LayoutInflater.from( parent.context ),
                 R.layout.set_rep_item,
                 parent,
                 false
         )
+    }
+
+    override fun bind( binding: SetRepItemBinding, item: Int, position: Int )
+    {
+        if( item == 0 )
+        {
+            binding.displayText = "All Reps"
+        }
+        else
+        {
+            binding.displayText = "Rep $item"
+        }
+
+        binding.selected = ( position == selectedIndex )
 
         binding.root.setOnClickListener {
             val oldIndex = selectedIndex
-            selectedIndex = binding.repIndex
+            selectedIndex = item
 
 
             notifyItemChanged( oldIndex )
             notifyItemChanged( selectedIndex )
 
-            setRepClickCallback?.invoke( binding.repIndex )
+            setRepClickCallback?.invoke( item )
         }
-
-        return binding
-    }
-
-    override fun bind( binding: SetRepItemBinding, item: Int, position: Int )
-    {
-        binding.repIndex = item
-        binding.selected = ( position == selectedIndex )
     }
 }

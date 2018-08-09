@@ -7,8 +7,8 @@
     <data>
 
         <variable
-            name="repIndex"
-            type="int" />
+            name="displayText"
+            type="String" />
 
         <variable
             name="selected"
@@ -40,9 +40,9 @@
             android:paddingEnd="32dp"
             android:textSize="22sp"
             android:maxLines="1"
-            android:text="@{`Rep ` + ( repIndex + 1 )}"
-            tools:text="Rep 1"
-            app:layout_constraintEnd_toStartOf="@+id/selected_indication"/>
+            android:text="@{displayText}"
+            app:layout_constraintEnd_toStartOf="@+id/selected_indication"
+            tools:text="Rep 1"/>
 
     </android.support.constraint.ConstraintLayout>
 
