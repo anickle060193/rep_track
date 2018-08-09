@@ -16,7 +16,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="launcher_foreground.svg"
+   sodipodi:docname="dumbbell.svg"
    inkscape:export-filename="D:\Users\Adam\Desktop\reptrack\extra\icon.png"
    inkscape:export-xdpi="180"
    inkscape:export-ydpi="180">
@@ -52,9 +52,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="-53.117743"
-     inkscape:cy="9.8356119"
+     inkscape:zoom="4"
+     inkscape:cx="-19.922867"
+     inkscape:cy="-11.788336"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -96,10 +96,10 @@
      transform="translate(0,-980.36227)">
     <path
        style="opacity:1;fill:url(#linearGradient4149);fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 37.132249,1014.956 19,1025.7861 l 17.475853,26.5762 35.524147,0 0,-7.4487 -14.304405,-29.9576 z"
+       d="M 37.132249,1014.956 19,1025.7861 l 17.475853,26.5762 35.524147,0 -14.304405,-37.4063 z"
        id="rect5134"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccc" />
+       sodipodi:nodetypes="cccccc" />
     <rect
        style="opacity:1;fill:#7c7c7c;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect4797"
