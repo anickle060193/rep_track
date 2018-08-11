@@ -43,7 +43,7 @@ class ConnectIQDeviceListAdapter(
         binding.vm = ConnectIQDeviceItemViewModel()
 
         binding.root.setOnClickListener {
-            binding.vm?.device?.let { device ->
+            binding.vm?.device?.value?.let { device ->
                 deviceClickCallback?.invoke( device )
             }
         }
@@ -53,6 +53,6 @@ class ConnectIQDeviceListAdapter(
 
     override fun bind( binding: ConnectIqDeviceItemBinding, item: IQDevice, position: Int )
     {
-        binding.vm?.bind( item )
+        binding.vm?.device?.value = item
     }
 }

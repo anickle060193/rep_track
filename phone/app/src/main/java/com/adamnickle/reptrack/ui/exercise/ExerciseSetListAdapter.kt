@@ -43,8 +43,8 @@ class ExerciseSetListAdapter(
         binding.vm = ExerciseSetItemViewModel()
 
         binding.root.setOnClickListener {
-            binding.vm?.exerciseSet?.let {
-                exerciseSetClickCallback?.invoke( it )
+            binding.vm?.exerciseSet?.value?.let { exerciseSet ->
+                exerciseSetClickCallback?.invoke( exerciseSet )
             }
         }
 

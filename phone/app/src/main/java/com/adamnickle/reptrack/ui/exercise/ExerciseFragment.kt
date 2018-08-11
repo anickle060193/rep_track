@@ -72,7 +72,7 @@ class ExerciseFragment: DaggerFragment()
             val exercise = workoutDao.getExerciseOrThrow( exerciseId )
 
             appExecutors.mainThread().execute {
-                viewModel.exercise = exercise
+                viewModel.exercise.value = exercise
             }
         }
 
@@ -87,7 +87,7 @@ class ExerciseFragment: DaggerFragment()
         } )
 
         adapter = ExerciseSetListAdapter( appExecutors ) { exerciseSet ->
-            viewModel.exercise?.let { exercise ->
+            viewModel.exercise.value?.let { exercise ->
                 listener?.onExerciseSetClicked( exercise, exerciseSet )
             }
         }

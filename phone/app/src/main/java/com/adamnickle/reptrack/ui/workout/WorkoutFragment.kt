@@ -97,7 +97,7 @@ class WorkoutFragment: DaggerFragment()
         appExecutors.diskIO().execute {
             val workout = workoutDao.getWorkoutOrThrow( workoutId )
             appExecutors.mainThread().execute {
-                viewModel.workout = workout
+                viewModel.workout.value = workout
             }
         }
     }
@@ -111,7 +111,7 @@ class WorkoutFragment: DaggerFragment()
         } )
 
         adapter = ExerciseListAdapter( appExecutors, workoutDao ) { exercise ->
-            viewModel.workout?.let { workout ->
+            viewModel.workout.value?.let { workout ->
                 listener?.onExerciseClicked( workout, exercise )
             }
         }
@@ -136,8 +136,8 @@ class WorkoutFragment: DaggerFragment()
                  && target is DataBoundViewHolder<*>
                  && target.binding is ExerciseItemBinding )
                 {
-                    viewHolder.binding.vm?.exercise?.let { sourceExercise ->
-                        target.binding.vm?.exercise?.let { targetExercise ->
+                    viewHolder.binding.vm?.exercise?.value?.let { sourceExercise ->
+                        target.binding.vm?.exercise?.value?.let { targetExercise ->
                             appExecutors.diskIO().execute {
                                 workoutDao.swapExercisesInWorkout( sourceExercise, targetExercise )
                             }
@@ -154,7 +154,7 @@ class WorkoutFragment: DaggerFragment()
                 if( viewHolder is DataBoundViewHolder<*>
                 && viewHolder.binding is ExerciseItemBinding )
                 {
-                    viewHolder.binding.vm?.exercise?.let{ exercise ->
+                    viewHolder.binding.vm?.exercise?.value?.let{ exercise ->
                         appExecutors.diskIO().execute {
                             workoutDao.markExerciseAsDeleted( exercise )
 
@@ -185,7 +185,7 @@ class WorkoutFragment: DaggerFragment()
 
         binding.exerciseAdd.setOnClickListener {
             context?.let { context ->
-                viewModel.workout?.also { workout ->
+                viewModel.workout.value?.also { workout ->
                     InputDialog.showDialog<NewExerciseDialogBinding>( context, "Exercise", R.layout.new_exercise_dialog ) { binding, dialog ->
                         val name = binding.exerciseName.text.toString()
                         if( name.isBlank() )
@@ -329,7 +329,7 @@ class WorkoutFragment: DaggerFragment()
     private fun sendWorkoutToWatch()
     {
         sharedViewModel.deviceId?.let { deviceId ->
-            viewModel.workout?.let { workout ->
+            viewModel.workout.value?.let { workout ->
                 appExecutors.diskIO().execute {
                     workoutDao.getFullWorkout( workout.idOrThrow() )?.let { workout ->
                         println( "Full Workout: $workout" )

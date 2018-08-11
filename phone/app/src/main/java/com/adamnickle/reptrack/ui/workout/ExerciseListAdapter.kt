@@ -43,7 +43,7 @@ class ExerciseListAdapter(
         binding.vm = ExerciseItemViewModel( workoutDao )
 
         binding.root.setOnClickListener {
-            binding.vm?.exercise?.let { exercise ->
+            binding.vm?.exercise?.value?.let { exercise ->
                 exerciseClickCallback?.invoke( exercise )
             }
         }

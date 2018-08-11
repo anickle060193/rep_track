@@ -90,7 +90,7 @@ class UncompletedExerciseSetFragment: DaggerFragment()
         binding.rpe.setOnFocusChangeListener { _, hasFocus ->
             if( !hasFocus )
             {
-                viewModel.exerciseSet?.let { exerciseSet ->
+                viewModel.exerciseSet.value?.let { exerciseSet ->
                     exerciseSet.rpe = binding.rpe.text.toString().toFloatOrNull()
                     appExecutors.diskIO().execute {
                         workoutDao.updateExerciseSet( exerciseSet )
@@ -102,7 +102,7 @@ class UncompletedExerciseSetFragment: DaggerFragment()
         binding.notes.setOnFocusChangeListener { _, hasFocus ->
             if( !hasFocus )
             {
-                viewModel.exerciseSet?.let { exerciseSet ->
+                viewModel.exerciseSet.value?.let { exerciseSet ->
                     exerciseSet.notes = binding.notes.text.toString()
                     appExecutors.diskIO().execute {
                         workoutDao.updateExerciseSet( exerciseSet )
@@ -112,7 +112,7 @@ class UncompletedExerciseSetFragment: DaggerFragment()
         }
 
         binding.markExerciseSetCompleted.setOnClickListener {
-            viewModel.exerciseSet?.let { exerciseSet ->
+            viewModel.exerciseSet.value?.let { exerciseSet ->
                 appExecutors.diskIO().execute {
                     workoutDao.markExerciseSetCompleted( exerciseSet )
 

@@ -1,32 +1,26 @@
 package com.adamnickle.reptrack.ui.exercise
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.adamnickle.reptrack.model.workout.ExerciseSet
-import com.adamnickle.reptrack.utils.property.LiveDataProperty
 
 class ExerciseSetItemViewModel: ViewModel()
 {
-    private val exerciseSetData = MutableLiveData<ExerciseSet>()
-    private val exerciseSetNumberData = MutableLiveData<Int>()
-    private val descriptionData = MediatorLiveData<String>()
+    val exerciseSet = MutableLiveData<ExerciseSet>()
+    val exerciseSetNumber = MutableLiveData<Int>()
+    val description = MediatorLiveData<String>()
 
     init
     {
-        descriptionData.addSource( exerciseSetData ) { exerciseSet -> descriptionData.value = formatDescription( exerciseSet, exerciseSetNumberData.value ) }
-        descriptionData.addSource( exerciseSetNumberData ) { exerciseSetNumber -> descriptionData.value = formatDescription( exerciseSetData.value, exerciseSetNumber ) }
+        this.description.addSource( exerciseSet ) { exerciseSet -> this.description.value = formatDescription( exerciseSet, exerciseSetNumber.value ) }
+        this.description.addSource( exerciseSetNumber ) { exerciseSetNumber -> this.description.value = formatDescription( exerciseSet.value, exerciseSetNumber ) }
     }
-
-    val exerciseSet by LiveDataProperty( exerciseSetData )
-
-    val description get(): LiveData<String> = descriptionData
 
     fun bind( exerciseSet: ExerciseSet, exerciseSetNumber: Int )
     {
-        exerciseSetData.value = exerciseSet
-        exerciseSetNumberData.value = exerciseSetNumber
+        this.exerciseSet.value = exerciseSet
+        this.exerciseSetNumber.value = exerciseSetNumber
     }
 
     private fun formatDescription( exerciseSet: ExerciseSet?, exerciseSetNumber: Int? ): String

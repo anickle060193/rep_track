@@ -74,7 +74,7 @@ class MainActivity: DaggerAppCompatActivity(),
                 .commit()
 
         sharedViewModel = ViewModelProviders.of( this, viewModelFactory ).get( SharedViewModel::class.java )
-        sharedViewModel.deviceLive.observe( this, Observer( this::onDeviceChanged ) )
+        sharedViewModel.device.observe( this, Observer( this::onDeviceChanged ) )
     }
 
     override fun onOptionsItemSelected( item: MenuItem ): Boolean
@@ -162,7 +162,7 @@ class MainActivity: DaggerAppCompatActivity(),
 
                     if( deviceStatus != IQDevice.IQDeviceStatus.CONNECTED )
                     {
-                        sharedViewModel.device = null
+                        sharedViewModel.device.value = null
                     }
                 }
 

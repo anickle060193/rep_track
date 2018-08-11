@@ -11,13 +11,11 @@ class ExerciseItemViewModel(
         private val workoutDao: WorkoutDao
 ): ViewModel()
 {
-    private val exerciseLiveData = MutableLiveData<Exercise?>()
+    val exercise = MutableLiveData<Exercise?>()
 
-    val exercise get(): Exercise? = exerciseLiveData.value
+    val exerciseName: LiveData<String> = Transformations.map( exercise ) { exercise -> exercise?.name ?: "" }
 
-    val exerciseName: LiveData<String> = Transformations.map( exerciseLiveData ) { exercise -> exercise?.name ?: "" }
-
-    val exerciseSetCount: LiveData<Int> = Transformations.switchMap( exerciseLiveData ) { exercise ->
+    val exerciseSetCount: LiveData<Int> = Transformations.switchMap( exercise ) { exercise ->
         exercise?.let {
             workoutDao.getExerciseSetCountForExerciseId( exercise.idOrThrow() )
         }
@@ -29,6 +27,6 @@ class ExerciseItemViewModel(
 
     fun bind( exercise: Exercise )
     {
-        this.exerciseLiveData.value = exercise
+        this.exercise.value = exercise
     }
 }

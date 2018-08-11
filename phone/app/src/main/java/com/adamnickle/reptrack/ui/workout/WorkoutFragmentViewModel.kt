@@ -7,20 +7,15 @@ import android.arch.lifecycle.ViewModel
 import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.Workout
 import com.adamnickle.reptrack.model.workout.WorkoutDao
-import com.adamnickle.reptrack.utils.property.MutableLiveDataProperty
 import javax.inject.Inject
 
 class WorkoutFragmentViewModel @Inject constructor(
         private val workoutDao: WorkoutDao
 ): ViewModel()
 {
-    private var workoutData = MutableLiveData<Workout?>()
+    val workout = MutableLiveData<Workout?>()
 
-    val workoutLive: LiveData<Workout?> get() = workoutData
-
-    var workout by MutableLiveDataProperty( workoutData )
-
-    val exercises: LiveData<List<Exercise>> = Transformations.switchMap( workoutData ) { workout ->
+    val exercises: LiveData<List<Exercise>> = Transformations.switchMap( workout ) { workout ->
         workout?.let { workoutDao.getExercisesForWorkoutId( workout.idOrThrow() ) }
     }
 }
