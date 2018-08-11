@@ -2,6 +2,7 @@ package com.adamnickle.reptrack.utils.extensions
 
 import android.graphics.Color
 import com.adamnickle.reptrack.model.workout.ExerciseSetAccel
+import com.adamnickle.reptrack.utils.Convert
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -10,7 +11,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
 private val TIME_AXIS_FORMATTER = DecimalFormat( "0.####s", DecimalFormatSymbols.getInstance() )
-private val ACCEL_AXIS_FORMATTER = DecimalFormat( "#,##0mG", DecimalFormatSymbols.getInstance() )
+private val ACCEL_AXIS_FORMATTER = DecimalFormat( "#,##0m/s²", DecimalFormatSymbols.getInstance() )
 
 fun LineChart.initializeAccelerometerLineChart()
 {
@@ -19,6 +20,10 @@ fun LineChart.initializeAccelerometerLineChart()
     this.xAxis.setValueFormatter { value, _ -> TIME_AXIS_FORMATTER.format( value ) }
     this.axisLeft.setValueFormatter { value, _ -> ACCEL_AXIS_FORMATTER.format( value ) }
 }
+
+private const val X_COLOR = Color.RED
+private const val Y_COLOR = -16744448
+private const val Z_COLOR = Color.BLUE
 
 fun LineChart.setAccelerometerData( accelData: List<ExerciseSetAccel>? )
 {
@@ -33,21 +38,21 @@ fun LineChart.setAccelerometerData( accelData: List<ExerciseSetAccel>? )
         for( accel in accelData )
         {
             val time = ( accel.time.toFloat() - startTime ) / 1000.0f
-            xEntries.add( Entry( time, accel.x ) )
-            yEntries.add( Entry( time, accel.y ) )
-            zEntries.add( Entry( time, accel.z ) )
+            xEntries.add( Entry( time, Convert.mGtoMPS( accel.x ) ) )
+            yEntries.add( Entry( time, Convert.mGtoMPS( accel.y ) ) )
+            zEntries.add( Entry( time, Convert.mGtoMPS( accel.z ) ) )
         }
 
         val xDataSet = LineDataSet( xEntries, "X" ).apply {
-            color = Color.RED
+            color = X_COLOR
             setDrawCircles( false )
         }
         val yDataSet = LineDataSet( yEntries, "Y" ).apply {
-            color = Color.GREEN
+            color = Y_COLOR
             setDrawCircles( false )
         }
         val zDataSet = LineDataSet( zEntries, "Z" ).apply {
-            color = Color.BLUE
+            color = Z_COLOR
             setDrawCircles( false )
         }
 

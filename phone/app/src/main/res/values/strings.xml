@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Rep Track</string>
 
-    <string name="accel_format">%.0f mG</string>
+    <string name="accel_format">%.2f m/s²</string>
 </resources>

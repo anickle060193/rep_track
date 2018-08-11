@@ -5,6 +5,7 @@ import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.ExerciseSetAccel
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.utils.AccelerometerParser
+import com.adamnickle.reptrack.utils.Convert
 import javax.inject.Inject
 
 class CompletedExerciseSetFragmentViewModel @Inject constructor(
@@ -46,9 +47,9 @@ class CompletedExerciseSetFragmentViewModel @Inject constructor(
         }
     }
 
-    val selectedExerciseSetMax: LiveData<Float> = Transformations.map( selectedExerciseSetAccelData ) { it?.max ?: 0.0f }
-    val selectedExerciseSetMin: LiveData<Float> = Transformations.map( selectedExerciseSetAccelData ) { it?.min ?: 0.0f }
-    val selectedExerciseSetAvg: LiveData<Float> = Transformations.map( selectedExerciseSetAccelData ) { it?.avg ?: 0.0f }
+    val selectedExerciseSetMax: LiveData<Float> = Transformations.map( selectedExerciseSetAccelData ) { Convert.mGtoMPS( it?.max ?: 0.0f ) }
+    val selectedExerciseSetMin: LiveData<Float> = Transformations.map( selectedExerciseSetAccelData ) { Convert.mGtoMPS( it?.min ?: 0.0f ) }
+    val selectedExerciseSetAvg: LiveData<Float> = Transformations.map( selectedExerciseSetAccelData ) { Convert.mGtoMPS( it?.avg ?: 0.0f ) }
 
     private fun getRepAccels( accels: List<ExerciseSetAccel>?, repCount: Int?, selectedRep: Int? ): List<ExerciseSetAccel>?
     {
