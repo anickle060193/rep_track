@@ -13,7 +13,8 @@ import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
-import com.adamnickle.reptrack.utils.AccelerometerParser
+import com.adamnickle.reptrack.utils.extensions.initializeAccelerometerLineChart
+import com.adamnickle.reptrack.utils.extensions.setAccelerometerData
 import com.adamnickle.reptrack.utils.property.autoCleared
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -69,10 +70,10 @@ class CompletedExerciseSetFragment: DaggerFragment()
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get( CompletedExerciseSetFragmentViewModel::class.java )
 
         appExecutors.diskIO().execute {
-            val exerciseSet = workoutDao.getExerciseSet( exerciseSetId ) ?: throw IllegalArgumentException( "Could not find Exercise Set: $exerciseSetId" )
+            val exerciseSet = workoutDao.getExerciseSetOrThrow( exerciseSetId )
 
             appExecutors.mainThread().execute {
-                viewModel.exerciseSet = exerciseSet
+                viewModel.exerciseSet.value = exerciseSet
             }
         }
     }
@@ -89,26 +90,19 @@ class CompletedExerciseSetFragment: DaggerFragment()
         binding.vm = viewModel
 
         adapter = CompletedSetRepListAdapter( appExecutors ) { setRep ->
-            viewModel.accelData = null
-
-            if( setRep == 0 )
-            {
-                appExecutors.diskIO().execute {
-                    viewModel.exerciseSet?.let { exerciseSet ->
-                        val accels = workoutDao.getExerciseSetAccelSync( exerciseSet.id ?: throw IllegalArgumentException( "Cannot display unsaved Exercise Set" ) )
-                        val accelData = AccelerometerParser.getAccelerationData( accels )
-                        appExecutors.mainThread().execute {
-                            viewModel.accelData = accelData
-                        }
-                    }
-                }
-            }
+            viewModel.selectedExerciseSetRep.value = setRep
         }
 
         binding.repsList.adapter = adapter
 
-        viewModel.exerciseSetLive.observe( this, Observer { exerciseSet ->
+        binding.accelerometerDataGraph.initializeAccelerometerLineChart()
+
+        viewModel.exerciseSet.observe( this, Observer { exerciseSet ->
             adapter.submitList( ( 0 until ( exerciseSet?.repCount ?: 0 ) + 1 ).toList() )
+        } )
+
+        viewModel.selectedExerciseSetRepAccels.observe( this, Observer { accels ->
+           binding.accelerometerDataGraph.setAccelerometerData( accels )
         } )
 
         return binding.root
@@ -124,11 +118,11 @@ class CompletedExerciseSetFragment: DaggerFragment()
         return when( item.itemId )
         {
             R.id.unmark_exercise_set_as_completed -> {
-                viewModel.exerciseSet?.let { exerciseSet ->
+                viewModel.exerciseSet.value?.let { exerciseSet ->
                     appExecutors.diskIO().execute {
                         workoutDao.unmarkExerciseSetCompleted( exerciseSet )
 
-                        val exercise = workoutDao.getExercise( exerciseSet.exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: ${exerciseSet.exerciseId}" )
+                        val exercise = workoutDao.getExerciseOrThrow( exerciseSet.exerciseId )
                         listener?.onExerciseSetUncompleted( exercise, exerciseSet )
                     }
                 }

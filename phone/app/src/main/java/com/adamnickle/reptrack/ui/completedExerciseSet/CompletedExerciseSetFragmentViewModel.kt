@@ -1,28 +1,79 @@
 package com.adamnickle.reptrack.ui.completedExerciseSet
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
-import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.*
 import com.adamnickle.reptrack.model.workout.ExerciseSet
+import com.adamnickle.reptrack.model.workout.ExerciseSetAccel
+import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.utils.AccelerometerParser
-import com.adamnickle.reptrack.utils.property.MutableLiveDataProperty
 import javax.inject.Inject
 
-class CompletedExerciseSetFragmentViewModel @Inject constructor(): ViewModel()
+class CompletedExerciseSetFragmentViewModel @Inject constructor(
+        workoutDao: WorkoutDao
+): ViewModel()
 {
-    private val exerciseSetData = MutableLiveData<ExerciseSet>()
-    private val accelLiveData = MutableLiveData<AccelerometerParser.AccelData?>()
+    val exerciseSet = MutableLiveData<ExerciseSet>()
+    val selectedExerciseSetRep = MutableLiveData<Int>()
+    init
+    {
+        selectedExerciseSetRep.value = 0
+    }
 
-    val exerciseSetLive: LiveData<ExerciseSet> get() = exerciseSetData
+    val exerciseSetAccels: LiveData<List<ExerciseSetAccel>> = Transformations.switchMap( exerciseSet ) { exerciseSet ->
+        exerciseSet?.let {
+            workoutDao.getExerciseSetAccel( exerciseSet.idOrThrow() )
+        }
+    }
 
-    var exerciseSet by MutableLiveDataProperty( exerciseSetData )
+    val selectedExerciseSetRepAccels = MediatorLiveData<List<ExerciseSetAccel>>()
+    init
+    {
+        selectedExerciseSetRepAccels.addSource( exerciseSetAccels ) { accels ->
+            selectedExerciseSetRepAccels.value = getRepAccels( accels, exerciseSet.value?.repCount, selectedExerciseSetRep.value )
+        }
 
-    var accelData: AccelerometerParser.AccelData?
-        get() = accelLiveData.value
-        set( value ) { accelLiveData.value = value }
+        selectedExerciseSetRepAccels.addSource( exerciseSet ) { exerciseSet ->
+            selectedExerciseSetRepAccels.value = getRepAccels( exerciseSetAccels.value, exerciseSet?.repCount, selectedExerciseSetRep.value )
+        }
 
-    val max: LiveData<Float> = Transformations.map( accelLiveData ) { it?.max ?: 0.0f }
-    val min: LiveData<Float> = Transformations.map( accelLiveData ) { it?.min ?: 0.0f }
-    val avg: LiveData<Float> = Transformations.map( accelLiveData ) { it?.avg ?: 0.0f }
+        selectedExerciseSetRepAccels.addSource( selectedExerciseSetRep ) { selectedExerciseSetRep ->
+            selectedExerciseSetRepAccels.value = getRepAccels( exerciseSetAccels.value, exerciseSet.value?.repCount, selectedExerciseSetRep )
+        }
+    }
+
+    val selectedExerciseSetAccelData: LiveData<AccelerometerParser.AccelData> = Transformations.map( selectedExerciseSetRepAccels ) { accels ->
+        accels?.let {
+            AccelerometerParser.getAccelerationData( accels )
+        }
+    }
+
+    val selectedExerciseSetMax: LiveData<Float> = Transformations.map( selectedExerciseSetAccelData ) { it?.max ?: 0.0f }
+    val selectedExerciseSetMin: LiveData<Float> = Transformations.map( selectedExerciseSetAccelData ) { it?.min ?: 0.0f }
+    val selectedExerciseSetAvg: LiveData<Float> = Transformations.map( selectedExerciseSetAccelData ) { it?.avg ?: 0.0f }
+
+    private fun getRepAccels( accels: List<ExerciseSetAccel>?, repCount: Int?, selectedRep: Int? ): List<ExerciseSetAccel>?
+    {
+        if( accels == null
+         || repCount == null
+         || selectedRep == null )
+        {
+            return null
+        }
+
+        if( selectedRep == 0 )
+        {
+            return accels
+        }
+        else
+        {
+            val repAccels = AccelerometerParser.findRepsAccels( accels, repCount )
+            if( selectedRep - 1 < repAccels.size )
+            {
+                return repAccels[ selectedRep - 1 ]
+            }
+            else
+            {
+                throw IllegalArgumentException( "Selected Rep is outside of valid range - selectedRep: $selectedRep - repCount: $repCount" )
+            }
+        }
+    }
 }

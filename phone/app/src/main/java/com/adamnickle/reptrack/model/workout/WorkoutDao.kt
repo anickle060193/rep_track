@@ -12,6 +12,12 @@ abstract class WorkoutDao
     @Query( "SELECT * FROM workout WHERE id = :workoutId LIMIT 1" )
     abstract fun getWorkout( workoutId: Long ): Workout?
 
+    @Ignore
+    fun getWorkoutOrThrow( workoutId: Long ): Workout
+    {
+        return getWorkout( workoutId ) ?: throw IllegalArgumentException( "Could not find Workout: $workoutId" )
+    }
+
     @SuppressWarnings( RoomWarnings.CURSOR_MISMATCH )
     @Transaction
     @Query( "SELECT * FROM workout WHERE id = :workoutId LIMIT 1" )
@@ -40,6 +46,12 @@ abstract class WorkoutDao
 
     @Query( "SELECT * FROM Exercise WHERE id = :exerciseId LIMIT 1" )
     abstract fun getExercise( exerciseId: Long ): Exercise?
+
+    @Ignore
+    fun getExerciseOrThrow( exerciseId: Long ): Exercise
+    {
+        return getExercise( exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: $exerciseId" )
+    }
 
     @Insert
     abstract fun insertExercise( exercise: Exercise ): Long
@@ -95,6 +107,12 @@ abstract class WorkoutDao
 
     @Query( "SELECT * FROM exerciseSet WHERE id = :exerciseSetId LIMIT 1" )
     abstract fun getExerciseSet( exerciseSetId: Long ): ExerciseSet?
+
+    @Ignore
+    fun getExerciseSetOrThrow( exerciseSetId: Long ): ExerciseSet
+    {
+        return getExerciseSet( exerciseSetId ) ?: throw IllegalArgumentException( "Could not find Exercise Set: $exerciseSetId" )
+    }
 
     @Insert
     abstract fun insertExerciseSet( exerciseSet: ExerciseSet ): Long
@@ -168,7 +186,4 @@ abstract class WorkoutDao
 
     @Query( "SELECT * FROM ExerciseSetAccel WHERE exerciseSetId = :exerciseSetId" )
     abstract fun getExerciseSetAccel( exerciseSetId: Long ): LiveData<List<ExerciseSetAccel>>
-
-    @Query( "SELECT * FROM ExerciseSetAccel WHERE exerciseSetId = :exerciseSetId" )
-    abstract fun getExerciseSetAccelSync( exerciseSetId: Long ): List<ExerciseSetAccel>
 }

@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.databinding.DataBindingUtil
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,13 +15,10 @@ import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
+import com.adamnickle.reptrack.utils.extensions.initializeAccelerometerLineChart
+import com.adamnickle.reptrack.utils.extensions.setAccelerometerData
 import com.adamnickle.reptrack.utils.property.autoCleared
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import dagger.android.support.DaggerFragment
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import javax.inject.Inject
 
 class UncompletedExerciseSetFragment: DaggerFragment()
@@ -49,9 +45,6 @@ class UncompletedExerciseSetFragment: DaggerFragment()
 
     companion object
     {
-        private val TIME_AXIS_FORMATTER = DecimalFormat( "0.####s", DecimalFormatSymbols.getInstance() )
-        private val ACCEL_AXIS_FORMATTER = DecimalFormat( "#,##0mG", DecimalFormatSymbols.getInstance() )
-
         private const val EXERCISE_SET_ID_TAG = "exercise_set_id"
 
         fun newInstance( exerciseSet: ExerciseSet ): UncompletedExerciseSetFragment
@@ -129,50 +122,10 @@ class UncompletedExerciseSetFragment: DaggerFragment()
             }
         }
 
-        binding.accelerometerDataGraph.apply {
-            description.isEnabled = false
-            axisRight.isEnabled = false
-            xAxis.setValueFormatter { value, _ -> TIME_AXIS_FORMATTER.format( value ) }
-            axisLeft.setValueFormatter { value, _ -> ACCEL_AXIS_FORMATTER.format( value ) }
-        }
+        binding.accelerometerDataGraph.initializeAccelerometerLineChart()
 
         viewModel.accelerometerData.observe( this, Observer { accelerometerData ->
-            if( accelerometerData != null && accelerometerData.isNotEmpty() )
-            {
-                val startTime = accelerometerData.minBy { accel -> accel.time }?.time ?: 0
-
-                val xEntries = mutableListOf<Entry>()
-                val yEntries = mutableListOf<Entry>()
-                val zEntries = mutableListOf<Entry>()
-
-                for( accel in accelerometerData )
-                {
-                    val time = ( accel.time.toFloat() - startTime ) / 1000.0f
-                    xEntries.add( Entry( time, accel.x ) )
-                    yEntries.add( Entry( time, accel.y ) )
-                    zEntries.add( Entry( time, accel.z ) )
-                }
-
-                val xDataSet = LineDataSet( xEntries, "X" ).apply {
-                    color = Color.RED
-                    setDrawCircles( false )
-                }
-                val yDataSet = LineDataSet( yEntries, "Y" ).apply {
-                    color = Color.GREEN
-                    setDrawCircles( false )
-                }
-                val zDataSet = LineDataSet( zEntries, "Z" ).apply {
-                    color = Color.BLUE
-                    setDrawCircles( false )
-                }
-
-                binding.accelerometerDataGraph.data = LineData( xDataSet, yDataSet, zDataSet )
-                binding.accelerometerDataGraph.invalidate()
-            }
-            else
-            {
-                binding.accelerometerDataGraph.clear()
-            }
+            binding.accelerometerDataGraph.setAccelerometerData( accelerometerData )
         } )
 
         return binding.root
