@@ -20,5 +20,7 @@ class WorkoutFragmentViewModel @Inject constructor(
 
     var workout by MutableLiveDataProperty( workoutData )
 
-    val exercises: LiveData<List<Exercise>> = Transformations.switchMap( workoutData ) { workout -> workout?.id?.let { workoutId -> workoutDao.getExercisesForWorkoutId( workoutId ) } }
+    val exercises: LiveData<List<Exercise>> = Transformations.switchMap( workoutData ) { workout ->
+        workout?.let { workoutDao.getExercisesForWorkoutId( workout.idOrThrow() ) }
+    }
 }

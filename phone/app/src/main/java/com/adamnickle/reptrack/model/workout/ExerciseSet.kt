@@ -26,10 +26,7 @@ data class ExerciseSet(
     @Ignore
     constructor( weight: Float, repCount: Int, exerciseId: Long, order: Int ): this( null, false, weight, repCount, exerciseId, order, false, null, "" )
 
-    fun idOrThrow(): Long
-    {
-        return id ?: throw IllegalArgumentException( "Exercise Set is unsaved" )
-    }
+    fun idOrThrow(): Long = id ?: throw IllegalStateException( "${ExerciseSet::class} is unsaved" )
 }
 
 class FullExerciseSet

@@ -19,7 +19,7 @@ class ExerciseItemViewModel(
 
     val exerciseSetCount: LiveData<Int> = Transformations.switchMap( exerciseLiveData ) { exercise ->
         exercise?.let {
-            workoutDao.getExerciseSetCountForExerciseId( exercise.id ?: throw IllegalArgumentException( "Cannot display unsaved Exercise" ) )
+            workoutDao.getExerciseSetCountForExerciseId( exercise.idOrThrow() )
         }
     }
 

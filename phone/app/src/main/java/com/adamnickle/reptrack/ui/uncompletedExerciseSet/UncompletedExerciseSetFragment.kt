@@ -49,7 +49,7 @@ class UncompletedExerciseSetFragment: DaggerFragment()
 
         fun newInstance( exerciseSet: ExerciseSet ): UncompletedExerciseSetFragment
         {
-            val exerciseSetId = exerciseSet.id ?: throw IllegalArgumentException( "Cannot create Uncompleted Exercise Set fragment from unsaved Exercise Set." )
+            val exerciseSetId = exerciseSet.idOrThrow()
 
             return UncompletedExerciseSetFragment().apply {
                 arguments = Bundle().apply {
@@ -68,7 +68,7 @@ class UncompletedExerciseSetFragment: DaggerFragment()
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get( UncompletedExerciseSetFragmentViewModel::class.java )
 
         appExecutors.diskIO().execute {
-            val exerciseSet = workoutDao.getExerciseSet( exerciseSetId ) ?: throw IllegalArgumentException( "Could not find Exercise Set: $exerciseSetId" )
+            val exerciseSet = workoutDao.getExerciseSetOrThrow( exerciseSetId )
 
             appExecutors.mainThread().execute {
                 viewModel.bind( exerciseSet )
@@ -116,7 +116,7 @@ class UncompletedExerciseSetFragment: DaggerFragment()
                 appExecutors.diskIO().execute {
                     workoutDao.markExerciseSetCompleted( exerciseSet )
 
-                    val exercise = workoutDao.getExercise( exerciseSet.exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: ${exerciseSet.exerciseId}" )
+                    val exercise = workoutDao.getExerciseOrThrow( exerciseSet.exerciseId )
                     listener?.onExerciseSetCompleted( exercise, exerciseSet )
                 }
             }

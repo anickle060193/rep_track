@@ -39,8 +39,8 @@ class WorkoutListAdapter(
                 false
         )
         binding.root.setOnClickListener {
-            binding.workout?.let {
-                workoutClickCallback?.invoke( it )
+            binding.workout?.let { workout ->
+                workoutClickCallback?.invoke( workout )
             }
         }
 

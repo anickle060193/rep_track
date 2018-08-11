@@ -49,7 +49,7 @@ class CompletedExerciseSetFragment: DaggerFragment()
 
         fun newInstance( exerciseSet: ExerciseSet ): CompletedExerciseSetFragment
         {
-            val exerciseSetId = exerciseSet.id ?: throw IllegalArgumentException( "Cannot create Completed Exercise Set fragment from unsaved Exercise Set." )
+            val exerciseSetId = exerciseSet.idOrThrow()
 
             return CompletedExerciseSetFragment().apply {
                 arguments = Bundle().apply {

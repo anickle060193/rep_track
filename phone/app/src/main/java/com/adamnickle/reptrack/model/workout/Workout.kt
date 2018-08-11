@@ -22,6 +22,8 @@ data class Workout(
 
     @Ignore
     constructor(): this( Date() )
+
+    fun idOrThrow(): Long = id ?: throw IllegalStateException( "${Workout::class} is unsaved" )
 }
 
 @TypeConverters( AppTypeConverters::class )

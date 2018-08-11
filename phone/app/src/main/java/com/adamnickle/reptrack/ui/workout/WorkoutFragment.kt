@@ -27,8 +27,8 @@ import com.adamnickle.reptrack.ui.common.InputDialog
 import com.adamnickle.reptrack.ui.common.SwipeableItemTouchHelperCallback
 import com.adamnickle.reptrack.ui.devices.SelectDeviceActivity
 import com.adamnickle.reptrack.ui.shared.SharedViewModel
-import com.adamnickle.reptrack.utils.property.autoCleared
 import com.adamnickle.reptrack.utils.extensions.addDividerItemDecoration
+import com.adamnickle.reptrack.utils.property.autoCleared
 import com.garmin.android.connectiq.ConnectIQ
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -48,7 +48,7 @@ class WorkoutFragment: DaggerFragment()
 
         fun newInstance( workout: Workout ): WorkoutFragment
         {
-            val workoutId = workout.id ?: throw IllegalArgumentException( "Cannot create Workout fragment from unsaved Workout." )
+            val workoutId = workout.idOrThrow()
 
             return WorkoutFragment().apply {
                 arguments = Bundle().apply {
@@ -95,7 +95,7 @@ class WorkoutFragment: DaggerFragment()
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get( WorkoutFragmentViewModel::class.java )
 
         appExecutors.diskIO().execute {
-            val workout = workoutDao.getWorkout( workoutId )
+            val workout = workoutDao.getWorkoutOrThrow( workoutId )
             appExecutors.mainThread().execute {
                 viewModel.workout = workout
             }
@@ -185,7 +185,7 @@ class WorkoutFragment: DaggerFragment()
 
         binding.exerciseAdd.setOnClickListener {
             context?.let { context ->
-                viewModel.workout?.id?.also { workoutId ->
+                viewModel.workout?.also { workout ->
                     InputDialog.showDialog<NewExerciseDialogBinding>( context, "Exercise", R.layout.new_exercise_dialog ) { binding, dialog ->
                         val name = binding.exerciseName.text.toString()
                         if( name.isBlank() )
@@ -220,8 +220,8 @@ class WorkoutFragment: DaggerFragment()
                         }
 
                         appExecutors.diskIO().execute {
-                            val order = workoutDao.getNextExerciseOrderForWorkoutId( workoutId )
-                            val exercise = Exercise( name, workoutId, order )
+                            val order = workoutDao.getNextExerciseOrderForWorkoutId( workout.idOrThrow() )
+                            val exercise = Exercise( name, workout.idOrThrow(), order )
                             val exerciseId = workoutDao.insertExercise( exercise )
 
                             val exerciseSets = arrayListOf<ExerciseSet>()
@@ -329,9 +329,9 @@ class WorkoutFragment: DaggerFragment()
     private fun sendWorkoutToWatch()
     {
         sharedViewModel.deviceId?.let { deviceId ->
-            viewModel.workout?.id?.let { workoutId ->
+            viewModel.workout?.let { workout ->
                 appExecutors.diskIO().execute {
-                    workoutDao.getFullWorkout( workoutId )?.let { workout ->
+                    workoutDao.getFullWorkout( workout.idOrThrow() )?.let { workout ->
                         println( "Full Workout: $workout" )
 
                         val message = mapOf( "type" to "workout", "workout" to workout.toMap() )

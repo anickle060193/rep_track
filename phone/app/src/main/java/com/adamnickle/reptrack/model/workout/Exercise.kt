@@ -20,6 +20,8 @@ data class Exercise(
 {
     @Ignore
     constructor( name: String, workoutId: Long, order: Int ): this( null, name, workoutId, order, false )
+
+    fun idOrThrow(): Long = id ?: throw IllegalStateException( "${Exercise::class} is unsaved" )
 }
 
 class FullExercise

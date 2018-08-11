@@ -21,4 +21,6 @@ data class ExerciseSetAccel(
 {
     @Ignore
     constructor( x: Float, y: Float, z: Float, time: Long, exerciseSetId: Long ): this( null, x, y, z, time, exerciseSetId )
+
+    fun idOrThrow(): Long = id ?: throw IllegalStateException( "${ExerciseSetAccel::class} is unsaved" )
 }

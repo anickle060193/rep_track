@@ -15,8 +15,8 @@ import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
-import com.adamnickle.reptrack.utils.property.autoCleared
 import com.adamnickle.reptrack.utils.extensions.addDividerItemDecoration
+import com.adamnickle.reptrack.utils.property.autoCleared
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ class ExerciseFragment: DaggerFragment()
 
         fun newInstance( exercise: Exercise ): ExerciseFragment
         {
-            val exerciseId = exercise.id ?: throw IllegalArgumentException( "Cannot create Exercise fragment from unsaved Exercise." )
+            val exerciseId = exercise.idOrThrow()
 
             return ExerciseFragment().apply {
                 arguments = Bundle().apply {
@@ -69,7 +69,7 @@ class ExerciseFragment: DaggerFragment()
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get( ExerciseFragmentViewModel::class.java )
 
         appExecutors.diskIO().execute {
-            val exercise = workoutDao.getExercise( exerciseId ) ?: throw IllegalArgumentException( "Could not find Exercise: $exerciseId" )
+            val exercise = workoutDao.getExerciseOrThrow( exerciseId )
 
             appExecutors.mainThread().execute {
                 viewModel.exercise = exercise
