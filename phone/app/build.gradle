@@ -51,6 +51,7 @@ dependencies {
     androidTestImplementation "android.arch.persistence.room:testing:$room_version"
 
     // Support
+    implementation "com.android.support:support-v4:$android_support_version"
     implementation "com.android.support:appcompat-v7:$android_support_version"
 
     // Support Design

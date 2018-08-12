@@ -3,15 +3,14 @@ package com.adamnickle.reptrack.ui.workouts
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.WorkoutItemBinding
@@ -21,6 +20,7 @@ import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.ui.common.DataBoundViewHolder
 import com.adamnickle.reptrack.ui.common.SwipeableItemTouchHelperCallback
+import com.adamnickle.reptrack.ui.settings.SettingsActivity
 import com.adamnickle.reptrack.utils.property.autoCleared
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -52,6 +52,13 @@ class WorkoutListFragment: DaggerFragment()
     companion object
     {
         fun newInstance() = WorkoutListFragment()
+    }
+
+    override fun onCreate( savedInstanceState: Bundle? )
+    {
+        super.onCreate( savedInstanceState )
+
+        setHasOptionsMenu( true )
     }
 
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View?
@@ -121,6 +128,25 @@ class WorkoutListFragment: DaggerFragment()
         }
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu( menu: Menu, inflater: MenuInflater )
+    {
+        inflater.inflate( R.menu.workout_list_fragment, menu )
+    }
+
+    override fun onOptionsItemSelected( item: MenuItem ): Boolean
+    {
+        return when( item.itemId )
+        {
+            R.id.settings -> {
+                context?.let { context ->
+                    startActivity( Intent( context, SettingsActivity::class.java ) )
+                }
+                return true
+            }
+            else -> super.onOptionsItemSelected( item )
+        }
     }
 
     override fun onAttach( context: Context )
