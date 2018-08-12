@@ -1,10 +1,7 @@
 package com.adamnickle.reptrack.injection.component
 
 import com.adamnickle.reptrack.RepTrackApp
-import com.adamnickle.reptrack.injection.module.AppBuilderModule
-import com.adamnickle.reptrack.injection.module.AppModule
-import com.adamnickle.reptrack.injection.module.ViewModelFactoryModule
-import com.adamnickle.reptrack.injection.module.ViewModelModule
+import com.adamnickle.reptrack.injection.module.*
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
@@ -15,6 +12,7 @@ import javax.inject.Singleton
     AndroidSupportInjectionModule::class,
     AppModule::class,
     AppBuilderModule::class,
+    PreferencesModule::class,
     ViewModelFactoryModule::class,
     ViewModelModule::class
 ] )

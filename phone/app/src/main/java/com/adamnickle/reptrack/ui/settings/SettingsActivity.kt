@@ -1,16 +1,21 @@
 package com.adamnickle.reptrack.ui.settings
 
-import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
-import android.preference.*
+import android.preference.ListPreference
+import android.preference.Preference
+import android.preference.PreferenceActivity
+import android.preference.RingtonePreference
+import android.support.annotation.XmlRes
 import android.view.MenuItem
 import android.view.WindowManager
 import com.adamnickle.reptrack.BuildConfig
 import com.adamnickle.reptrack.R
+import javax.inject.Inject
 
 class SettingsActivity : DaggerAppCompatPreferenceActivity()
 {
@@ -26,7 +31,10 @@ class SettingsActivity : DaggerAppCompatPreferenceActivity()
         }
     }
 
-    override fun onIsMultiPane(): Boolean = isXLargeTablet( this )
+    override fun onIsMultiPane(): Boolean
+    {
+        return ( resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK ) >= Configuration.SCREENLAYOUT_SIZE_XLARGE
+    }
 
     override fun onBuildHeaders( target: List<PreferenceActivity.Header> )
     {
@@ -35,18 +43,34 @@ class SettingsActivity : DaggerAppCompatPreferenceActivity()
 
     override fun isValidFragment( fragmentName: String ): Boolean
     {
-        return PreferenceFragment::class.java.name == fragmentName
-                || GeneralPreferenceFragment::class.java.name == fragmentName
+        return GeneralPreferenceFragment::class.java.name == fragmentName
                 || DataSyncPreferenceFragment::class.java.name == fragmentName
                 || NotificationPreferenceFragment::class.java.name == fragmentName
     }
 
-    abstract class PrefFragment: PreferenceFragment()
+    abstract class HelperPreferenceFragment(
+            @XmlRes private val preferencesResId: Int,
+            private val preferenceKeys: Array<String>
+    ): DaggerPreferenceFragment()
     {
+        @Inject
+        lateinit var sharedPreferences: SharedPreferences
+
         override fun onCreate( savedInstanceState: Bundle? )
         {
             super.onCreate( savedInstanceState )
             setHasOptionsMenu( true )
+            addPreferencesFromResource( preferencesResId )
+
+            for( preferenceKey in preferenceKeys )
+            {
+                bindPreferenceSummaryToValue( findPreference( preferenceKey ) )
+            }
+        }
+
+        override fun findPreference( key: CharSequence ): Preference
+        {
+            return super.findPreference( key ) ?: throw IllegalArgumentException( "Could not find preference for '$key' key." )
         }
 
         override fun onOptionsItemSelected( item: MenuItem ): Boolean = when( item.itemId )
@@ -58,41 +82,31 @@ class SettingsActivity : DaggerAppCompatPreferenceActivity()
             }
             else -> super.onOptionsItemSelected( item )
         }
-    }
 
-    class GeneralPreferenceFragment : PrefFragment()
-    {
-        override fun onCreate( savedInstanceState: Bundle? )
+        private fun bindPreferenceSummaryToValue(preference: Preference )
         {
-            super.onCreate( savedInstanceState )
-            addPreferencesFromResource( R.xml.pref_general )
+            preference.onPreferenceChangeListener = bindPreferenceSummaryToValueListener
 
-            bindPreferenceSummaryToValue( findPreference( "example_text" ) )
-            bindPreferenceSummaryToValue( findPreference( "example_list" ) )
+            val value = sharedPreferences.getString( preference.key, "" )
+
+            bindPreferenceSummaryToValueListener.onPreferenceChange( preference, value )
         }
     }
 
-    class NotificationPreferenceFragment : PrefFragment()
-    {
-        override fun onCreate( savedInstanceState: Bundle? )
-        {
-            super.onCreate( savedInstanceState )
-            addPreferencesFromResource( R.xml.pref_notification )
+    class GeneralPreferenceFragment : HelperPreferenceFragment(
+            R.xml.pref_general,
+            arrayOf( "example_text", "example_list" )
+    )
 
-            bindPreferenceSummaryToValue( findPreference( "notifications_new_message_ringtone" ) )
-        }
-    }
+    class NotificationPreferenceFragment : HelperPreferenceFragment(
+            R.xml.pref_notification,
+            arrayOf( "notifications_new_message_ringtone" )
+    )
 
-    class DataSyncPreferenceFragment : PrefFragment()
-    {
-        override fun onCreate( savedInstanceState: Bundle? )
-        {
-            super.onCreate( savedInstanceState )
-            addPreferencesFromResource( R.xml.pref_data_sync )
-
-            bindPreferenceSummaryToValue( findPreference( "sync_frequency" ) )
-        }
-    }
+    class DataSyncPreferenceFragment : HelperPreferenceFragment(
+            R.xml.pref_data_sync,
+            arrayOf( "sync_frequency" )
+    )
 
     companion object
     {
@@ -139,22 +153,6 @@ class SettingsActivity : DaggerAppCompatPreferenceActivity()
             }
 
             return@OnPreferenceChangeListener true
-        }
-
-        private fun isXLargeTablet( context: Context ): Boolean
-        {
-            return ( context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK ) >= Configuration.SCREENLAYOUT_SIZE_XLARGE
-        }
-
-        private fun bindPreferenceSummaryToValue( preference: Preference )
-        {
-            preference.onPreferenceChangeListener = bindPreferenceSummaryToValueListener
-
-            val value = PreferenceManager
-                    .getDefaultSharedPreferences( preference.context )
-                    .getString( preference.key, "" )
-
-            bindPreferenceSummaryToValueListener.onPreferenceChange( preference, value )
         }
     }
 }

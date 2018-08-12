@@ -19,12 +19,6 @@ abstract class AppBuilderModule
     abstract fun contributeMainActivity(): MainActivity
 
     @ContributesAndroidInjector
-    abstract fun contributeSelectDeviceActivity(): SelectDeviceActivity
-
-    @ContributesAndroidInjector
-    abstract fun contributeSettingsActivity(): SettingsActivity
-
-    @ContributesAndroidInjector
     abstract fun contributeWorkoutListFragment(): WorkoutListFragment
 
     @ContributesAndroidInjector
@@ -38,4 +32,19 @@ abstract class AppBuilderModule
 
     @ContributesAndroidInjector
     abstract fun contributeCompletedExerciseSetFragment(): CompletedExerciseSetFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSelectDeviceActivity(): SelectDeviceActivity
+
+    @ContributesAndroidInjector
+    abstract fun contributeSettingsActivity(): SettingsActivity
+
+    @ContributesAndroidInjector
+    abstract fun contributeGeneralPreferenceFragment(): SettingsActivity.GeneralPreferenceFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeNotificationPreferenceFragment(): SettingsActivity.NotificationPreferenceFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeDataSyncPreferenceFragment(): SettingsActivity.DataSyncPreferenceFragment
 }
