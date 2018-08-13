@@ -3,13 +3,10 @@ package com.adamnickle.reptrack.ui.settings
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Bundle
 import android.preference.ListPreference
 import android.preference.Preference
 import android.preference.PreferenceActivity
-import android.preference.RingtonePreference
 import android.support.annotation.XmlRes
 import android.view.MenuItem
 import android.view.WindowManager
@@ -43,9 +40,7 @@ class SettingsActivity : DaggerAppCompatPreferenceActivity()
 
     override fun isValidFragment( fragmentName: String ): Boolean
     {
-        return GeneralPreferenceFragment::class.java.name == fragmentName
-                || DataSyncPreferenceFragment::class.java.name == fragmentName
-                || NotificationPreferenceFragment::class.java.name == fragmentName
+        return UnitsPreferenceFragment::class.java.name == fragmentName
     }
 
     abstract class HelperPreferenceFragment(
@@ -93,19 +88,9 @@ class SettingsActivity : DaggerAppCompatPreferenceActivity()
         }
     }
 
-    class GeneralPreferenceFragment : HelperPreferenceFragment(
-            R.xml.pref_general,
-            arrayOf( "example_text", "example_list" )
-    )
-
-    class NotificationPreferenceFragment : HelperPreferenceFragment(
-            R.xml.pref_notification,
-            arrayOf( "notifications_new_message_ringtone" )
-    )
-
-    class DataSyncPreferenceFragment : HelperPreferenceFragment(
-            R.xml.pref_data_sync,
-            arrayOf( "sync_frequency" )
+    class UnitsPreferenceFragment : HelperPreferenceFragment(
+            R.xml.pref_units,
+            arrayOf( "acceleration_units" )
     )
 
     companion object
@@ -124,27 +109,6 @@ class SettingsActivity : DaggerAppCompatPreferenceActivity()
                 else
                 {
                     preference.summary = null
-                }
-            }
-            else if( preference is RingtonePreference )
-            {
-                if( stringValue.isBlank() )
-                {
-                    preference.setSummary( R.string.pref_ringtone_silent )
-                }
-                else
-                {
-                    val ringtone = RingtoneManager.getRingtone( preference.context, Uri.parse( stringValue ) )
-
-                    if( ringtone == null )
-                    {
-                        preference.setSummary( null )
-                    }
-                    else
-                    {
-                        val name = ringtone.getTitle( preference.context )
-                        preference.setSummary( name )
-                    }
                 }
             }
             else

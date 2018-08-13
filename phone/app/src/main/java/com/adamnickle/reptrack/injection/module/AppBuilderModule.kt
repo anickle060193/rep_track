@@ -40,11 +40,5 @@ abstract class AppBuilderModule
     abstract fun contributeSettingsActivity(): SettingsActivity
 
     @ContributesAndroidInjector
-    abstract fun contributeGeneralPreferenceFragment(): SettingsActivity.GeneralPreferenceFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeNotificationPreferenceFragment(): SettingsActivity.NotificationPreferenceFragment
-
-    @ContributesAndroidInjector
-    abstract fun contributeDataSyncPreferenceFragment(): SettingsActivity.DataSyncPreferenceFragment
+    abstract fun contributeGeneralPreferenceFragment(): SettingsActivity.UnitsPreferenceFragment
 }
