@@ -5,6 +5,7 @@ import com.adamnickle.reptrack.ui.completedExerciseSet.CompletedExerciseSetFragm
 import com.adamnickle.reptrack.ui.devices.SelectDeviceActivity
 import com.adamnickle.reptrack.ui.exercise.ExerciseFragment
 import com.adamnickle.reptrack.ui.settings.SettingsActivity
+import com.adamnickle.reptrack.ui.settings.SettingsFragment
 import com.adamnickle.reptrack.ui.uncompletedExerciseSet.UncompletedExerciseSetFragment
 import com.adamnickle.reptrack.ui.workout.WorkoutFragment
 import com.adamnickle.reptrack.ui.workouts.WorkoutListFragment
@@ -40,5 +41,5 @@ abstract class AppBuilderModule
     abstract fun contributeSettingsActivity(): SettingsActivity
 
     @ContributesAndroidInjector
-    abstract fun contributeGeneralPreferenceFragment(): SettingsActivity.UnitsPreferenceFragment
+    abstract fun contributeSettingsFragment(): SettingsFragment
 }

@@ -1,0 +1,18 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/pref_header_units">
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/pref_acceleration_units_titles"
+            android:entryValues="@array/pref_acceleration_units_values"
+            android:key="acceleration_units"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/pref_title_acceleration_units"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
