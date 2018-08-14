@@ -1,24 +1,24 @@
 package com.adamnickle.reptrack.ui.settings
 
-import android.app.Fragment
 import android.os.Bundle
-import android.preference.PreferenceFragment
-import dagger.android.AndroidInjection
+import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceFragmentCompat
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasFragmentInjector
+import dagger.android.support.AndroidSupportInjection
+import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-abstract class DaggerPreferenceFragment: PreferenceFragment(), HasFragmentInjector
+abstract class DaggerPreferenceFragment: PreferenceFragmentCompat(), HasSupportFragmentInjector
 {
     @Inject
     lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     override fun onCreate( savedInstanceState: Bundle? )
     {
-        AndroidInjection.inject( this )
+        AndroidSupportInjection.inject( this )
         super.onCreate( savedInstanceState )
     }
 
-    override fun fragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = childFragmentInjector
 }

@@ -2,8 +2,8 @@ package com.adamnickle.reptrack.ui.settings
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.ListPreference
-import android.preference.Preference
+import androidx.preference.ListPreference
+import androidx.preference.Preference
 import com.adamnickle.reptrack.R
 import javax.inject.Inject
 
@@ -36,9 +36,8 @@ class SettingsFragment: DaggerPreferenceFragment()
         return@OnPreferenceChangeListener true
     }
 
-    override fun onCreate( savedInstanceState: Bundle? )
+    override fun onCreatePreferences( savedInstanceState: Bundle?, rootKey: String? )
     {
-        super.onCreate( savedInstanceState )
         addPreferencesFromResource( R.xml.preferences )
 
         bindPreferenceSummaryToValue( findPreference( "acceleration_units" ) )
