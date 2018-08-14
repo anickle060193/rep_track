@@ -1,7 +1,7 @@
 package com.adamnickle.reptrack.ui.settings
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -14,6 +14,7 @@ abstract class DaggerAppCompatPreferenceActivity: AppCompatPreferenceActivity(),
     @Inject
     lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
 
+    @Suppress( "DEPRECATION" )
     @Inject
     lateinit var frameworkFragmentInjector: DispatchingAndroidInjector<android.app.Fragment>
 
@@ -25,5 +26,6 @@ abstract class DaggerAppCompatPreferenceActivity: AppCompatPreferenceActivity(),
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = supportFragmentInjector
 
+    @Suppress( "DEPRECATION" )
     override fun fragmentInjector(): AndroidInjector<android.app.Fragment> = frameworkFragmentInjector
 }

@@ -1,9 +1,9 @@
 package com.adamnickle.reptrack.utils.extensions
 
 import android.content.ContextWrapper
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 fun View.getParentActivity(): AppCompatActivity?

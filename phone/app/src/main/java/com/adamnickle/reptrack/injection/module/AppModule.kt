@@ -1,6 +1,6 @@
 package com.adamnickle.reptrack.injection.module
 
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import com.adamnickle.reptrack.RepTrackApp
 import com.adamnickle.reptrack.model.database.AppDatabase
 import com.adamnickle.reptrack.model.database.migrations.Migration1to2

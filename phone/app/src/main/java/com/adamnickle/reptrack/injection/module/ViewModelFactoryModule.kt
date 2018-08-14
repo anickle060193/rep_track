@@ -1,6 +1,6 @@
 package com.adamnickle.reptrack.injection.module
 
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider
 import com.adamnickle.reptrack.ui.ViewModelFactory
 import dagger.Binds
 import dagger.Module

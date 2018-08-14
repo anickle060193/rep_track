@@ -1,6 +1,6 @@
 package com.adamnickle.reptrack.injection.module
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import com.adamnickle.reptrack.ui.completedExerciseSet.CompletedExerciseSetFragmentViewModel
 import com.adamnickle.reptrack.ui.exercise.ExerciseFragmentViewModel
 import com.adamnickle.reptrack.ui.shared.SharedViewModel

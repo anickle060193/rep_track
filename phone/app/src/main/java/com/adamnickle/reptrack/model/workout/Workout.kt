@@ -1,6 +1,6 @@
 package com.adamnickle.reptrack.model.workout
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.adamnickle.reptrack.model.AppTypeConverters
 import com.adamnickle.reptrack.utils.extensions.toShortString
 import java.util.*

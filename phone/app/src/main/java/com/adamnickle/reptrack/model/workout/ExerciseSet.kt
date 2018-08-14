@@ -1,6 +1,6 @@
 package com.adamnickle.reptrack.model.workout
 
-import android.arch.persistence.room.*
+import androidx.room.*
 
 @Entity(
         tableName = "exerciseSet",

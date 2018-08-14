@@ -6,7 +6,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:listDivider">@drawable/list_divider</item>
-        <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayout</item>
+        <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

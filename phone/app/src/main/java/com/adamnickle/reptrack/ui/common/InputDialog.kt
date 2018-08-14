@@ -2,10 +2,10 @@ package com.adamnickle.reptrack.ui.common
 
 import android.content.Context
 import android.content.DialogInterface
-import android.databinding.DataBindingUtil
-import android.databinding.ViewDataBinding
-import android.support.annotation.LayoutRes
-import android.support.v7.app.AlertDialog
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.EditText

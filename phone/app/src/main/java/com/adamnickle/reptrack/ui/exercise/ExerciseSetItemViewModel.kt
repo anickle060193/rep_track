@@ -1,8 +1,8 @@
 package com.adamnickle.reptrack.ui.exercise
 
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 
 class ExerciseSetItemViewModel: ViewModel()

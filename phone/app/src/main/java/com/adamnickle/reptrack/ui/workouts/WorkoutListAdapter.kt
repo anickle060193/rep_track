@@ -1,7 +1,7 @@
 package com.adamnickle.reptrack.ui.workouts
 
-import android.databinding.DataBindingUtil
-import android.support.v7.util.DiffUtil
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.adamnickle.reptrack.AppExecutors

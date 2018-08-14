@@ -1,6 +1,6 @@
 package com.adamnickle.reptrack.ui.completedExerciseSet
 
-import android.arch.lifecycle.*
+import androidx.lifecycle.*
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.ExerciseSetAccel
 import com.adamnickle.reptrack.model.workout.WorkoutDao

@@ -1,7 +1,7 @@
 package com.adamnickle.reptrack.model.database.migrations
 
-import android.arch.persistence.db.SupportSQLiteDatabase
-import android.arch.persistence.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.room.migration.Migration
 
 object Migration3to4: Migration( 3, 4 )
 {

@@ -1,13 +1,13 @@
 package com.adamnickle.reptrack.ui.common
 
 import android.graphics.Canvas
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.View
 
 abstract class SwipeableItemTouchHelperCallback( dragDirs: Int, swipeDirs: Int ): ItemTouchHelper.SimpleCallback( dragDirs, swipeDirs )
 {
-    override fun onMove( recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder?): Boolean
+    override fun onMove( recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder ): Boolean
     {
         return false
     }
