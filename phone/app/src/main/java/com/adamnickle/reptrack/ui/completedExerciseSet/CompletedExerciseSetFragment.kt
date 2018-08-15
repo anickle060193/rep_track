@@ -37,9 +37,6 @@ class CompletedExerciseSetFragment: DaggerFragment()
     @Inject
     lateinit var workoutDao: WorkoutDao
 
-    @Inject
-    lateinit var sharedPreferences: SharedPreferences
-
     private var binding by autoCleared<CompletedExerciseSetFragmentBinding>()
 
     private var adapter by autoCleared<CompletedSetRepListAdapter>()
@@ -91,8 +88,6 @@ class CompletedExerciseSetFragment: DaggerFragment()
                 container,
                 false
         )
-
-        binding.accelerationFormat = UiUtil.getAccelerationFormat( this.resources, sharedPreferences )
 
         binding.vm = viewModel
 

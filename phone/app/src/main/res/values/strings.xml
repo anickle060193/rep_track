@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Rep Track</string>
 
-    <string name="acceleration_format_g">%.0f g₀</string>
-    <string name="acceleration_format_mps2">%.2f m/s²</string>
-    <string name="acceleration_format_ftps2">%.2f ft/s²</string>
+    <string name="acceleration_format_g">%.0f g&#8320;</string>
+    <string name="acceleration_format_mps2">%.2f m/s&#178;</string>
+    <string name="acceleration_format_ftps2">%.2f ft/s&#178;</string>
 
     <string-array name="acceleration_formats">
         <item>@string/acceleration_format_g</item>

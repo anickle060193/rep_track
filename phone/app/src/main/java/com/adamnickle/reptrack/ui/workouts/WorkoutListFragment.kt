@@ -1,16 +1,15 @@
 package com.adamnickle.reptrack.ui.workouts
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.*
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.WorkoutItemBinding
@@ -22,6 +21,7 @@ import com.adamnickle.reptrack.ui.common.DataBoundViewHolder
 import com.adamnickle.reptrack.ui.common.SwipeableItemTouchHelperCallback
 import com.adamnickle.reptrack.ui.settings.SettingsActivity
 import com.adamnickle.reptrack.utils.property.autoCleared
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -132,7 +132,7 @@ class WorkoutListFragment: DaggerFragment()
 
     override fun onCreateOptionsMenu( menu: Menu, inflater: MenuInflater )
     {
-        inflater.inflate( R.menu.workout_list_fragment, menu )
+        // inflater.inflate( R.menu.workout_list_fragment, menu )
     }
 
     override fun onOptionsItemSelected( item: MenuItem ): Boolean
