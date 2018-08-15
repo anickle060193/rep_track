@@ -1,13 +1,13 @@
 package com.adamnickle.reptrack.ui.uncompletedExerciseSet
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.UncompletedExerciseSetFragmentBinding
@@ -18,6 +18,9 @@ import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.utils.extensions.initializeAccelerometerLineChart
 import com.adamnickle.reptrack.utils.extensions.setAccelerometerData
 import com.adamnickle.reptrack.utils.property.autoCleared
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -126,6 +129,31 @@ class UncompletedExerciseSetFragment: DaggerFragment()
 
         viewModel.accelerometerData.observe( this, Observer { accelerometerData ->
             binding.accelerometerDataGraph.setAccelerometerData( accelerometerData )
+        } )
+
+        binding.spectrumDataGraph.initializeAccelerometerLineChart()
+
+        viewModel.spectrum.observe( this, Observer { spectrum ->
+            if( spectrum != null && spectrum.isNotEmpty() )
+            {
+                val entries = mutableListOf<Entry>()
+
+                for( ( i, s ) in spectrum.withIndex() )
+                {
+                    entries.add( Entry( i.toFloat(), s ))
+                }
+
+                val dataSet = LineDataSet( entries, "X" ).apply {
+                    setDrawCircles( false )
+                }
+
+                binding.spectrumDataGraph.data = LineData( dataSet )
+                binding.spectrumDataGraph.invalidate()
+            }
+            else
+            {
+                binding.spectrumDataGraph.clear()
+            }
         } )
 
         return binding.root

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.ExerciseSetAccel
 import com.adamnickle.reptrack.model.workout.WorkoutDao
+import com.adamnickle.reptrack.utils.AccelerometerParser
 import javax.inject.Inject
 
 class UncompletedExerciseSetFragmentViewModel @Inject constructor(
@@ -22,6 +23,8 @@ class UncompletedExerciseSetFragmentViewModel @Inject constructor(
     val accelerometerData: LiveData<List<ExerciseSetAccel>> = Transformations.switchMap( exerciseSet ) { exerciseSet ->
         exerciseSet?.let { workoutDao.getExerciseSetAccel( exerciseSet.idOrThrow() ) }
     }
+
+    val spectrum = Transformations.map( accelerometerData ) { AccelerometerParser.fft( it ) }
 
     fun bind( exerciseSet: ExerciseSet )
     {

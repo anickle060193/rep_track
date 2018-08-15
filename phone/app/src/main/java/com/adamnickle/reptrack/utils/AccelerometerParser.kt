@@ -1,14 +1,18 @@
 package com.adamnickle.reptrack.utils
 
 import com.adamnickle.reptrack.model.workout.ExerciseSetAccel
+import org.jtransforms.fft.FloatFFT_1D
 import kotlin.math.min
 import kotlin.math.sqrt
 
 object AccelerometerParser
 {
-    private fun combineAccelXYZ( accels: List<ExerciseSetAccel> ): List<Float> = accels.map { accel ->
-        sqrt( accel.x * accel.x + accel.y * accel.y + accel.z * accel.z )
+    private fun combineAccelXYZ( accel: ExerciseSetAccel ): Float
+    {
+        return sqrt( accel.x * accel.x + accel.y * accel.y + accel.z * accel.z )
     }
+
+    private fun combineAccelXYZ( accels: List<ExerciseSetAccel> ): List<Float> = accels.map( AccelerometerParser::combineAccelXYZ )
 
     data class AccelData( val max: Float, val min: Float, val avg: Float )
 
@@ -70,5 +74,44 @@ object AccelerometerParser
         }
 
         return reps
+    }
+
+    fun fft( accels: List<ExerciseSetAccel> ): FloatArray
+    {
+        val combined = combineAccelXYZ( accels )
+
+        val bottom = combined.min() ?: 0.0f
+        val top = combined.max() ?: bottom
+        val mid = combined.average().toFloat()
+
+        val range = top - bottom
+
+        val normSamples = combined.map { accel -> ( accel - mid ) / range }
+
+        val fft = FloatFFT_1D( normSamples.size.toLong() )
+
+        val spectrum = normSamples.toFloatArray()
+
+        val input = FloatArray( spectrum.size * 2 )
+        for( i in spectrum.indices )
+        {
+            input[ i ] = spectrum[ i ]
+        }
+
+        fft.realForward( input )
+
+        for( i in 0 until input.size )
+        {
+            input[ i ] *= input[ i ]
+        }
+
+        val output = FloatArray( ( input.size + 1 ) / 2 )
+
+        for( i in output.indices )
+        {
+            output [ i ] = sqrt(input[ 2 * i ] * input[ 2 * i ] + input[ 2 * i + 1 ] * input[ 2 * i + 1 ] )
+        }
+
+        return output
     }
 }
