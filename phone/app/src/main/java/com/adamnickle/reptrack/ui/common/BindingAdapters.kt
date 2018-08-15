@@ -1,11 +1,11 @@
 package com.adamnickle.reptrack.ui.common
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.databinding.BindingAdapter
-import androidx.annotation.StringRes
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.StringRes
+import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.adamnickle.reptrack.utils.extensions.getParentActivity
 
 @BindingAdapter( value = [ "mutableText", "mutableFormat" ], requireAll = false )

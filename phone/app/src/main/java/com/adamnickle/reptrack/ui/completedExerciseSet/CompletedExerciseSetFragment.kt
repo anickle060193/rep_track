@@ -1,11 +1,12 @@
 package com.adamnickle.reptrack.ui.completedExerciseSet
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
-import androidx.databinding.DataBindingUtil
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.CompletedExerciseSetFragmentBinding
@@ -13,6 +14,7 @@ import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
+import com.adamnickle.reptrack.ui.common.UiUtil
 import com.adamnickle.reptrack.utils.extensions.initializeAccelerometerLineChart
 import com.adamnickle.reptrack.utils.extensions.setAccelerometerData
 import com.adamnickle.reptrack.utils.property.autoCleared
@@ -34,6 +36,9 @@ class CompletedExerciseSetFragment: DaggerFragment()
 
     @Inject
     lateinit var workoutDao: WorkoutDao
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     private var binding by autoCleared<CompletedExerciseSetFragmentBinding>()
 
@@ -86,6 +91,8 @@ class CompletedExerciseSetFragment: DaggerFragment()
                 container,
                 false
         )
+
+        binding.accelerationFormat = UiUtil.getAccelerationFormat( this.resources, sharedPreferences )
 
         binding.vm = viewModel
 

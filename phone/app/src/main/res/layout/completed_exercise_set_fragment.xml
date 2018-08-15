@@ -10,6 +10,10 @@
             name="vm"
             type="com.adamnickle.reptrack.ui.completedExerciseSet.CompletedExerciseSetFragmentViewModel" />
 
+        <variable
+            name="accelerationFormat"
+            type="int" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -59,7 +63,7 @@
                 android:textAlignment="center"
                 android:textSize="28sp"
                 app:mutableText="@{vm.selectedExerciseSetMin}"
-                app:mutableFormat="@{@string/accel_format}"
+                app:mutableFormat="@{accelerationFormat}"
                 tools:text="0.0 mG" />
 
             <include layout="@layout/accent_separator" />
@@ -77,7 +81,7 @@
                 android:textAlignment="center"
                 android:textSize="28sp"
                 app:mutableText="@{vm.selectedExerciseSetMax}"
-                app:mutableFormat="@{@string/accel_format}"
+                app:mutableFormat="@{accelerationFormat}"
                 tools:text="0.0 mG" />
 
             <include layout="@layout/accent_separator" />
@@ -95,7 +99,7 @@
                 android:textAlignment="center"
                 android:textSize="28sp"
                 app:mutableText="@{vm.selectedExerciseSetAvg}"
-                app:mutableFormat="@{@string/accel_format}"
+                app:mutableFormat="@{accelerationFormat}"
                 tools:text="0.0 mG" />
 
             <include layout="@layout/accent_separator" />

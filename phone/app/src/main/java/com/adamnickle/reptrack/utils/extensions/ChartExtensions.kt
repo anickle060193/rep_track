@@ -1,6 +1,7 @@
 package com.adamnickle.reptrack.utils.extensions
 
 import android.graphics.Color
+import androidx.annotation.StringRes
 import com.adamnickle.reptrack.model.workout.ExerciseSetAccel
 import com.adamnickle.reptrack.utils.Convert
 import com.github.mikephil.charting.charts.LineChart
@@ -11,14 +12,13 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
 private val TIME_AXIS_FORMATTER = DecimalFormat( "0.####s", DecimalFormatSymbols.getInstance() )
-private val ACCEL_AXIS_FORMATTER = DecimalFormat( "#,##0m/s²", DecimalFormatSymbols.getInstance() )
 
-fun LineChart.initializeAccelerometerLineChart()
+fun LineChart.initializeAccelerometerLineChart( @StringRes accelerationFormat: Int )
 {
     this.description.isEnabled = false
     this.axisRight.isEnabled = false
     this.xAxis.setValueFormatter { value, _ -> TIME_AXIS_FORMATTER.format( value ) }
-    this.axisLeft.setValueFormatter { value, _ -> ACCEL_AXIS_FORMATTER.format( value ) }
+    this.axisLeft.setValueFormatter { value, _ -> this.resources.getString( accelerationFormat, value ) }
 }
 
 private const val X_COLOR = Color.RED

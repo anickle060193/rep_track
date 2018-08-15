@@ -1,7 +1,7 @@
 package com.adamnickle.reptrack.utils
 
-import androidx.lifecycle.LiveData
 import android.content.SharedPreferences
+import androidx.lifecycle.LiveData
 import javax.inject.Inject
 
 class PreferenceLiveData<T>(
