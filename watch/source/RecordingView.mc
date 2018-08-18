@@ -6,12 +6,14 @@ using Toybox.System as Sys;
 class RecordingView extends Ui.View
 {
     private var _recording;
+    private var _canRecord;
 
-    function initialize()
+    function initialize( canRecord )
     {
         View.initialize();
         
         _recording = false;
+        _canRecord = canRecord;
     }
 
     function onLayout( dc )
@@ -29,7 +31,12 @@ class RecordingView extends Ui.View
     function onUpdate( dc )
     {
         var recordLabel = View.findDrawableById( "RecordLabel" );
-        if( _recording )
+        if( !_canRecord )
+        {
+            recordLabel.setText( "Device cannot\nrecord\nacceleration\ndata" );
+            recordLabel.setColor( Gfx.COLOR_RED );
+        }
+        else if( _recording )
         {
             recordLabel.setText( "Stop" );
             recordLabel.setColor( Gfx.COLOR_WHITE );
@@ -50,7 +57,7 @@ class RecordingView extends Ui.View
     function setRecording( recording )
     {
         _recording = recording;
-        
+
         Ui.requestUpdate();
     }
 }
@@ -82,6 +89,11 @@ class RecordingDelegate extends CustomBehaviorDelegate
     
     function onTap( clickEvent )
     {
+        if( !_accel.hasAccelerometer() )
+        {
+            return;
+        }
+    
         if( _recording )
         {
             _accel.stop();
@@ -99,6 +111,8 @@ class RecordingDelegate extends CustomBehaviorDelegate
             "recording" => _recording
         };
         Comm.transmit( message, { }, new RecordingCommListener( method( :onTransmitStatus ) ) );
+        
+        return true;
     }
     
     private function onAccelerometerCallback( sensorData )
@@ -134,7 +148,7 @@ class RecordingDelegate extends CustomBehaviorDelegate
 
     function createCurrentView()
     {
-        _recordingView = new RecordingView();
+        _recordingView = new RecordingView( _accel.hasAccelerometer() );
         updateView();
         return _recordingView;
     }
