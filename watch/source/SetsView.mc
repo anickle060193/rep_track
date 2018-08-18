@@ -66,7 +66,7 @@ class SetsView extends Ui.View
     }
 }
 
-class SetsDelegate extends Ui.BehaviorDelegate
+class SetsDelegate extends CustomBehaviorDelegate
 {
     private var _workout;
     private var _exerciseIndex;
@@ -82,41 +82,37 @@ class SetsDelegate extends Ui.BehaviorDelegate
         _currentSetIndex = 0;
     }
 
-    function onSwipe( swipeEvent )
+    function onBack()
     {
-        var direction = swipeEvent.getDirection();
-        if( direction == Ui.SWIPE_RIGHT )
+        Ui.popView( Ui.SLIDE_RIGHT );
+        return true;
+    }
+
+    function onForward()
+    {
+	    var recordingDelegate = new RecordingDelegate( _workout, _exerciseIndex, _currentSetIndex );
+	    Ui.pushView( recordingDelegate.createCurrentView(), recordingDelegate, Ui.SLIDE_LEFT );
+	    return true;
+    }
+
+    function onScrollToNextItem()
+    {
+        var setCount = _workout.exercises[ _exerciseIndex ].sets.size();
+        if( _currentSetIndex < setCount - 1 )
         {
-            onBack();
-        }
-        else if( direction == Ui.SWIPE_UP )
-        {
-            var setCount = _workout.exercises[ _exerciseIndex ].sets.size();
-            if( _currentSetIndex < setCount - 1 )
-            {
-                _currentSetIndex += 1;
-                Ui.switchToView( createCurrentView(), self, Ui.SLIDE_UP );
-            }
-        }
-        else if( direction == Ui.SWIPE_DOWN )
-        {
-            if( _currentSetIndex > 0 )
-            {
-                _currentSetIndex -= 1;
-                Ui.switchToView( createCurrentView(), self, Ui.SLIDE_DOWN );
-            }
-        }
-        else if( direction == Ui.SWIPE_LEFT )
-        {
-            var recordingDelegate = new RecordingDelegate( _workout, _exerciseIndex, _currentSetIndex );
-            Ui.pushView( recordingDelegate.createCurrentView(), recordingDelegate, Ui.SLIDE_LEFT );
+            _currentSetIndex += 1;
+            Ui.switchToView( createCurrentView(), self, Ui.SLIDE_UP );
         }
         return true;
     }
 
-    function onBack()
+    function onScrollToPreviousItem()
     {
-        Ui.popView( Ui.SLIDE_RIGHT );
+        if( _currentSetIndex > 0 )
+        {
+            _currentSetIndex -= 1;
+            Ui.switchToView( createCurrentView(), self, Ui.SLIDE_DOWN );
+        }
         return true;
     }
 

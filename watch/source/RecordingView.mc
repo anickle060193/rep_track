@@ -55,7 +55,7 @@ class RecordingView extends Ui.View
     }
 }
 
-class RecordingDelegate extends Ui.BehaviorDelegate
+class RecordingDelegate extends CustomBehaviorDelegate
 {
     private var _workout;
     private var _exercise;
@@ -121,16 +121,6 @@ class RecordingDelegate extends Ui.BehaviorDelegate
     private function onTransmitStatus( success )
     {
         Sys.println( "Transmit status: " + success );
-    }
-
-    function onSwipe( swipeEvent )
-    {
-        var direction = swipeEvent.getDirection();
-        if( direction == Ui.SWIPE_RIGHT )
-        {
-            onBack();
-        }
-        return true;
     }
 
     function onBack()

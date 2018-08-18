@@ -35,7 +35,7 @@ class WorkoutView extends Ui.View
     }
 }
 
-class WorkoutDelegate extends Ui.BehaviorDelegate
+class WorkoutDelegate extends CustomBehaviorDelegate
 {
     private var _workout;
 
@@ -46,7 +46,7 @@ class WorkoutDelegate extends Ui.BehaviorDelegate
         _workout = workout;
     }
 
-    function onNextPage()
+    function onForward()
     {
         if( _workout.exercises.size() > 0 )
         {

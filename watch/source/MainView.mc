@@ -30,7 +30,7 @@ class MainView extends Ui.View
     }
 }
 
-class MainDelegate extends Ui.BehaviorDelegate
+class MainDelegate extends CustomBehaviorDelegate
 {
     function initialize()
     {
