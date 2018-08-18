@@ -75,7 +75,4 @@ dependencies {
 
     // MPAndroidChat
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-
-    // JTransforms
-    implementation 'com.github.wendykierp:JTransforms:3.0'
 }

@@ -17,10 +17,8 @@ import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.utils.extensions.initializeAccelerometerLineChart
 import com.adamnickle.reptrack.utils.extensions.setAccelerometerData
+import com.adamnickle.reptrack.utils.extensions.setCombinedAccelerometerData
 import com.adamnickle.reptrack.utils.property.autoCleared
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -131,29 +129,10 @@ class UncompletedExerciseSetFragment: DaggerFragment()
             binding.accelerometerDataGraph.setAccelerometerData( accelerometerData )
         } )
 
-        binding.spectrumDataGraph.initializeAccelerometerLineChart()
+        binding.combinedAccelerometerDataGraph.initializeAccelerometerLineChart()
 
-        viewModel.spectrum.observe( this, Observer { spectrum ->
-            if( spectrum != null && spectrum.isNotEmpty() )
-            {
-                val entries = mutableListOf<Entry>()
-
-                for( ( i, s ) in spectrum.withIndex() )
-                {
-                    entries.add( Entry( i.toFloat(), s ))
-                }
-
-                val dataSet = LineDataSet( entries, "X" ).apply {
-                    setDrawCircles( false )
-                }
-
-                binding.spectrumDataGraph.data = LineData( dataSet )
-                binding.spectrumDataGraph.invalidate()
-            }
-            else
-            {
-                binding.spectrumDataGraph.clear()
-            }
+        viewModel.combinedAccelerometerData.observe( this, Observer { combinedAccelerometerData ->
+            binding.combinedAccelerometerDataGraph.setCombinedAccelerometerData( combinedAccelerometerData )
         } )
 
         return binding.root

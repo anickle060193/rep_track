@@ -1,7 +1,6 @@
 package com.adamnickle.reptrack.ui.completedExerciseSet
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
@@ -14,9 +13,9 @@ import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
-import com.adamnickle.reptrack.ui.common.UiUtil
 import com.adamnickle.reptrack.utils.extensions.initializeAccelerometerLineChart
 import com.adamnickle.reptrack.utils.extensions.setAccelerometerData
+import com.adamnickle.reptrack.utils.extensions.setCombinedAccelerometerData
 import com.adamnickle.reptrack.utils.property.autoCleared
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -97,14 +96,20 @@ class CompletedExerciseSetFragment: DaggerFragment()
 
         binding.repsList.adapter = adapter
 
-        binding.accelerometerDataGraph.initializeAccelerometerLineChart()
-
         viewModel.exerciseSet.observe( this, Observer { exerciseSet ->
             adapter.submitList( ( 0 until ( exerciseSet?.repCount ?: 0 ) + 1 ).toList() )
         } )
 
+        binding.accelerometerDataGraph.initializeAccelerometerLineChart()
+
         viewModel.selectedExerciseSetRepAccels.observe( this, Observer { accels ->
            binding.accelerometerDataGraph.setAccelerometerData( accels )
+        } )
+
+        binding.combinedAccelerometerDataGraph.initializeAccelerometerLineChart()
+
+        viewModel.selectedCombinedExerciseSetRepAccels.observe( this, Observer { combined ->
+            binding.combinedAccelerometerDataGraph.setCombinedAccelerometerData( combined )
         } )
 
         return binding.root

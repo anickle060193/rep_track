@@ -1,16 +1,12 @@
 package com.adamnickle.reptrack.utils
 
 import com.adamnickle.reptrack.model.workout.ExerciseSetAccel
-import org.jtransforms.fft.FloatFFT_1D
-import kotlin.math.min
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 object AccelerometerParser
 {
-    private fun combineAccelXYZ( accel: ExerciseSetAccel ): Float
-    {
-        return sqrt( accel.x * accel.x + accel.y * accel.y + accel.z * accel.z )
-    }
+    private fun combineAccelXYZ( accel: ExerciseSetAccel ): Float = sqrt( accel.x * accel.x + accel.y * accel.y + accel.z * accel.z )
 
     private fun combineAccelXYZ( accels: List<ExerciseSetAccel> ): List<Float> = accels.map( AccelerometerParser::combineAccelXYZ )
 
@@ -42,76 +38,76 @@ object AccelerometerParser
         return AccelData( max, min, avg )
     }
 
+    data class CombinedAccel( val time: Long, val accel: Float )
+
+    fun getCombinedAccels( accels: List<ExerciseSetAccel> ): List<CombinedAccel> = accels.map { accel -> CombinedAccel( accel.time, combineAccelXYZ( accel ) ) }
+
     fun findRepsAccels( accels: List<ExerciseSetAccel>, repCount: Int ): List<List<ExerciseSetAccel>>
     {
-        val repLength = accels.size / repCount
+        val combined = combineAccelXYZ( accels )
+
+        val start = accels.minBy { accel -> accel.time }?.time ?: 0
+        val end = accels.maxBy { accel -> accel.time }?.time ?: start
+
+        val range = end - start
+        val approximateRepRange = range / repCount
+        val repTimeBuffer = 0.2 * approximateRepRange
+
+        val sortedIndexes = combined.withIndex().sortedByDescending { ( _, s ) -> s }.toMutableList()
+
+        var index = 1
+
+        while( index < repCount
+            && index < sortedIndexes.size )
+        {
+            val indexTime = accels[ sortedIndexes[ index ].index ].time
+
+            var tooClose = false
+            for( i in 0 until index )
+            {
+                val accel = accels[ sortedIndexes[ i ].index ]
+                if( abs( accel.time - indexTime ) < repTimeBuffer )
+                {
+                    tooClose = true
+                    break
+                }
+            }
+
+            if( tooClose )
+            {
+                sortedIndexes.removeAt( index )
+            }
+            else
+            {
+                index++
+            }
+        }
+
+        val highIndexes = sortedIndexes.take( repCount ).map { it.index }.sorted()
+
+        val midpoints = mutableListOf<Int>()
+
+        midpoints.add( 0 )
+
+        for( i in 0 until highIndexes.size - 1 )
+        {
+            midpoints.add( ( highIndexes[ i ] + highIndexes[ i + 1 ] ) / 2 )
+        }
+
+        midpoints.add( accels.size - 1 )
 
         val reps = ArrayList<List<ExerciseSetAccel>>()
 
-        for( i in 0 until repCount )
+        for( i in 0 until midpoints.size - 1 )
         {
-            val start = i * repLength
-            val end = min( start + repLength, accels.size )
-            reps.add( accels.subList( i * repLength, end ) )
+            reps.add( accels.subList( midpoints[ i ], midpoints[ i + 1 ] ) )
+        }
+
+        while( reps.size < repCount )
+        {
+            reps.add( emptyList() )
         }
 
         return reps
-    }
-
-    fun findReps( accels: List<ExerciseSetAccel>, repCount: Int ): List<List<Float>>
-    {
-        val combined = combineAccelXYZ( accels )
-
-        val repLength = combined.size / repCount
-
-        val reps = ArrayList<List<Float>>()
-
-        for( i in 0 until repCount )
-        {
-            val start = i * repLength
-            val end = min( start + repLength, combined.size )
-            reps.add( combined.subList( i * repLength, end ) )
-        }
-
-        return reps
-    }
-
-    fun fft( accels: List<ExerciseSetAccel> ): FloatArray
-    {
-        val combined = combineAccelXYZ( accels )
-
-        val bottom = combined.min() ?: 0.0f
-        val top = combined.max() ?: bottom
-        val mid = combined.average().toFloat()
-
-        val range = top - bottom
-
-        val normSamples = combined.map { accel -> ( accel - mid ) / range }
-
-        val fft = FloatFFT_1D( normSamples.size.toLong() )
-
-        val spectrum = normSamples.toFloatArray()
-
-        val input = FloatArray( spectrum.size * 2 )
-        for( i in spectrum.indices )
-        {
-            input[ i ] = spectrum[ i ]
-        }
-
-        fft.realForward( input )
-
-        for( i in 0 until input.size )
-        {
-            input[ i ] *= input[ i ]
-        }
-
-        val output = FloatArray( ( input.size + 1 ) / 2 )
-
-        for( i in output.indices )
-        {
-            output [ i ] = sqrt(input[ 2 * i ] * input[ 2 * i ] + input[ 2 * i + 1 ] * input[ 2 * i + 1 ] )
-        }
-
-        return output
     }
 }

@@ -24,7 +24,9 @@ class UncompletedExerciseSetFragmentViewModel @Inject constructor(
         exerciseSet?.let { workoutDao.getExerciseSetAccel( exerciseSet.idOrThrow() ) }
     }
 
-    val spectrum = Transformations.map( accelerometerData ) { AccelerometerParser.fft( it ) }
+    val combinedAccelerometerData: LiveData<List<AccelerometerParser.CombinedAccel>> = Transformations.map( accelerometerData ) { accelerometerData ->
+        AccelerometerParser.getCombinedAccels( accelerometerData )
+    }
 
     fun bind( exerciseSet: ExerciseSet )
     {

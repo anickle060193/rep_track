@@ -25,19 +25,33 @@ class CompletedExerciseSetFragmentViewModel @Inject constructor(
         }
     }
 
+    val exerciseSetRepAccels = MediatorLiveData<List<List<ExerciseSetAccel>>>()
+    init
+    {
+        exerciseSetRepAccels.addSource( exerciseSetAccels ) { accels ->
+            exerciseSetRepAccels.value = getRepAccels( accels, exerciseSet.value?.repCount )
+        }
+
+        exerciseSetRepAccels.addSource( exerciseSet ) { exerciseSet ->
+            exerciseSetRepAccels.value = getRepAccels( exerciseSetAccels.value, exerciseSet?.repCount )
+        }
+    }
+
     val selectedExerciseSetRepAccels = MediatorLiveData<List<ExerciseSetAccel>>()
     init
     {
-        selectedExerciseSetRepAccels.addSource( exerciseSetAccels ) { accels ->
-            selectedExerciseSetRepAccels.value = getRepAccels( accels, exerciseSet.value?.repCount, selectedExerciseSetRep.value )
-        }
-
-        selectedExerciseSetRepAccels.addSource( exerciseSet ) { exerciseSet ->
-            selectedExerciseSetRepAccels.value = getRepAccels( exerciseSetAccels.value, exerciseSet?.repCount, selectedExerciseSetRep.value )
+        selectedExerciseSetRepAccels.addSource( exerciseSetRepAccels ) { repAccels ->
+            selectedExerciseSetRepAccels.value = getSelectedRepAccels( exerciseSetAccels.value, repAccels, selectedExerciseSetRep.value )
         }
 
         selectedExerciseSetRepAccels.addSource( selectedExerciseSetRep ) { selectedExerciseSetRep ->
-            selectedExerciseSetRepAccels.value = getRepAccels( exerciseSetAccels.value, exerciseSet.value?.repCount, selectedExerciseSetRep )
+            selectedExerciseSetRepAccels.value = getSelectedRepAccels( exerciseSetAccels.value, exerciseSetRepAccels.value, selectedExerciseSetRep )
+        }
+    }
+
+    val selectedCombinedExerciseSetRepAccels: LiveData<List<AccelerometerParser.CombinedAccel>> = Transformations.map( selectedExerciseSetRepAccels ) { selectedExerciseSetRepAccels ->
+        selectedExerciseSetRepAccels?.let {
+            AccelerometerParser.getCombinedAccels( selectedExerciseSetRepAccels )
         }
     }
 
@@ -51,10 +65,20 @@ class CompletedExerciseSetFragmentViewModel @Inject constructor(
     val selectedExerciseSetMin: LiveData<Float> = Transformations.map( selectedExerciseSetAccelData ) { Convert.mGtoMPS( it?.min ?: 0.0f ) }
     val selectedExerciseSetAvg: LiveData<Float> = Transformations.map( selectedExerciseSetAccelData ) { Convert.mGtoMPS( it?.avg ?: 0.0f ) }
 
-    private fun getRepAccels( accels: List<ExerciseSetAccel>?, repCount: Int?, selectedRep: Int? ): List<ExerciseSetAccel>?
+    private fun getRepAccels( accels: List<ExerciseSetAccel>?, repCount: Int? ): List<List<ExerciseSetAccel>>?
     {
         if( accels == null
-         || repCount == null
+         || repCount == null )
+        {
+            return null
+        }
+
+        return AccelerometerParser.findRepsAccels( accels, repCount )
+    }
+
+    private fun getSelectedRepAccels( accels: List<ExerciseSetAccel>?, repAccels: List<List<ExerciseSetAccel>>?, selectedRep: Int? ): List<ExerciseSetAccel>?
+    {
+        if( repAccels == null
          || selectedRep == null )
         {
             return null
@@ -66,14 +90,13 @@ class CompletedExerciseSetFragmentViewModel @Inject constructor(
         }
         else
         {
-            val repAccels = AccelerometerParser.findRepsAccels( accels, repCount )
             if( selectedRep - 1 < repAccels.size )
             {
                 return repAccels[ selectedRep - 1 ]
             }
             else
             {
-                throw IllegalArgumentException( "Selected Rep is outside of valid range - selectedRep: $selectedRep - repCount: $repCount" )
+                throw IllegalArgumentException( "Selected Rep is outside of valid range - selectedRep: $selectedRep - repCount: ${repAccels.size}" )
             }
         }
     }
