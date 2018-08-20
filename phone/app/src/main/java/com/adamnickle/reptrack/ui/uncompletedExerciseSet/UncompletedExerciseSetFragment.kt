@@ -2,9 +2,7 @@ package com.adamnickle.reptrack.ui.uncompletedExerciseSet
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -64,6 +62,8 @@ class UncompletedExerciseSetFragment: DaggerFragment()
     {
         super.onCreate( savedInstanceState )
 
+        setHasOptionsMenu( true )
+
         val exerciseSetId = arguments?.getLong( EXERCISE_SET_ID_TAG ) ?: throw IllegalArgumentException( "Missing Exercise Set ID for Uncompleted Exercise Set Fragment" )
 
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get( UncompletedExerciseSetFragmentViewModel::class.java )
@@ -112,17 +112,6 @@ class UncompletedExerciseSetFragment: DaggerFragment()
             }
         }
 
-        binding.markExerciseSetCompleted.setOnClickListener {
-            viewModel.exerciseSet.value?.let { exerciseSet ->
-                appExecutors.diskIO().execute {
-                    workoutDao.markExerciseSetCompleted( exerciseSet )
-
-                    val exercise = workoutDao.getExerciseOrThrow( exerciseSet.exerciseId )
-                    listener?.onExerciseSetCompleted( exercise, exerciseSet )
-                }
-            }
-        }
-
         binding.accelerometerDataGraph.initializeAccelerometerLineChart()
 
         viewModel.accelerometerData.observe( this, Observer { accelerometerData ->
@@ -136,6 +125,30 @@ class UncompletedExerciseSetFragment: DaggerFragment()
         } )
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu( menu: Menu, inflater: MenuInflater )
+    {
+        inflater.inflate( R.menu.uncompleted_exercise_set_fragment, menu )
+    }
+
+    override fun onOptionsItemSelected( item: MenuItem ): Boolean
+    {
+        return when( item.itemId )
+        {
+            R.id.mark_exercise_set_as_completed -> {
+                viewModel.exerciseSet.value?.let { exerciseSet ->
+                    appExecutors.diskIO().execute {
+                        workoutDao.markExerciseSetCompleted( exerciseSet )
+
+                        val exercise = workoutDao.getExerciseOrThrow( exerciseSet.exerciseId )
+                        listener?.onExerciseSetCompleted( exercise, exerciseSet )
+                    }
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected( item )
+        }
     }
 
     override fun onAttach( context: Context )

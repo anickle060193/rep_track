@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/mark_exercise_set_as_completed"
+        android:title="Mark as Completed"
+        android:icon="@drawable/ic_done_white_32dp"
+        app:showAsAction="ifRoom" />
+
+</menu>

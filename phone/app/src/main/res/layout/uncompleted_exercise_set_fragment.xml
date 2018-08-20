@@ -60,7 +60,7 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@+id/notes_container"
-            app:layout_constraintBottom_toTopOf="@+id/mark_exercise_set_completed"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -77,16 +77,6 @@
                 android:layout_weight="1" />
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/mark_exercise_set_completed"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Button.Colored"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="Mark Set Completed"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
