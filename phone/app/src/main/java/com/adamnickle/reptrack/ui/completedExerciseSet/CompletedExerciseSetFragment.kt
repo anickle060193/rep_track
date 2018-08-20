@@ -90,6 +90,30 @@ class CompletedExerciseSetFragment: DaggerFragment()
 
         binding.vm = viewModel
 
+        binding.rpe.setOnFocusChangeListener { _, hasFocus ->
+            if( !hasFocus )
+            {
+                viewModel.exerciseSet.value?.let { exerciseSet ->
+                    exerciseSet.rpe = binding.rpe.text.toString().toFloatOrNull()
+                    appExecutors.diskIO().execute {
+                        workoutDao.updateExerciseSet( exerciseSet )
+                    }
+                }
+            }
+        }
+
+        binding.notes.setOnFocusChangeListener { _, hasFocus ->
+            if( !hasFocus )
+            {
+                viewModel.exerciseSet.value?.let { exerciseSet ->
+                    exerciseSet.notes = binding.notes.text.toString()
+                    appExecutors.diskIO().execute {
+                        workoutDao.updateExerciseSet( exerciseSet )
+                    }
+                }
+            }
+        }
+
         adapter = CompletedSetRepListAdapter( appExecutors ) { setRep ->
             viewModel.selectedExerciseSetRep.value = setRep
         }

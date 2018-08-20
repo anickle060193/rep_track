@@ -13,6 +13,11 @@ class CompletedExerciseSetFragmentViewModel @Inject constructor(
 ): ViewModel()
 {
     val exerciseSet = MutableLiveData<ExerciseSet>()
+
+    val rpe: LiveData<Float> = Transformations.map( exerciseSet ) { it.rpe }
+
+    val notes: LiveData<String> = Transformations.map( exerciseSet ) { it.notes }
+
     val selectedExerciseSetRep = MutableLiveData<Int>()
     init
     {
