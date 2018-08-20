@@ -313,9 +313,6 @@ class WorkoutFragment: DaggerFragment()
                 if( deviceId != null )
                 {
                     sharedViewModel.deviceId = deviceId
-
-                    Snackbar.make( binding.root, "Device Selected: $deviceId", Snackbar.LENGTH_LONG )
-                            .show()
                 }
                 else
                 {
