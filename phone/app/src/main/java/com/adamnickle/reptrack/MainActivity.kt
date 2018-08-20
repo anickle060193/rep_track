@@ -1,12 +1,12 @@
 package com.adamnickle.reptrack
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.FragmentTransaction
 import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.adamnickle.reptrack.connectIQ.ConnectIQHelper
 import com.adamnickle.reptrack.model.message.AccelerometerMessage
 import com.adamnickle.reptrack.model.message.RecordingMessage
@@ -158,10 +158,9 @@ class MainActivity: DaggerAppCompatActivity(),
             connectIQHelper.startListeningToDevice( device.deviceIdentifier, object: ConnectIQHelper.ConnectIQEventListener() {
                 override fun onDeviceStatusChanged( iqDevice: IQDevice, deviceStatus: IQDevice.IQDeviceStatus )
                 {
-                    Toast.makeText( this@MainActivity, "Device status changed: $deviceStatus", Toast.LENGTH_LONG ).show()
-
                     if( deviceStatus != IQDevice.IQDeviceStatus.CONNECTED )
                     {
+                        Toast.makeText( this@MainActivity, "Device status changed: $deviceStatus", Toast.LENGTH_LONG ).show()
                         sharedViewModel.device.value = null
                     }
                 }

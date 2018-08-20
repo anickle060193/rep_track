@@ -2,12 +2,11 @@ package com.adamnickle.reptrack.ui.devices
 
 import android.app.Activity
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
+import androidx.databinding.DataBindingUtil
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.BuildConfig
 import com.adamnickle.reptrack.R
@@ -15,6 +14,7 @@ import com.adamnickle.reptrack.connectIQ.ConnectIQHelper
 import com.adamnickle.reptrack.databinding.SelectDeviceActivityBinding
 import com.adamnickle.reptrack.utils.property.autoCleared
 import com.garmin.android.connectiq.ConnectIQ.IQSdkErrorStatus.*
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
@@ -63,10 +63,10 @@ class SelectDeviceActivity: DaggerAppCompatActivity()
         }
         else
         {
-            connectIQHelper.initialize(this, false) { status ->
+            connectIQHelper.initialize( this ) { status ->
                 if(status != null)
                 {
-                    val errorMessage = when(status)
+                    val errorMessage = when( status )
                     {
                         GCM_NOT_INSTALLED -> "Garmin Connect App is not installed"
                         GCM_UPGRADE_NEEDED -> "Garmin Connect App update is required"

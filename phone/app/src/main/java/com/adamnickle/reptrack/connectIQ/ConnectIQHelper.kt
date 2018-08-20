@@ -38,7 +38,7 @@ class ConnectIQHelper @Inject constructor()
         }
     }
 
-    fun initialize( context: Context, wireless: Boolean, callback: ( ConnectIQ.IQSdkErrorStatus? ) -> Unit )
+    fun initialize( context: Context, callback: ( ConnectIQ.IQSdkErrorStatus? ) -> Unit )
     {
         if( isInitialized )
         {
@@ -47,7 +47,7 @@ class ConnectIQHelper @Inject constructor()
 
         val applicationContext = context.applicationContext
 
-        connectIQ = ConnectIQ.getInstance( applicationContext, if( wireless ) ConnectIQ.IQConnectType.WIRELESS else ConnectIQ.IQConnectType.TETHERED )
+        connectIQ = ConnectIQ.getInstance( applicationContext, ConnectIQ.IQConnectType.TETHERED )
         connectIQ?.initialize( applicationContext, true, object: ConnectIQ.ConnectIQListener
         {
             override fun onSdkReady()
