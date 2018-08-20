@@ -39,7 +39,7 @@ class MainDelegate extends CustomBehaviorDelegate
         Comm.registerForPhoneAppMessages( method( :onPhoneAppMessage ) );
     }
 
-    private function onPhoneAppMessage( message )
+    function onPhoneAppMessage( message )
     {
         if( message == null )
         {

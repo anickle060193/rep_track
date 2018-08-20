@@ -6,6 +6,7 @@ class Accel
     private var _hasAccelerometer;
     private var _sampleRate;
     private var _period;
+    private var _recording;
 
     function initialize()
     {
@@ -22,25 +23,32 @@ class Accel
             _sampleRate = 1;
             _period = 1;
         }
+
+        _recording = false;
     }
-    
+
     function hasAccelerometer()
     {
         return _hasAccelerometer;
     }
-    
+
     function getSampleRate()
     {
         return _sampleRate;
     }
-    
+
     function getPeriod()
     {
         return _period;
     }
-    
+
     function start( accelerometerDataCallback )
     {
+        if( _recording )
+        {
+            throw new Exception( "Accel already recording" );
+        }
+
         if( !_hasAccelerometer )
         {
             return false;
@@ -54,6 +62,7 @@ class Accel
         try
         {
             Sensor.registerSensorDataListener( accelerometerDataCallback, options );
+            _recording = true;
             return true;
         }
         catch( e )
@@ -62,14 +71,20 @@ class Accel
         }
         return false;
     }
-    
+
     function stop()
     {
+        if( !_recording )
+        {
+            throw new Exception( "Accel not recording" );
+        }
+
         if( !_hasAccelerometer )
         {
             return;
         }
 
         Sensor.unregisterSensorDataListener();
+        _recording = false;
     }
 }

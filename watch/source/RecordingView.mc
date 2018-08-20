@@ -70,7 +70,7 @@ class RecordingDelegate extends CustomBehaviorDelegate
 
     private var _recordingView;
     private var _recording;
-    
+
     private var _accel;
 
     function initialize( workout, exerciseIndex, setIndex )
@@ -93,7 +93,7 @@ class RecordingDelegate extends CustomBehaviorDelegate
         {
             return;
         }
-    
+
         if( _recording )
         {
             _accel.stop();
@@ -103,7 +103,7 @@ class RecordingDelegate extends CustomBehaviorDelegate
         {
             _recording = _accel.start( method( :onAccelerometerCallback ) );
         }
-        
+
         updateView();
         
         var message = {
@@ -114,8 +114,8 @@ class RecordingDelegate extends CustomBehaviorDelegate
         
         return true;
     }
-    
-    private function onAccelerometerCallback( sensorData )
+
+    function onAccelerometerCallback( sensorData )
     {
         var message = {
             "type"=> "accelerometer",
@@ -132,7 +132,7 @@ class RecordingDelegate extends CustomBehaviorDelegate
         Comm.transmit( message, { }, new RecordingCommListener( method( :onTransmitStatus ) ) );
     }
 
-    private function onTransmitStatus( success )
+    function onTransmitStatus( success )
     {
         Sys.println( "Transmit status: " + success );
     }
@@ -152,7 +152,7 @@ class RecordingDelegate extends CustomBehaviorDelegate
         updateView();
         return _recordingView;
     }
-    
+
     private function updateView()
     {
         if( _recordingView != null )
@@ -165,17 +165,17 @@ class RecordingDelegate extends CustomBehaviorDelegate
 class RecordingCommListener extends Comm.ConnectionListener
 {
     private var _callback;
-    
+
     function initialize( callback )
     {
         _callback = callback;
     }
-    
+
     function onComplete()
     {
         _callback.invoke( true );
     }
-    
+
     function onError()
     {
         _callback.invoke( false );
