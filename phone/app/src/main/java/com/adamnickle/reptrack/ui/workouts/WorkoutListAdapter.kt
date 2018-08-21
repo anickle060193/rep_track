@@ -1,9 +1,9 @@
 package com.adamnickle.reptrack.ui.workouts
 
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.DiffUtil
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.WorkoutItemBinding
@@ -38,8 +38,11 @@ class WorkoutListAdapter(
                 parent,
                 false
         )
+
+        binding.vm = WorkoutItemViewModel()
+
         binding.root.setOnClickListener {
-            binding.workout?.let { workout ->
+            binding.vm?.workout?.value?.let { workout ->
                 workoutClickCallback?.invoke( workout )
             }
         }
@@ -49,7 +52,7 @@ class WorkoutListAdapter(
 
     override fun bind( binding: WorkoutItemBinding, item: Workout, position: Int )
     {
-        binding.workout = item
+        binding.vm?.workout?.value = item
     }
 
 }

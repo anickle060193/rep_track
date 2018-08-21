@@ -93,7 +93,7 @@ class WorkoutListFragment: DaggerFragment()
                 if( viewHolder is DataBoundViewHolder<*>
                  && viewHolder.binding is WorkoutItemBinding )
                 {
-                    viewHolder.binding.workout?.let { workout ->
+                    viewHolder.binding.vm?.workout?.value?.let { workout ->
                         appExecutors.diskIO().execute {
                             workoutDao.markWorkoutAsDeleted( workout )
 

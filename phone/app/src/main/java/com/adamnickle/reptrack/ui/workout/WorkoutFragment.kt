@@ -1,16 +1,15 @@
 package com.adamnickle.reptrack.ui.workout
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.*
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.connectIQ.ConnectIQHelper
@@ -30,6 +29,7 @@ import com.adamnickle.reptrack.ui.shared.SharedViewModel
 import com.adamnickle.reptrack.utils.extensions.addDividerItemDecoration
 import com.adamnickle.reptrack.utils.property.autoCleared
 import com.garmin.android.connectiq.ConnectIQ
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -38,6 +38,7 @@ class WorkoutFragment: DaggerFragment()
     interface OnWorkoutFragmentInteractionListener
     {
         fun onExerciseClicked( workout: Workout, exercise: Exercise )
+        fun onWorkoutRenamed( workout: Workout )
     }
 
     companion object
@@ -288,6 +289,32 @@ class WorkoutFragment: DaggerFragment()
     {
         return when( item.itemId )
         {
+            R.id.rename_workout -> {
+                viewModel.workout.value?.let { workout ->
+                    InputDialog.showInputDialog( requireContext(), "Workout Name:" ) { workoutName, dialogInterface, input ->
+                        if( workoutName.isBlank() )
+                        {
+                            input.error = "Workout name cannot be blank"
+                            input.requestFocus()
+                            return@showInputDialog
+                        }
+
+                        appExecutors.diskIO().execute {
+                            workout.name = workoutName
+                            workoutDao.updateWorkout( workout )
+
+                            listener?.let { listener ->
+                                appExecutors.mainThread().execute {
+                                    listener.onWorkoutRenamed( workout )
+                                }
+                            }
+                        }
+
+                        dialogInterface.dismiss()
+                    }
+                }
+                return true
+            }
             R.id.select_device -> {
                 startActivityForResult( Intent( context, SelectDeviceActivity::class.java ), SELECT_DEVICE_REQUEST )
                 return true

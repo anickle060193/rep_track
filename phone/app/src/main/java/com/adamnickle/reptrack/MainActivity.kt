@@ -101,6 +101,16 @@ class MainActivity: DaggerAppCompatActivity(),
                 .commit()
     }
 
+    override fun onWorkoutRenamed( workout: Workout )
+    {
+        val fragment = supportFragmentManager.findFragmentById( R.id.main_content )
+        if( fragment is WorkoutFragment )
+        {
+            fragment.arguments?.putString( TITLE_ARG, workout.name )
+            supportActionBar?.title = workout.name
+        }
+    }
+
     override fun onExerciseClicked( workout: Workout, exercise: Exercise )
     {
         supportFragmentManager
