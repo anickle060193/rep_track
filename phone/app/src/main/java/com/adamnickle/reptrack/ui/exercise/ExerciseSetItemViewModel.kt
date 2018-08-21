@@ -1,21 +1,22 @@
 package com.adamnickle.reptrack.ui.exercise
 
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.adamnickle.reptrack.model.workout.ExerciseSet
 
 class ExerciseSetItemViewModel: ViewModel()
 {
     val exerciseSet = MutableLiveData<ExerciseSet>()
-    val exerciseSetNumber = MutableLiveData<Int>()
-    val description = MediatorLiveData<String>()
 
+    val exerciseSetNumber = MutableLiveData<Int>()
+
+    val description = MediatorLiveData<String>()
     init
     {
         this.description.addSource( exerciseSet ) { exerciseSet -> this.description.value = formatDescription( exerciseSet, exerciseSetNumber.value ) }
         this.description.addSource( exerciseSetNumber ) { exerciseSetNumber -> this.description.value = formatDescription( exerciseSet.value, exerciseSetNumber ) }
     }
+
+    val completed: LiveData<Boolean> = Transformations.map( exerciseSet ) { it.completed }
 
     fun bind( exerciseSet: ExerciseSet, exerciseSetNumber: Int )
     {

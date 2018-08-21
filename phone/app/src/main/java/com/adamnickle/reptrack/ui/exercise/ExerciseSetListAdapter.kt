@@ -1,9 +1,9 @@
 package com.adamnickle.reptrack.ui.exercise
 
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.DiffUtil
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.ExerciseSetItemBinding
@@ -12,7 +12,7 @@ import com.adamnickle.reptrack.ui.common.DataBoundListAdapter
 
 class ExerciseSetListAdapter(
         appExecutors: AppExecutors,
-        private val exerciseSetClickCallback: ( ( ExerciseSet ) -> Unit )?
+        private val listener: OnExerciseSetListInteractionListener?
 ): DataBoundListAdapter<ExerciseSet, ExerciseSetItemBinding>(
         appExecutors,
         object: DiffUtil.ItemCallback<ExerciseSet>()
@@ -44,7 +44,13 @@ class ExerciseSetListAdapter(
 
         binding.root.setOnClickListener {
             binding.vm?.exerciseSet?.value?.let { exerciseSet ->
-                exerciseSetClickCallback?.invoke( exerciseSet )
+                listener?.onExerciseSetClick( exerciseSet )
+            }
+        }
+
+        binding.completed.setOnCheckedChangeListener { _, completed ->
+            binding.vm?.exerciseSet?.value?.let { exerciseSet ->
+                listener?.onExerciseSetCompletedChange( exerciseSet, completed )
             }
         }
 
@@ -54,5 +60,11 @@ class ExerciseSetListAdapter(
     override fun bind( binding: ExerciseSetItemBinding, item: ExerciseSet, position: Int )
     {
         binding.vm?.bind( item, position + 1 )
+    }
+
+    interface OnExerciseSetListInteractionListener
+    {
+        fun onExerciseSetClick( exerciseSet: ExerciseSet )
+        fun onExerciseSetCompletedChange( exerciseSet: ExerciseSet, completed: Boolean )
     }
 }

@@ -1,13 +1,13 @@
 package com.adamnickle.reptrack.ui.exercise
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.adamnickle.reptrack.AppExecutors
 import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.ExerciseFragmentBinding
@@ -86,11 +86,23 @@ class ExerciseFragment: DaggerFragment()
             adapter.submitList( result?.sortedBy { exerciseSet -> exerciseSet.order } )
         } )
 
-        adapter = ExerciseSetListAdapter( appExecutors ) { exerciseSet ->
-            viewModel.exercise.value?.let { exercise ->
-                listener?.onExerciseSetClicked( exercise, exerciseSet )
+        adapter = ExerciseSetListAdapter( appExecutors, object: ExerciseSetListAdapter.OnExerciseSetListInteractionListener
+        {
+            override fun onExerciseSetClick( exerciseSet: ExerciseSet )
+            {
+                viewModel.exercise.value?.let { exercise ->
+                    listener?.onExerciseSetClicked( exercise, exerciseSet )
+                }
             }
-        }
+
+            override fun onExerciseSetCompletedChange( exerciseSet: ExerciseSet, completed: Boolean )
+            {
+                appExecutors.diskIO().execute {
+                    exerciseSet.completed = completed
+                    workoutDao.updateExerciseSet( exerciseSet )
+                }
+            }
+        } )
 
         binding.exerciseSetsList.adapter = adapter
         binding.exerciseSetsList.addDividerItemDecoration()

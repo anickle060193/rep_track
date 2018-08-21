@@ -31,29 +31,44 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/foreground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/ListItemBackground"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:orientation="horizontal">
+            style="@style/ListItemBackground">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:textAlignment="textStart"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:textSize="28sp"
-                app:mutableText="@{vm.description}"
-                app:layout_constraintTop_toTopOf="parent"
+                android:ellipsize="end"
+                android:maxLines="1"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/completed"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/exercise_set_count"
-                tools:text="Set 1: 6 reps @ 184 lbs" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:mutableText="@{vm.description}"
+                tools:text="Set 1: 6 reps @ 184 lbs"/>
 
-        </LinearLayout>
+            <CheckBox
+                android:id="@+id/completed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:mutableChecked="@{vm.completed}"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 

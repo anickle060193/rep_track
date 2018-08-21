@@ -1,6 +1,7 @@
 package com.adamnickle.reptrack.ui.common
 
 import android.view.View
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
@@ -23,6 +24,18 @@ fun <T> setMutableText( view: TextView, data: LiveData<T>?, mutableFormat: Strin
             {
                 view.text = value?.toString() ?: ""
             }
+        } )
+    }
+}
+
+@BindingAdapter( "mutableChecked" )
+fun setMutableChecked( view: CheckBox, data: LiveData<Boolean>? )
+{
+    val parentActivity = view.getParentActivity()
+    if( parentActivity != null && data != null )
+    {
+        data.observe( parentActivity, Observer { checked ->
+            view.isChecked = checked
         } )
     }
 }
