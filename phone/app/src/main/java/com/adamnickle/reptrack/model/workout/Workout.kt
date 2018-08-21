@@ -2,7 +2,6 @@ package com.adamnickle.reptrack.model.workout
 
 import androidx.room.*
 import com.adamnickle.reptrack.model.AppTypeConverters
-import com.adamnickle.reptrack.utils.extensions.toShortString
 import java.util.*
 
 @Entity
@@ -18,10 +17,7 @@ data class Workout(
     constructor( name: String, date: Date ): this( null, name, date, false )
 
     @Ignore
-    constructor( date: Date ): this( date.toShortString(), date )
-
-    @Ignore
-    constructor(): this( Date() )
+    constructor( name: String ): this( name, Date() )
 
     fun idOrThrow(): Long = id ?: throw IllegalStateException( "${Workout::class} is unsaved" )
 }

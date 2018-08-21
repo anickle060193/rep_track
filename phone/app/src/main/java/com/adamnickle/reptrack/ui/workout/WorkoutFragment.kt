@@ -291,12 +291,12 @@ class WorkoutFragment: DaggerFragment()
         {
             R.id.rename_workout -> {
                 viewModel.workout.value?.let { workout ->
-                    InputDialog.showInputDialog( requireContext(), "Workout Name:" ) { workoutName, dialogInterface, input ->
+                    InputDialog.showCapWordsInputDialog( requireContext(), "Workout Name:" ) { workoutName, dialogInterface, input ->
                         if( workoutName.isBlank() )
                         {
                             input.error = "Workout name cannot be blank"
                             input.requestFocus()
-                            return@showInputDialog
+                            return@showCapWordsInputDialog
                         }
 
                         appExecutors.diskIO().execute {

@@ -18,6 +18,7 @@ import com.adamnickle.reptrack.model.workout.Workout
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.ui.common.DataBoundViewHolder
+import com.adamnickle.reptrack.ui.common.InputDialog
 import com.adamnickle.reptrack.ui.common.SwipeableItemTouchHelperCallback
 import com.adamnickle.reptrack.ui.settings.SettingsActivity
 import com.adamnickle.reptrack.utils.property.autoCleared
@@ -122,8 +123,19 @@ class WorkoutListFragment: DaggerFragment()
         } ).attachToRecyclerView( binding.workoutsList )
 
         binding.workoutAdd.setOnClickListener {
-            appExecutors.diskIO().execute {
-                workoutDao.insertWorkout( Workout() )
+            InputDialog.showCapWordsInputDialog( requireContext(), "Workout Name" ) { workoutName, dialogInterface, input ->
+                if( workoutName.isBlank() )
+                {
+                    input.error = "Workout name cannot be blank"
+                    input.requestFocus()
+                    return@showCapWordsInputDialog
+                }
+
+                appExecutors.diskIO().execute {
+                    workoutDao.insertWorkout( Workout( workoutName ) )
+                }
+
+                dialogInterface.dismiss()
             }
         }
 
