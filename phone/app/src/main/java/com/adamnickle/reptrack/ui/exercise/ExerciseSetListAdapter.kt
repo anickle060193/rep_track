@@ -48,9 +48,9 @@ class ExerciseSetListAdapter(
             }
         }
 
-        binding.completed.setOnCheckedChangeListener { _, completed ->
+        binding.completed.setOnClickListener {
             binding.vm?.exerciseSet?.value?.let { exerciseSet ->
-                listener?.onExerciseSetCompletedChange( exerciseSet, completed )
+                listener?.onExerciseSetCompletedChange( exerciseSet, binding.completed.isChecked )
             }
         }
 
