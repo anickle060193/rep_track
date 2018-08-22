@@ -315,8 +315,18 @@ class WorkoutFragment: DaggerFragment()
                 }
                 return true
             }
+
             R.id.select_device -> {
                 startActivityForResult( Intent( context, SelectDeviceActivity::class.java ), SELECT_DEVICE_REQUEST )
+                return true
+            }
+
+            R.id.open_watch_app -> {
+                sharedViewModel.deviceId?.let { deviceId ->
+                    connectIQ.openApplication( deviceId, ConnectIQ.IQOpenApplicationListener { device, app, status ->
+                        println( "Open App Status: $status" )
+                    } )
+                }
                 return true
             }
 
