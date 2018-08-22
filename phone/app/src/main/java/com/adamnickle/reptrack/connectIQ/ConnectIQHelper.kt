@@ -2,6 +2,7 @@ package com.adamnickle.reptrack.connectIQ
 
 import android.content.Context
 import com.adamnickle.reptrack.AppExecutors
+import com.adamnickle.reptrack.BuildConfig
 import com.garmin.android.connectiq.ConnectIQ
 import com.garmin.android.connectiq.IQApp
 import com.garmin.android.connectiq.IQDevice
@@ -14,6 +15,8 @@ class ConnectIQHelper @Inject constructor()
     companion object
     {
         const val REP_TRACK_APP_ID = "2649146e00df42358fb239388daf724b"
+
+        private const val USING_WATCH_SIM = false
 
         private val REP_TRACK_APP = IQApp( REP_TRACK_APP_ID )
     }
@@ -47,7 +50,9 @@ class ConnectIQHelper @Inject constructor()
 
         val applicationContext = context.applicationContext
 
-        connectIQ = ConnectIQ.getInstance( applicationContext, ConnectIQ.IQConnectType.TETHERED )
+        val connectType = if( USING_WATCH_SIM && BuildConfig.DEBUG ) ConnectIQ.IQConnectType.TETHERED else ConnectIQ.IQConnectType.WIRELESS
+
+        connectIQ = ConnectIQ.getInstance( applicationContext, connectType )
         connectIQ?.initialize( applicationContext, true, object: ConnectIQ.ConnectIQListener
         {
             override fun onSdkReady()
