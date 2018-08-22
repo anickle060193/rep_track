@@ -86,12 +86,21 @@ class RecordingDelegate extends CustomBehaviorDelegate
         
         _accel = new Accel();
     }
+
+    function onBack()
+    {
+        if( !_recording )
+        {
+            Ui.popView( Ui.SLIDE_RIGHT );
+        }
+        return true;
+    }
     
-    function onTap( clickEvent )
+    function onSelect()
     {
         if( !_accel.hasAccelerometer() )
         {
-            return;
+            return true;
         }
 
         if( _recording )
@@ -135,15 +144,6 @@ class RecordingDelegate extends CustomBehaviorDelegate
     function onTransmitStatus( success )
     {
         Sys.println( "Transmit status: " + success );
-    }
-
-    function onBack()
-    {
-        if( !_recording )
-        {
-            Ui.popView( Ui.SLIDE_RIGHT );
-        }
-        return true;
     }
 
     function createCurrentView()

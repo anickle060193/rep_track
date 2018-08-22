@@ -2,9 +2,9 @@ using Toybox.System as Sys;
 
 module Utils
 {
-    private var systemSettings = null;
+    var systemSettings = null;
 
-    private function getSystemSettings()
+    function getSystemSettings()
     {
         if( systemSettings == null )
         {

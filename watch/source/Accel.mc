@@ -1,3 +1,4 @@
+using Toybox.Lang;
 using Toybox.Sensor;
 using Toybox.System as Sys;
 
@@ -20,6 +21,7 @@ class Accel
         }
         else
         {
+            Sys.println( "Device does not have an accelerometer." );
             _sampleRate = 1;
             _period = 1;
         }
@@ -46,7 +48,7 @@ class Accel
     {
         if( _recording )
         {
-            throw new Exception( "Accel already recording" );
+            throw new Lang.Exception( "Accel already recording" );
         }
 
         if( !_hasAccelerometer )
@@ -76,7 +78,7 @@ class Accel
     {
         if( !_recording )
         {
-            throw new Exception( "Accel not recording" );
+            throw new Lang.Exception( "Accel not recording" );
         }
 
         if( !_hasAccelerometer )
