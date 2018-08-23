@@ -79,7 +79,10 @@ class SelectDeviceActivity: DaggerAppCompatActivity()
                 }
                 else
                 {
-                    refreshDevicesList()
+                    if( !this.isDestroyed )
+                    {
+                        refreshDevicesList()
+                    }
                 }
             }
         }
