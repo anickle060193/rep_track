@@ -44,63 +44,66 @@ object AccelerometerParser
 
     fun findRepsAccels( accels: List<ExerciseSetAccel>, repCount: Int ): List<List<ExerciseSetAccel>>
     {
-        val combined = combineAccelXYZ( accels )
+        val reps = ArrayList<List<ExerciseSetAccel>>()
 
-        val start = accels.minBy { accel -> accel.time }?.time ?: 0
-        val end = accels.maxBy { accel -> accel.time }?.time ?: start
-
-        val range = end - start
-        val approximateRepRange = range / repCount
-        val repTimeBuffer = 0.2 * approximateRepRange
-
-        val sortedIndexes = combined.withIndex().sortedByDescending { ( _, s ) -> s }.toMutableList()
-
-        var index = 1
-
-        while( index < repCount
-            && index < sortedIndexes.size )
+        if( accels.size >= repCount )
         {
-            val indexTime = accels[ sortedIndexes[ index ].index ].time
+            val combined = combineAccelXYZ( accels )
 
-            var tooClose = false
-            for( i in 0 until index )
+            val start = accels.minBy { accel -> accel.time }?.time ?: 0
+            val end = accels.maxBy { accel -> accel.time }?.time ?: start
+
+            val range = end - start
+            val approximateRepRange = range / repCount
+            val repTimeBuffer = 0.2 * approximateRepRange
+
+            val sortedIndexes = combined.withIndex().sortedByDescending { ( _, s ) -> s }.toMutableList()
+
+            var index = 1
+
+            while( index < repCount
+                && index < sortedIndexes.size )
             {
-                val accel = accels[ sortedIndexes[ i ].index ]
-                if( abs( accel.time - indexTime ) < repTimeBuffer )
+                val indexTime = accels[ sortedIndexes[ index ].index ].time
+
+                var tooClose = false
+                for( i in 0 until index )
                 {
-                    tooClose = true
-                    break
+                    val accel = accels[ sortedIndexes[ i ].index ]
+                    if( abs( accel.time - indexTime ) < repTimeBuffer )
+                    {
+                        tooClose = true
+                        break
+                    }
+                }
+
+                if( tooClose )
+                {
+                    sortedIndexes.removeAt( index )
+                }
+                else
+                {
+                    index++
                 }
             }
 
-            if( tooClose )
+            val highIndexes = sortedIndexes.take( repCount ).map { it.index }.sorted()
+
+            val midpoints = mutableListOf<Int>()
+
+            midpoints.add( 0 )
+
+            for( i in 0 until highIndexes.size - 1 )
             {
-                sortedIndexes.removeAt( index )
+                midpoints.add( ( highIndexes[ i ] + highIndexes[ i + 1 ] ) / 2 )
             }
-            else
+
+            midpoints.add( accels.size - 1 )
+
+            for( i in 0 until midpoints.size - 1 )
             {
-                index++
+                reps.add( accels.subList( midpoints[ i ], midpoints[ i + 1 ] ) )
             }
-        }
-
-        val highIndexes = sortedIndexes.take( repCount ).map { it.index }.sorted()
-
-        val midpoints = mutableListOf<Int>()
-
-        midpoints.add( 0 )
-
-        for( i in 0 until highIndexes.size - 1 )
-        {
-            midpoints.add( ( highIndexes[ i ] + highIndexes[ i + 1 ] ) / 2 )
-        }
-
-        midpoints.add( accels.size - 1 )
-
-        val reps = ArrayList<List<ExerciseSetAccel>>()
-
-        for( i in 0 until midpoints.size - 1 )
-        {
-            reps.add( accels.subList( midpoints[ i ], midpoints[ i + 1 ] ) )
         }
 
         while( reps.size < repCount )
