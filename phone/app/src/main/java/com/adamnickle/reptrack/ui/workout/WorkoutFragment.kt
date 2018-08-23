@@ -323,7 +323,7 @@ class WorkoutFragment: DaggerFragment()
 
             R.id.open_watch_app -> {
                 sharedViewModel.deviceId?.let { deviceId ->
-                    connectIQ.openApplication( deviceId, ConnectIQ.IQOpenApplicationListener { device, app, status ->
+                    connectIQ.openApplication( deviceId, ConnectIQ.IQOpenApplicationListener { _, _, status ->
                         println( "Open App Status: $status" )
                     } )
                 }
