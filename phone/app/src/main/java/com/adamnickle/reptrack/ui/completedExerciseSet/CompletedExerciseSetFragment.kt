@@ -127,7 +127,7 @@ class CompletedExerciseSetFragment: DaggerFragment()
         binding.accelerometerDataGraph.initializeAccelerometerLineChart()
 
         viewModel.selectedExerciseSetRepAccels.observe( this, Observer { accels ->
-           binding.accelerometerDataGraph.setAccelerometerData( accels )
+           binding.accelerometerDataGraph.setAccelerometerData( accels, false )
         } )
 
         binding.combinedAccelerometerDataGraph.initializeAccelerometerLineChart()

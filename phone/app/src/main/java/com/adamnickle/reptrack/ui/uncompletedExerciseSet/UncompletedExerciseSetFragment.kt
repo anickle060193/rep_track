@@ -11,6 +11,7 @@ import com.adamnickle.reptrack.R
 import com.adamnickle.reptrack.databinding.UncompletedExerciseSetFragmentBinding
 import com.adamnickle.reptrack.model.workout.Exercise
 import com.adamnickle.reptrack.model.workout.ExerciseSet
+import com.adamnickle.reptrack.model.workout.ExerciseSetAccel
 import com.adamnickle.reptrack.model.workout.WorkoutDao
 import com.adamnickle.reptrack.ui.ViewModelFactory
 import com.adamnickle.reptrack.utils.extensions.initializeAccelerometerLineChart
@@ -115,7 +116,7 @@ class UncompletedExerciseSetFragment: DaggerFragment()
         binding.accelerometerDataGraph.initializeAccelerometerLineChart()
 
         viewModel.accelerometerData.observe( this, Observer { accelerometerData ->
-            binding.accelerometerDataGraph.setAccelerometerData( accelerometerData )
+            binding.accelerometerDataGraph.setAccelerometerData( accelerometerData, true )
         } )
 
         binding.combinedAccelerometerDataGraph.initializeAccelerometerLineChart()
@@ -130,6 +131,13 @@ class UncompletedExerciseSetFragment: DaggerFragment()
     override fun onCreateOptionsMenu( menu: Menu, inflater: MenuInflater )
     {
         inflater.inflate( R.menu.uncompleted_exercise_set_fragment, menu )
+    }
+
+    override fun onPrepareOptionsMenu( menu: Menu )
+    {
+        val hasHighlight = binding.accelerometerDataGraph.highlighted?.isNotEmpty() == true
+        menu.findItem( R.id.erase_data_before_selection )?.isEnabled = hasHighlight
+        menu.findItem( R.id.erase_data_after_selection )?.isEnabled = hasHighlight
     }
 
     override fun onOptionsItemSelected( item: MenuItem ): Boolean
@@ -147,8 +155,44 @@ class UncompletedExerciseSetFragment: DaggerFragment()
                 }
                 true
             }
+
+            R.id.erase_data_before_selection -> {
+                getHighlightedAccel()?.let { exerciseSetAccel ->
+                    appExecutors.diskIO().execute {
+                        workoutDao.deleteExerciseSetAccelBefore( exerciseSetAccel.exerciseSetId, exerciseSetAccel.time )
+                    }
+                    binding.accelerometerDataGraph.highlightValue( null )
+                }
+                return true
+            }
+
+            R.id.erase_data_after_selection -> {
+                getHighlightedAccel()?.let { exerciseSetAccel ->
+                    appExecutors.diskIO().execute {
+                        workoutDao.deleteExerciseSetAccelAfter( exerciseSetAccel.exerciseSetId, exerciseSetAccel.time )
+                    }
+                    binding.accelerometerDataGraph.highlightValue( null )
+                }
+                return true
+            }
+
             else -> super.onOptionsItemSelected( item )
         }
+    }
+
+    private fun getHighlightedAccel(): ExerciseSetAccel?
+    {
+        binding.accelerometerDataGraph.highlighted?.firstOrNull()?.let { highlight ->
+            binding.accelerometerDataGraph.data?.dataSets?.getOrNull( highlight.dataSetIndex )?.getEntryForXValue( highlight.x, highlight.y )?.let { entry ->
+                entry.data?.let { data ->
+                    if( data is ExerciseSetAccel )
+                    {
+                        return data
+                    }
+                }
+            }
+        }
+        return null
     }
 
     override fun onAttach( context: Context )

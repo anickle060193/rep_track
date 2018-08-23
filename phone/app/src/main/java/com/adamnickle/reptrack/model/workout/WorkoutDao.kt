@@ -186,4 +186,10 @@ abstract class WorkoutDao
 
     @Query( "SELECT * FROM ExerciseSetAccel WHERE exerciseSetId = :exerciseSetId" )
     abstract fun getExerciseSetAccel( exerciseSetId: Long ): LiveData<List<ExerciseSetAccel>>
+
+    @Query( "DELETE FROM ExerciseSetAccel WHERE exerciseSetId = :exerciseSetId AND time > :time" )
+    abstract fun deleteExerciseSetAccelAfter( exerciseSetId: Long, time: Long )
+
+    @Query( "DELETE FROM ExerciseSetAccel WHERE exerciseSetId = :exerciseSetId AND time < :time" )
+    abstract fun deleteExerciseSetAccelBefore( exerciseSetId: Long, time: Long )
 }

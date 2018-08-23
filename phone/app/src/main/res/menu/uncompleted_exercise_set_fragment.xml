@@ -9,4 +9,16 @@
         android:icon="@drawable/ic_done_white_32dp"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/erase_data_before_selection"
+        android:title="Erase Data Before Selection"
+        app:showAsAction="never"
+        android:enabled="false" />
+
+    <item
+        android:id="@+id/erase_data_after_selection"
+        android:title="Erase Data After Selection"
+        app:showAsAction="never"
+        android:enabled="false" />
+
 </menu>

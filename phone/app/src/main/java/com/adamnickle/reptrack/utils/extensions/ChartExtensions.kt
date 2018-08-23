@@ -23,10 +23,12 @@ fun LineChart.initializeAccelerometerLineChart()
 }
 
 private const val X_COLOR = Color.RED
-private const val Y_COLOR = -16744448
+private val Y_COLOR = Color.rgb( 0, 128, 0 )
 private const val Z_COLOR = Color.BLUE
+private val COMBINED_COLOR = Color.rgb( 3, 169, 244 )
+private val HIGHLIGHT_COLOR = Color.argb( 150, 99, 159, 255 )
 
-fun LineChart.setAccelerometerData( accelData: List<ExerciseSetAccel>? )
+fun LineChart.setAccelerometerData( accelData: List<ExerciseSetAccel>?, allowHighlight: Boolean )
 {
     if( accelData != null && accelData.isNotEmpty() )
     {
@@ -39,25 +41,32 @@ fun LineChart.setAccelerometerData( accelData: List<ExerciseSetAccel>? )
         for( accel in accelData )
         {
             val time = ( accel.time.toFloat() - startTime ) / 1000.0f
-            xEntries.add( Entry( time, Convert.mGtoMPS( accel.x ) ) )
-            yEntries.add( Entry( time, Convert.mGtoMPS( accel.y ) ) )
-            zEntries.add( Entry( time, Convert.mGtoMPS( accel.z ) ) )
+            xEntries.add( Entry( time, Convert.mGtoMPS( accel.x ) ).apply { data = accel } )
+            yEntries.add( Entry( time, Convert.mGtoMPS( accel.y ) ).apply { data = accel } )
+            zEntries.add( Entry( time, Convert.mGtoMPS( accel.z ) ).apply { data = accel } )
         }
 
-        val xDataSet = LineDataSet( xEntries, "X" ).apply {
-            color = X_COLOR
-            setDrawCircles( false )
-        }
-        val yDataSet = LineDataSet( yEntries, "Y" ).apply {
-            color = Y_COLOR
-            setDrawCircles( false )
-        }
-        val zDataSet = LineDataSet( zEntries, "Z" ).apply {
-            color = Z_COLOR
-            setDrawCircles( false )
+        val dataSets = arrayOf(
+            LineDataSet( xEntries, "X" ).apply {
+                color = X_COLOR
+            },
+            LineDataSet( yEntries, "Y" ).apply {
+                color = Y_COLOR
+            },
+            LineDataSet( zEntries, "Z" ).apply {
+                color = Z_COLOR
+            }
+        )
+
+        dataSets.forEach { dataSet ->
+            dataSet.setDrawCircles( false )
+            dataSet.isHighlightEnabled = allowHighlight
+            dataSet.highLightColor = HIGHLIGHT_COLOR
+            dataSet.highlightLineWidth = 3.0f
         }
 
-        this.data = LineData( xDataSet, yDataSet, zDataSet )
+        this.legend?.isEnabled = true
+        this.data = LineData( *dataSets )
         this.invalidate()
     }
     else
@@ -80,11 +89,14 @@ fun LineChart.setCombinedAccelerometerData( accelData: List<AccelerometerParser.
             entries.add( Entry( time, Convert.mGtoMPS( accel.accel ) ) )
         }
 
-        val dataset = LineDataSet( entries, "X" ).apply {
-            color = X_COLOR
+        val dataset = LineDataSet( entries, "Combined" ).apply {
+            color = COMBINED_COLOR
             setDrawCircles( false )
+
+            isHighlightEnabled = false
         }
 
+        this.legend?.isEnabled = false
         this.data = LineData( dataset )
         this.invalidate()
     }
